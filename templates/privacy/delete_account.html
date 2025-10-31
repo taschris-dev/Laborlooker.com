@@ -1,0 +1,102 @@
+{% extends "base.html" %}
+
+{% block title %}Delete Account{% endblock %}
+
+{% block content %}
+<div class="max-w-2xl mx-auto">
+    <h1 class="text-2xl font-bold mb-6 text-red-600">Delete Account</h1>
+    
+    <div class="bg-red-50 border-l-4 border-red-400 p-4 mb-6">
+        <div class="flex">
+            <div class="flex-shrink-0">
+                <svg class="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
+                </svg>
+            </div>
+            <div class="ml-3">
+                <p class="text-sm text-red-700">
+                    <strong>Warning:</strong> This action cannot be undone. All your personal data will be permanently deleted.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <div class="bg-white shadow rounded-lg p-6">
+        <h2 class="text-lg font-medium text-gray-900 mb-4">What will be deleted?</h2>
+        
+        <ul class="list-disc list-inside space-y-2 text-sm text-gray-600 mb-6">
+            <li>Your account and login credentials</li>
+            <li>Profile information (name, contact details, business information)</li>
+            <li>Work history and project records</li>
+            <li>Payment and banking information</li>
+            <li>All uploaded documents and files</li>
+            <li>Communication history and messages</li>
+            <li>Privacy settings and preferences</li>
+        </ul>
+
+        <div class="bg-yellow-50 border border-yellow-200 rounded-md p-4 mb-6">
+            <h3 class="text-sm font-medium text-yellow-800 mb-2">What we keep:</h3>
+            <ul class="list-disc list-inside space-y-1 text-sm text-yellow-700">
+                <li>Basic transaction records (for legal and tax purposes)</li>
+                <li>Anonymized usage statistics</li>
+                <li>Security and audit logs (without personal identifiers)</li>
+            </ul>
+            <p class="text-xs text-yellow-600 mt-2">
+                This minimal data is kept in compliance with legal requirements and will be fully anonymized.
+            </p>
+        </div>
+
+        <form method="POST" class="space-y-4">
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">
+                    Confirm your password to proceed
+                </label>
+                <input type="password" name="password" required
+                       class="w-full border border-gray-300 rounded-md px-3 py-2"
+                       placeholder="Enter your current password">
+            </div>
+
+            <div class="flex items-start">
+                <div class="flex items-center h-5">
+                    <input type="checkbox" name="confirm_deletion" required
+                           class="h-4 w-4 text-red-600 border-gray-300 rounded focus:ring-red-500">
+                </div>
+                <div class="ml-3 text-sm">
+                    <label class="font-medium text-gray-700">
+                        I understand that this action cannot be undone and all my data will be permanently deleted
+                    </label>
+                </div>
+            </div>
+
+            <div class="flex justify-between items-center pt-4">
+                <a href="{{ url_for('privacy_settings') }}" 
+                   class="bg-gray-300 text-gray-700 px-4 py-2 rounded-md hover:bg-gray-400 transition-colors">
+                    Cancel
+                </a>
+                <button type="submit" 
+                        class="bg-red-600 text-white px-6 py-2 rounded-md hover:bg-red-700 transition-colors">
+                    Permanently Delete Account
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <div class="mt-8 bg-blue-50 rounded-lg p-4">
+        <h3 class="text-sm font-medium text-blue-800 mb-2">Need help instead?</h3>
+        <p class="text-sm text-blue-700 mb-3">
+            If you're having issues with your account, consider these alternatives:
+        </p>
+        <div class="space-y-1 text-sm">
+            <a href="{{ url_for('privacy_settings') }}" class="text-blue-600 hover:text-blue-800 block">
+                • Update your privacy settings
+            </a>
+            <a href="{{ url_for('export_user_data') }}" class="text-blue-600 hover:text-blue-800 block">
+                • Export your data first
+            </a>
+            <a href="mailto:support@laborlooker.com" class="text-blue-600 hover:text-blue-800 block">
+                • Contact support for assistance
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

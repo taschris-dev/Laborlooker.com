@@ -1,0 +1,124 @@
+{% extends "base.html" %}
+
+{% block title %}Create Advertisement Campaign - LaborLooker{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <h2>Create New Advertisement Campaign</h2>
+            <p class="lead">Connect with businesses that want to advertise through your contracting services.</p>
+            
+            <form method="POST">
+                <div class="card">
+                    <div class="card-header">
+                        <h5>Campaign Details</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="form-group">
+                            <label for="campaign_name">Campaign Name *</label>
+                            <input type="text" class="form-control" id="campaign_name" name="campaign_name" required
+                                   placeholder="e.g., Local Business Billboard Campaign">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="campaign_type">Campaign Type *</label>
+                            <select class="form-control" id="campaign_type" name="campaign_type" required>
+                                <option value="">Select campaign type</option>
+                                <option value="physical">Physical Advertising (Billboards, Print, Signage)</option>
+                                <option value="virtual">Virtual Advertising (Social Media, Websites, Digital)</option>
+                                <option value="mixed">Mixed Campaign (Physical + Virtual)</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="description">Campaign Description</label>
+                            <textarea class="form-control" id="description" name="description" rows="4"
+                                      placeholder="Describe your advertising campaign and what you can offer to potential advertisers..."></textarea>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="target_audience">Target Audience</label>
+                            <textarea class="form-control" id="target_audience" name="target_audience" rows="3"
+                                      placeholder="Describe the target audience that would see the advertisements..."></textarea>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="budget">Proposed Budget Range ($)</label>
+                            <input type="number" class="form-control" id="budget" name="budget" step="0.01" min="0"
+                                   placeholder="1000.00">
+                            <small class="form-text text-muted">Optional: Suggested budget range for advertisers</small>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card mt-4">
+                    <div class="card-header">
+                        <h5>Geographic Targeting</h5>
+                    </div>
+                    <div class="card-body">
+                        <label>Select Geographic Areas:</label>
+                        <div class="row">
+                            {% for area in geographic_areas %}
+                            <div class="col-md-4 col-sm-6">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" name="geographic_areas" 
+                                           value="{{ area }}" id="area_{{ loop.index }}">
+                                    <label class="form-check-label" for="area_{{ loop.index }}">
+                                        {{ area }}
+                                    </label>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card mt-4">
+                    <div class="card-header">
+                        <h5>Service Categories</h5>
+                    </div>
+                    <div class="card-body">
+                        <label>Select Relevant Service Categories:</label>
+                        <div class="row">
+                            {% for category in service_categories %}
+                            <div class="col-md-4 col-sm-6">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" name="service_categories" 
+                                           value="{{ category }}" id="category_{{ loop.index }}">
+                                    <label class="form-check-label" for="category_{{ loop.index }}">
+                                        {{ category }}
+                                    </label>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="mt-4">
+                    <button type="submit" class="btn btn-primary btn-lg">
+                        Create Advertisement Campaign
+                    </button>
+                    <a href="{{ url_for('contractor_advertisement_campaigns') }}" class="btn btn-outline-secondary btn-lg ml-2">
+                        Cancel
+                    </a>
+                </div>
+            </form>
+            
+            <div class="mt-4">
+                <h5>How Advertisement Campaigns Work</h5>
+                <div class="alert alert-light">
+                    <ul class="mb-0">
+                        <li><strong>Create Campaign:</strong> Define your advertising services and target audience</li>
+                        <li><strong>Advertiser Connection:</strong> Businesses interested in advertising will connect with your campaign</li>
+                        <li><strong>Negotiate Terms:</strong> Work directly with advertisers to finalize campaign details</li>
+                        <li><strong>Execute Campaign:</strong> Provide advertising services as agreed</li>
+                        <li><strong>Track Performance:</strong> Monitor campaign performance and client satisfaction</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,136 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="flex justify-between items-center mb-6">
+<h1 class="text-2xl font-semibold">Work Schedule & Appointments</h1>
+<a href="/schedule/new" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">+ Schedule Work</a>
+</div>
+
+<!-- Upcoming Work -->
+<div class="bg-white rounded shadow mb-6">
+<div class="p-4 border-b">
+    <h2 class="font-medium text-green-700">📅 Upcoming Work (Next 30 Days)</h2>
+</div>
+<div class="p-4">
+{% if upcoming_work %}
+<div class="space-y-3">
+{% for work in upcoming_work %}
+<div class="border-l-4 {% if work.status == 'scheduled' %}border-blue-500{% elif work.status == 'in_progress' %}border-orange-500{% endif %} pl-4 p-3 bg-gray-50 rounded">
+    <div class="flex justify-between items-start">
+    <div>
+        <h3 class="font-medium">{{ work.title }}</h3>
+        <div class="text-sm text-gray-600">{{ work.client.name }}</div>
+        <div class="text-sm text-gray-500">
+        📅 {{ work.scheduled_date.strftime('%Y-%m-%d %H:%M') }}
+        {% if work.estimated_hours %} • ⏱️ {{ work.estimated_hours }}h{% endif %}
+        {% if work.estimated_value > 0 %} • 💰 ${{ "%.0f"|format(work.estimated_value) }}{% endif %}
+        </div>
+        {% if work.prospect %}
+        <div class="text-xs text-blue-600">Prospect: {{ work.prospect.name }}</div>
+        {% elif work.contact %}
+        <div class="text-xs text-green-600">Customer: {{ work.contact.name }}</div>
+        {% endif %}
+    </div>
+    <div class="flex gap-2">
+        <span class="inline-block px-2 py-1 text-xs rounded 
+        {% if work.status == 'scheduled' %}bg-blue-100 text-blue-700
+        {% elif work.status == 'in_progress' %}bg-orange-100 text-orange-700
+        {% endif %}">
+        {{ work.status.replace('_', ' ').title() }}
+        </span>
+        {% if work.status == 'scheduled' %}
+        <form method="post" action="/schedule/{{ work.id }}/complete" class="inline">
+        <button type="submit" onclick="return confirm('Mark as completed?')"
+                class="text-xs bg-green-600 text-white px-2 py-1 rounded hover:bg-green-700">
+            Complete
+        </button>
+        </form>
+        {% endif %}
+    </div>
+    </div>
+    {% if work.description %}
+    <div class="text-sm text-gray-600 mt-2">{{ work.description }}</div>
+    {% endif %}
+</div>
+{% endfor %}
+</div>
+{% else %}
+<div class="text-center py-8">
+    <div class="text-gray-400 text-4xl mb-4">📅</div>
+    <h3 class="text-lg font-medium text-gray-700 mb-2">No upcoming work scheduled</h3>
+    <p class="text-gray-500 mb-4">Schedule appointments and jobs to track your workflow</p>
+    <a href="/schedule/new" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Schedule First Appointment</a>
+</div>
+{% endif %}
+</div>
+</div>
+
+<!-- All Work History -->
+<div class="bg-white rounded shadow">
+<div class="p-4 border-b">
+    <h2 class="font-medium">📋 Recent Work History</h2>
+</div>
+<div class="p-4">
+{% if all_work %}
+<div class="overflow-x-auto">
+<table class="min-w-full text-sm">
+    <thead>
+    <tr class="border-b">
+        <th class="text-left p-2">Work/Appointment</th>
+        <th class="text-left p-2">Client</th>
+        <th class="text-left p-2">Customer/Prospect</th>
+        <th class="text-left p-2">Scheduled</th>
+        <th class="text-left p-2">Status</th>
+        <th class="text-right p-2">Est. Value</th>
+        <th class="text-right p-2">Actual Value</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for work in all_work %}
+    <tr class="border-b hover:bg-gray-50">
+        <td class="p-2">
+        <div class="font-medium">{{ work.title }}</div>
+        {% if work.description %}<div class="text-xs text-gray-500">{{ work.description[:50] }}...</div>{% endif %}
+        </td>
+        <td class="p-2">{{ work.client.name }}</td>
+        <td class="p-2">
+        {% if work.prospect %}
+            <span class="text-blue-600">{{ work.prospect.name }}</span>
+        {% elif work.contact %}
+            <span class="text-green-600">{{ work.contact.name }}</span>
+        {% else %}
+            <span class="text-gray-400">—</span>
+        {% endif %}
+        </td>
+        <td class="p-2">{{ work.scheduled_date.strftime('%m/%d/%Y %H:%M') }}</td>
+        <td class="p-2">
+        <span class="inline-block px-2 py-1 text-xs rounded 
+            {% if work.status == 'scheduled' %}bg-blue-100 text-blue-700
+            {% elif work.status == 'in_progress' %}bg-orange-100 text-orange-700
+            {% elif work.status == 'completed' %}bg-green-100 text-green-700
+            {% elif work.status == 'cancelled' %}bg-red-100 text-red-700
+            {% endif %}">
+            {{ work.status.replace('_', ' ').title() }}
+        </span>
+        </td>
+        <td class="p-2 text-right">
+        {% if work.estimated_value > 0 %}${{ "%.0f"|format(work.estimated_value) }}{% else %}—{% endif %}
+        </td>
+        <td class="p-2 text-right">
+        {% if work.actual_value > 0 %}
+            <span class="font-medium text-green-600">${{ "%.0f"|format(work.actual_value) }}</span>
+        {% else %}—{% endif %}
+        </td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+</div>
+{% else %}
+<div class="text-center py-8 text-gray-500">
+    No work history yet. Start scheduling appointments to track your business workflow.
+</div>
+{% endif %}
+</div>
+</div>
+
+{% endblock %}

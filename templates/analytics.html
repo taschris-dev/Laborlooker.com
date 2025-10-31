@@ -1,0 +1,144 @@
+{% extends 'base.html' %}
+{% block content %}
+<h1 class="text-2xl font-semibold mb-4">Marketing Analytics & ROI Dashboard</h1>
+
+<!-- Campaign Performance -->
+<div class="bg-white rounded shadow mb-6">
+<div class="p-4 border-b">
+    <h2 class="font-medium">Campaign Performance & ROI</h2>
+</div>
+<div class="p-4">
+{% if campaigns_with_stats %}
+<div class="overflow-x-auto">
+<table class="w-full text-sm">
+    <thead>
+    <tr class="border-b">
+        <th class="text-left p-2">Campaign</th>
+        <th class="text-left p-2">Type</th>
+        <th class="text-left p-2">Client</th>
+        <th class="text-right p-2">Budget</th>
+        <th class="text-right p-2">Clicks</th>
+        <th class="text-right p-2">Leads</th>
+        <th class="text-right p-2">Conv. Rate</th>
+        <th class="text-right p-2">Lead Value</th>
+        <th class="text-right p-2">ROI</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for stat in campaigns_with_stats %}
+    <tr class="border-b hover:bg-gray-50">
+        <td class="p-2">
+        <a href="/campaigns/{{ stat.campaign.id }}" class="text-blue-600 hover:underline">
+            {{ stat.campaign.name }}
+        </a>
+        </td>
+        <td class="p-2 capitalize">{{ stat.campaign.campaign_type.replace('_', ' ') }}</td>
+        <td class="p-2">{{ stat.campaign.client.name }}</td>
+        <td class="p-2 text-right">${{ "%.2f"|format(stat.campaign.budget) }}</td>
+        <td class="p-2 text-right">{{ stat.total_clicks }}</td>
+        <td class="p-2 text-right">{{ stat.total_leads }}</td>
+        <td class="p-2 text-right">{{ "%.1f"|format(stat.conversion_rate) }}%</td>
+        <td class="p-2 text-right">${{ "%.2f"|format(stat.total_lead_value) }}</td>
+        <td class="p-2 text-right {% if stat.roi > 0 %}text-green-600{% elif stat.roi < 0 %}text-red-600{% endif %}">
+        {{ "%.1f"|format(stat.roi) }}%
+        </td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+</div>
+{% else %}
+<p class="text-gray-600">No campaign data available yet.</p>
+{% endif %}
+</div>
+</div>
+
+<!-- Client Portfolio Summary -->
+<div class="bg-white rounded shadow mb-6">
+<div class="p-4 border-b">
+    <h2 class="font-medium">Client Portfolio Summary</h2>
+</div>
+<div class="p-4">
+{% if clients_with_stats %}
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+{% for stat in clients_with_stats %}
+<div class="border rounded p-4">
+    <h3 class="font-medium text-lg">{{ stat.client.name }}</h3>
+    <div class="text-sm text-gray-600 mb-2">{{ stat.client.industry or 'Industry not specified' }}</div>
+    
+    <div class="space-y-1 text-sm">
+    <div class="flex justify-between">
+        <span>Active Campaigns:</span>
+        <span class="font-medium">{{ stat.total_campaigns }}</span>
+    </div>
+    <div class="flex justify-between">
+        <span>CRM Contacts:</span>
+        <span class="font-medium">{{ stat.total_contacts }}</span>
+    </div>
+    <div class="flex justify-between">
+        <span>Total Budget:</span>
+        <span class="font-medium">${{ "%.2f"|format(stat.total_budget) }}</span>
+    </div>
+    </div>
+    
+    {% if stat.client.website %}
+    <div class="mt-2">
+    <a href="{{ stat.client.website }}" target="_blank" class="text-xs text-blue-600 hover:underline">
+        {{ stat.client.website }}
+    </a>
+    </div>
+    {% endif %}
+</div>
+{% endfor %}
+</div>
+{% else %}
+<p class="text-gray-600">No client data available yet.</p>
+{% endif %}
+</div>
+</div>
+
+<!-- Marketing Technology Features -->
+<div class="bg-white rounded shadow">
+<div class="p-4 border-b">
+    <h2 class="font-medium">Our Marketing Technology Solutions</h2>
+</div>
+<div class="p-4">
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+    <div class="text-center p-4 bg-blue-50 rounded">
+    <div class="text-2xl mb-2">📊</div>
+    <h3 class="font-medium">CRM Integration</h3>
+    <p class="text-sm text-gray-600">Upload customer lists and create targeted campaigns</p>
+    </div>
+    
+    <div class="text-center p-4 bg-green-50 rounded">
+    <div class="text-2xl mb-2">📬</div>
+    <h3 class="font-medium">Direct Mail</h3>
+    <p class="text-sm text-gray-600">Trackable direct mail campaigns with QR codes</p>
+    </div>
+    
+    <div class="text-center p-4 bg-yellow-50 rounded">
+    <div class="text-2xl mb-2">🏷️</div>
+    <h3 class="font-medium">Sticker Campaigns</h3>
+    <p class="text-sm text-gray-600">Physical marketing materials with digital tracking</p>
+    </div>
+    
+    <div class="text-center p-4 bg-purple-50 rounded">
+    <div class="text-2xl mb-2">📺</div>
+    <h3 class="font-medium">Media Campaigns</h3>
+    <p class="text-sm text-gray-600">Multi-channel media campaigns with attribution</p>
+    </div>
+</div>
+
+<div class="mt-6 p-4 bg-gray-50 rounded">
+    <h3 class="font-medium mb-2">What We Do</h3>
+    <p class="text-sm text-gray-700">
+    We connect local businesses through different media, marketing, and technology channels. 
+    We take your customer list (CRM), plug it into our technology, and build trackable referral 
+    campaigns to help you find new customers. Our platform supports direct mail campaigns, 
+    sticker campaigns, media campaigns, and digital campaigns - all with full tracking and ROI measurement.
+    </p>
+</div>
+</div>
+</div>
+
+{% endblock %}

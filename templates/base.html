@@ -1,0 +1,274 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>{% block title %}LaborLooker - Connecting Local Businesses{% endblock %}</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+<style>
+    .hamburger-menu {
+        position: fixed;
+        top: 0;
+        left: -300px;
+        width: 300px;
+        height: 100vh;
+        background: white;
+        box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+        transition: left 0.3s ease;
+        z-index: 1000;
+        overflow-y: auto;
+    }
+    .hamburger-menu.open {
+        left: 0;
+    }
+    .hamburger-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        background: rgba(0,0,0,0.5);
+        z-index: 999;
+        display: none;
+    }
+    .hamburger-overlay.show {
+        display: block;
+    }
+    .rating-stars {
+        color: #ffc107;
+    }
+</style>
+</head>
+<body class="bg-gray-50 text-gray-900">
+
+<!-- Hamburger Menu -->
+<div class="hamburger-overlay" id="hamburgerOverlay" onclick="toggleHamburgerMenu()"></div>
+<div class="hamburger-menu" id="hamburgerMenu">
+    <div class="p-4 border-b">
+        <div class="flex justify-between items-center">
+            <h3 class="font-bold text-lg">LaborLooker</h3>
+            <button onclick="toggleHamburgerMenu()" class="text-gray-500 hover:text-gray-700">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        {% if current_user.is_authenticated %}
+        <p class="text-sm text-gray-600 mt-1">{{ current_user.email }}</p>
+        <span class="inline-block px-2 py-1 text-xs bg-blue-100 text-blue-800 rounded">
+            {{ current_user.account_type.title() }}
+        </span>
+        {% endif %}
+    </div>
+    
+    <div class="p-4">
+        <h4 class="font-semibold text-gray-700 mb-2">Quick Links</h4>
+        <ul class="space-y-2">
+            <li><a href="/about-us" class="flex items-center text-gray-600 hover:text-blue-600">
+                <i class="fas fa-info-circle w-5"></i> About Us
+            </a></li>
+            <li><a href="/contact-us" class="flex items-center text-gray-600 hover:text-blue-600">
+                <i class="fas fa-envelope w-5"></i> Contact Us
+            </a></li>
+            <li><a href="/careers" class="flex items-center text-gray-600 hover:text-blue-600">
+                <i class="fas fa-briefcase w-5"></i> Careers
+            </a></li>
+            <li><a href="/help" class="flex items-center text-gray-600 hover:text-blue-600">
+                <i class="fas fa-question-circle w-5"></i> Help & Support
+            </a></li>
+            <li><a href="/building-codes" class="flex items-center text-gray-600 hover:text-blue-600">
+                <i class="fas fa-building w-5"></i> Building Code Lookup
+            </a></li>
+        </ul>
+        
+        {% if current_user.is_authenticated %}
+        <h4 class="font-semibold text-gray-700 mb-2 mt-6">Account</h4>
+        <ul class="space-y-2">
+            <li><a href="{{ url_for('my_ratings') }}" class="flex items-center text-gray-600 hover:text-blue-600">
+                <i class="fas fa-star w-5"></i> My Ratings
+            </a></li>
+            <li><a href="/security" class="flex items-center text-gray-600 hover:text-blue-600">
+                <i class="fas fa-shield-alt w-5"></i> Security & 2FA
+            </a></li>
+            <li><a href="/id-verification" class="flex items-center text-gray-600 hover:text-blue-600">
+                <i class="fas fa-id-card w-5"></i> ID Verification
+            </a></li>
+            <li><a href="{{ url_for('privacy_settings') }}" class="flex items-center text-gray-600 hover:text-blue-600">
+                <i class="fas fa-user-shield w-5"></i> Privacy Settings
+            </a></li>
+        </ul>
+        {% endif %}
+        
+        <h4 class="font-semibold text-gray-700 mb-2 mt-6">Legal & Privacy</h4>
+        <ul class="space-y-2">
+            <li><a href="{{ url_for('privacy_policy') }}" class="flex items-center text-gray-600 hover:text-blue-600">
+                <i class="fas fa-user-secret w-5"></i> Privacy Policy
+            </a></li>
+            <li><a href="{{ url_for('terms_of_service') }}" class="flex items-center text-gray-600 hover:text-blue-600">
+                <i class="fas fa-file-contract w-5"></i> Terms of Service
+            </a></li>
+            {% if current_user.is_authenticated %}
+            <li><a href="{{ url_for('privacy_policy_docusign') }}" class="flex items-center text-gray-600 hover:text-blue-600">
+                <i class="fas fa-file-signature w-5"></i> DocuSign Privacy
+            </a></li>
+            <li><a href="{{ url_for('terms_of_use_docusign') }}" class="flex items-center text-gray-600 hover:text-blue-600">
+                <i class="fas fa-gavel w-5"></i> DocuSign Terms
+            </a></li>
+            {% endif %}
+        </ul>
+    </div>
+</div>
+
+<nav class="bg-white border-b sticky top-0 z-10">
+<div class="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
+<div class="flex items-center gap-4">
+    <!-- Hamburger Button -->
+    <button onclick="toggleHamburgerMenu()" class="text-gray-600 hover:text-gray-900 mr-2">
+        <i class="fas fa-bars text-xl"></i>
+    </button>
+    
+    <a class="font-semibold text-blue-600" href="/">LaborLooker</a>
+    {% if current_user.is_authenticated %}
+        {% if current_user.account_type == "developer" %}
+            <a class="text-sm text-gray-600 hover:text-gray-900" href="{{ url_for('developer_dashboard') }}">🏠 Dashboard</a>
+            <a class="text-sm text-gray-600 hover:text-gray-900" href="{{ url_for('networking_labor_sourcing') }}">� Labor Sourcing</a>
+            <a class="text-sm text-gray-600 hover:text-gray-900" href="{{ url_for('billing_overview') }}">� Billing</a>
+            <a class="text-sm text-gray-600 hover:text-gray-900" href="{{ url_for('advertising_marketplace') }}">📢 Advertising</a>
+        {% elif current_user.account_type == "contractor" %}
+            <a class="text-sm text-gray-600 hover:text-gray-900" href="{{ url_for('contractor_dashboard') }}">🏠 Dashboard</a>
+            <a class="text-sm text-gray-600 hover:text-gray-900" href="{{ url_for('contractor_advertisement_campaigns') }}">📢 Campaigns</a>
+            <a class="text-sm text-gray-600 hover:text-gray-900" href="/contractor/invoices">🧾 Invoices</a>
+            <a class="text-sm text-gray-600 hover:text-gray-900" href="{{ url_for('advertising_marketplace') }}">🎯 Find Advertisers</a>
+        {% elif current_user.account_type == "customer" %}
+            <a class="text-sm text-gray-600 hover:text-gray-900" href="{{ url_for('customer_dashboard') }}">🏠 Dashboard</a>
+            <a class="text-sm text-gray-600 hover:text-gray-900" href="/customer/schedule-work">🔨 Schedule Work</a>
+            <a class="text-sm text-gray-600 hover:text-gray-900" href="/customer/billing">💳 Billing</a>
+            <a class="text-sm text-gray-600 hover:text-gray-900" href="{{ url_for('advertising_marketplace') }}">🎯 Find Advertisers</a>
+        {% endif %}
+    {% else %}
+        <a class="text-sm text-gray-600 hover:text-gray-900" href="/guide">📖 Guide</a>
+        <a class="text-sm text-gray-600 hover:text-gray-900" href="/prospects">👥 Prospects</a>
+        <a class="text-sm text-gray-600 hover:text-gray-900" href="/schedule">📅 Schedule</a>
+    {% endif %}
+</div>
+<div class="flex items-center gap-4">
+{% if current_user.is_authenticated %}
+    <!-- User Rating Display -->
+    {% set user_rating, rating_count = calculate_user_rating_template(current_user.id) %}
+    {% if user_rating > 0 %}
+    <div class="flex items-center text-sm">
+        <span class="rating-stars mr-1">
+            {% for i in range(1, 6) %}
+                {% if i <= user_rating %}★{% else %}☆{% endif %}
+            {% endfor %}
+        </span>
+        <span class="text-gray-600">({{ rating_count }})</span>
+    </div>
+    {% else %}
+    <span class="text-xs bg-green-100 text-green-800 px-2 py-1 rounded">New User</span>
+    {% endif %}
+    
+    <span class="text-sm text-gray-600">{{ current_user.email.split('@')[0] }}</span>
+    <a class="text-sm text-blue-600 hover:text-blue-900" href="{{ url_for('privacy_settings') }}">Privacy</a>
+    <a class="text-sm text-red-600 hover:text-red-900" href="{{ url_for('logout') }}">Logout</a>
+{% else %}
+    <a class="text-sm text-blue-600 hover:text-blue-900" href="{{ url_for('login') }}">Login</a>
+    <a class="text-sm text-green-600 hover:text-green-900" href="{{ url_for('register') }}">Register</a>
+{% endif %}
+</div>
+</div>
+</nav>
+
+<script>
+function toggleHamburgerMenu() {
+    const menu = document.getElementById('hamburgerMenu');
+    const overlay = document.getElementById('hamburgerOverlay');
+    
+    menu.classList.toggle('open');
+    overlay.classList.toggle('show');
+}
+
+// Close menu when clicking outside
+document.addEventListener('click', function(e) {
+    const menu = document.getElementById('hamburgerMenu');
+    const overlay = document.getElementById('hamburgerOverlay');
+    const hamburgerBtn = e.target.closest('button[onclick="toggleHamburgerMenu()"]');
+    
+    if (!menu.contains(e.target) && !hamburgerBtn && menu.classList.contains('open')) {
+        menu.classList.remove('open');
+        overlay.classList.remove('show');
+    }
+});
+</script>
+
+<main class="max-w-6xl mx-auto px-4 py-6">
+{% with messages = get_flashed_messages(with_categories=true) %}
+{% if messages %}
+<div class="space-y-2 mb-4">
+{% for category, message in messages %}
+<div class="p-3 rounded {{ 'bg-green-100 text-green-900' if category=='success' else 'bg-red-100 text-red-900' }}">{{ message }}</div>
+{% endfor %}
+</div>
+{% endif %}
+{% endwith %}
+
+
+{% block content %}{% endblock %}
+</main>
+
+<!-- Footer -->
+<footer class="bg-gray-800 text-white py-8 mt-12">
+    <div class="max-w-6xl mx-auto px-4">
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+            <div>
+                <h3 class="text-lg font-bold mb-4">LaborLooker</h3>
+                <p class="text-sm text-gray-300">Connecting customers with qualified contractors for home improvement and construction services.</p>
+            </div>
+            
+            <div>
+                <h4 class="font-semibold mb-4">Services</h4>
+                <ul class="space-y-2 text-sm">
+                    <li><a href="{{ url_for('customer_search_contractors') if current_user.is_authenticated else url_for('register') }}" class="text-gray-300 hover:text-white">Find Contractors</a></li>
+                    <li><a href="{{ url_for('register') }}" class="text-gray-300 hover:text-white">Join as Contractor</a></li>
+                    <li><a href="{{ url_for('register') }}" class="text-gray-300 hover:text-white">Network Management</a></li>
+                    <li><a href="{{ url_for('contracts_dashboard') if current_user.is_authenticated else url_for('register') }}" class="text-gray-300 hover:text-white">Digital Contracts</a></li>
+                </ul>
+            </div>
+            
+            <div>
+                <h4 class="font-semibold mb-4">Support</h4>
+                <ul class="space-y-2 text-sm">
+                    <li><a href="mailto:support@laborlooker.com" class="text-gray-300 hover:text-white">Contact Support</a></li>
+                    <li><a href="{{ url_for('guide') }}" class="text-gray-300 hover:text-white">User Guide</a></li>
+                    {% if current_user.is_authenticated %}
+                    <li><a href="{{ url_for('privacy_settings') }}" class="text-gray-300 hover:text-white">Privacy Settings</a></li>
+                    {% endif %}
+                    <li><a href="mailto:help@laborlooker.com" class="text-gray-300 hover:text-white">Help Center</a></li>
+                </ul>
+            </div>
+            
+            <div>
+                <h4 class="font-semibold mb-4">Legal</h4>
+                <ul class="space-y-2 text-sm">
+                    <li><a href="{{ url_for('privacy_policy') }}" class="text-gray-300 hover:text-white">Privacy Policy</a></li>
+                    <li><a href="{{ url_for('terms_of_service') }}" class="text-gray-300 hover:text-white">Terms of Service</a></li>
+                    {% if current_user.is_authenticated %}
+                    <li><a href="{{ url_for('privacy_policy_docusign') }}" class="text-gray-300 hover:text-white">DocuSign Privacy</a></li>
+                    <li><a href="{{ url_for('terms_of_use_docusign') }}" class="text-gray-300 hover:text-white">DocuSign Terms</a></li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+        
+        <div class="border-t border-gray-700 mt-8 pt-8 flex flex-col md:flex-row justify-between items-center">
+            <div class="text-sm text-gray-400">
+                © 2024 LaborLooker. All rights reserved.
+            </div>
+            <div class="text-sm text-gray-400 mt-4 md:mt-0">
+                <a href="mailto:privacy@laborlooker.com" class="hover:text-white">Privacy Questions</a> |
+                <a href="mailto:legal@laborlooker.com" class="hover:text-white">Legal Inquiries</a>
+            </div>
+        </div>
+    </div>
+</footer>
+</body>
+</html>

@@ -1,0 +1,148 @@
+{% extends "base.html" %}
+
+{% block title %}Data Consent{% endblock %}
+
+{% block content %}
+<div class="max-w-3xl mx-auto">
+    <h1 class="text-2xl font-bold mb-6">Data Processing Consent</h1>
+    
+    <div class="bg-blue-50 border-l-4 border-blue-400 p-4 mb-6">
+        <div class="flex">
+            <div class="flex-shrink-0">
+                <svg class="h-5 w-5 text-blue-400" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" />
+                </svg>
+            </div>
+            <div class="ml-3">
+                <p class="text-sm text-blue-700">
+                    <strong>Your Control:</strong> You can withdraw consent at any time. This controls how we use your data beyond core service functionality.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <form method="POST" class="space-y-6">
+        <!-- Analytics Consent -->
+        <div class="bg-white shadow rounded-lg p-6">
+            <div class="flex items-start">
+                <div class="flex items-center h-5">
+                    <input type="checkbox" name="consent_analytics" 
+                           {% if consent.analytics %}checked{% endif %}
+                           class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500">
+                </div>
+                <div class="ml-3">
+                    <h3 class="text-lg font-medium text-gray-900">Analytics & Performance</h3>
+                    <p class="text-sm text-gray-600 mt-1">
+                        Allow us to collect anonymized usage data to improve our platform performance and user experience.
+                    </p>
+                    <div class="mt-3 text-xs text-gray-500">
+                        <strong>What we collect:</strong>
+                        <ul class="list-disc list-inside mt-1 space-y-1">
+                            <li>Page views and click patterns</li>
+                            <li>Feature usage statistics</li>
+                            <li>Performance metrics (load times, errors)</li>
+                            <li>Device and browser information</li>
+                        </ul>
+                        <p class="mt-2"><strong>Data is:</strong> Anonymized, aggregated, and never sold to third parties</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Marketing Consent -->
+        <div class="bg-white shadow rounded-lg p-6">
+            <div class="flex items-start">
+                <div class="flex items-center h-5">
+                    <input type="checkbox" name="consent_marketing" 
+                           {% if consent.marketing %}checked{% endif %}
+                           class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500">
+                </div>
+                <div class="ml-3">
+                    <h3 class="text-lg font-medium text-gray-900">Marketing Communications</h3>
+                    <p class="text-sm text-gray-600 mt-1">
+                        Receive personalized marketing emails, product updates, and promotional offers.
+                    </p>
+                    <div class="mt-3 text-xs text-gray-500">
+                        <strong>What we send:</strong>
+                        <ul class="list-disc list-inside mt-1 space-y-1">
+                            <li>Product feature announcements</li>
+                            <li>Industry insights and tips</li>
+                            <li>Special offers and promotions</li>
+                            <li>Newsletter and updates</li>
+                        </ul>
+                        <p class="mt-2"><strong>Frequency:</strong> No more than 2-3 emails per month, unsubscribe anytime</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Third Party Consent -->
+        <div class="bg-white shadow rounded-lg p-6">
+            <div class="flex items-start">
+                <div class="flex items-center h-5">
+                    <input type="checkbox" name="consent_third_party" 
+                           {% if consent.third_party %}checked{% endif %}
+                           class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500">
+                </div>
+                <div class="ml-3">
+                    <h3 class="text-lg font-medium text-gray-900">Third-Party Integrations</h3>
+                    <p class="text-sm text-gray-600 mt-1">
+                        Allow integration with trusted third-party services to enhance your experience.
+                    </p>
+                    <div class="mt-3 text-xs text-gray-500">
+                        <strong>Current integrations:</strong>
+                        <ul class="list-disc list-inside mt-1 space-y-1">
+                            <li>PayPal for payment processing</li>
+                            <li>Google Maps for location services</li>
+                            <li>Email delivery services</li>
+                            <li>Cloud storage for document management</li>
+                        </ul>
+                        <p class="mt-2"><strong>Data sharing:</strong> Only necessary data for service functionality, governed by their privacy policies</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Current Consent Status -->
+        {% if consent %}
+        <div class="bg-gray-50 rounded-lg p-4">
+            <h3 class="text-sm font-medium text-gray-900 mb-2">Current Consent Status</h3>
+            <div class="text-xs text-gray-600 space-y-1">
+                <p><strong>Last updated:</strong> {{ consent.timestamp if consent.timestamp else 'Not set' }}</p>
+                <p><strong>Analytics:</strong> {{ 'Granted' if consent.analytics else 'Denied' }}</p>
+                <p><strong>Marketing:</strong> {{ 'Granted' if consent.marketing else 'Denied' }}</p>
+                <p><strong>Third-party:</strong> {{ 'Granted' if consent.third_party else 'Denied' }}</p>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Submit Button -->
+        <div class="flex justify-end">
+            <button type="submit" class="bg-blue-600 text-white px-6 py-2 rounded-md hover:bg-blue-700 transition-colors">
+                Update Consent Preferences
+            </button>
+        </div>
+    </form>
+
+    <!-- Legal Information -->
+    <div class="mt-8 bg-gray-50 rounded-lg p-4">
+        <h3 class="text-sm font-medium text-gray-900 mb-2">Your Rights</h3>
+        <div class="text-xs text-gray-600 space-y-2">
+            <p>
+                <strong>Right to withdraw:</strong> You can change these settings at any time. Withdrawal won't affect previous processing.
+            </p>
+            <p>
+                <strong>Core services:</strong> Essential platform functionality (account management, service delivery, security) doesn't require additional consent.
+            </p>
+            <p>
+                <strong>Data protection:</strong> All data processing complies with GDPR, CCPA, and other applicable privacy laws.
+            </p>
+            <div class="mt-3 space-x-4">
+                <a href="/privacy-policy" class="text-blue-600 hover:text-blue-800">Privacy Policy</a>
+                <a href="/terms-of-service" class="text-blue-600 hover:text-blue-800">Terms of Service</a>
+                <a href="{{ url_for('privacy_settings') }}" class="text-blue-600 hover:text-blue-800">Privacy Settings</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

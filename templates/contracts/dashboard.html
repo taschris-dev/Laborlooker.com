@@ -1,0 +1,325 @@
+{% extends "base.html" %}
+
+{% block title %}Contract Management{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">
+                        <i class="fas fa-file-contract"></i> Contract Management
+                    </h4>
+                </div>
+                <div class="card-body">
+                    {% if pending_contracts %}
+                        <div class="alert alert-warning">
+                            <h5><i class="fas fa-exclamation-triangle"></i> Action Required</h5>
+                            <p class="mb-2">You have pending contracts that require your signature.</p>
+                            <p class="mb-0">Some platform features may be limited until all contracts are signed.</p>
+                        </div>
+                    {% endif %}
+                    
+                    {% if compliance_status.0 %}
+                        <div class="alert alert-success">
+                            <h5><i class="fas fa-check-circle"></i> Contract Compliance Complete</h5>
+                            <p class="mb-0">All required contracts have been signed. You have full access to platform features.</p>
+                        </div>
+                    {% else %}
+                        <div class="alert alert-danger">
+                            <h5><i class="fas fa-times-circle"></i> Contract Compliance Required</h5>
+                            <p class="mb-0">{{ compliance_status.1 }}</p>
+                        </div>
+                    {% endif %}
+                    
+                    <!-- Contract Actions -->
+                    <div class="row mb-4">
+                        {% if current_user.account_type == 'contractor' %}
+                            <div class="col-md-6">
+                                <div class="card border-primary">
+                                    <div class="card-body text-center">
+                                        <h5 class="card-title">Contractor Agreement</h5>
+                                        <p class="card-text">Sign the contractor agreement to start accepting jobs</p>
+                                        {% set contractor_agreement = contracts|selectattr('document_type', 'equalto', 'contractor_agreement')|first %}
+                                        {% if contractor_agreement %}
+                                            {% if contractor_agreement.status == 'completed' %}
+                                                <span class="badge bg-success">✓ Signed</span>
+                                                <p class="small text-muted mt-2">
+                                                    Completed: {{ contractor_agreement.completed_at.strftime('%B %d, %Y') }}
+                                                </p>
+                                            {% elif contractor_agreement.status == 'sent' %}
+                                                <a href="#" class="btn btn-warning" onclick="openDocuSignEnvelope('{{ contractor_agreement.envelope_id }}')">
+                                                    <i class="fas fa-pen"></i> Complete Signing
+                                                </a>
+                                                <p class="small text-muted mt-2">Sent: {{ contractor_agreement.sent_at.strftime('%B %d, %Y') }}</p>
+                                            {% elif contractor_agreement.status == 'delivered' %}
+                                                <a href="#" class="btn btn-info" onclick="openDocuSignEnvelope('{{ contractor_agreement.envelope_id }}')">
+                                                    <i class="fas fa-pen"></i> Sign Now
+                                                </a>
+                                                <p class="small text-muted mt-2">Delivered: {{ contractor_agreement.delivered_at.strftime('%B %d, %Y') }}</p>
+                                            {% else %}
+                                                <span class="badge bg-secondary">{{ contractor_agreement.status.title() }}</span>
+                                            {% endif %}
+                                        {% else %}
+                                            <form method="POST" action="{{ url_for('send_contract') }}">
+                                                <input type="hidden" name="contract_type" value="contractor_agreement">
+                                                <button type="submit" class="btn btn-primary">
+                                                    <i class="fas fa-file-plus"></i> Generate Agreement
+                                                </button>
+                                            </form>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        {% endif %}
+                        
+                        {% if current_user.account_type == 'customer' %}
+                            <div class="col-md-6">
+                                <div class="card border-info">
+                                    <div class="card-body text-center">
+                                        <h5 class="card-title">Client Terms of Service</h5>
+                                        <p class="card-text">Accept terms to post jobs and hire contractors</p>
+                                        {% set client_terms = contracts|selectattr('document_type', 'equalto', 'client_terms')|first %}
+                                        {% if client_terms %}
+                                            {% if client_terms.status == 'completed' %}
+                                                <span class="badge bg-success">✓ Signed</span>
+                                                <p class="small text-muted mt-2">
+                                                    Completed: {{ client_terms.completed_at.strftime('%B %d, %Y') }}
+                                                </p>
+                                            {% elif client_terms.status == 'sent' %}
+                                                <a href="#" class="btn btn-warning" onclick="openDocuSignEnvelope('{{ client_terms.envelope_id }}')">
+                                                    <i class="fas fa-pen"></i> Complete Signing
+                                                </a>
+                                                <p class="small text-muted mt-2">Sent: {{ client_terms.sent_at.strftime('%B %d, %Y') }}</p>
+                                            {% elif client_terms.status == 'delivered' %}
+                                                <a href="#" class="btn btn-info" onclick="openDocuSignEnvelope('{{ client_terms.envelope_id }}')">
+                                                    <i class="fas fa-pen"></i> Sign Now
+                                                </a>
+                                                <p class="small text-muted mt-2">Delivered: {{ client_terms.delivered_at.strftime('%B %d, %Y') }}</p>
+                                            {% else %}
+                                                <span class="badge bg-secondary">{{ client_terms.status.title() }}</span>
+                                            {% endif %}
+                                        {% else %}
+                                            <form method="POST" action="{{ url_for('send_contract') }}">
+                                                <input type="hidden" name="contract_type" value="client_terms">
+                                                <button type="submit" class="btn btn-primary">
+                                                    <i class="fas fa-file-plus"></i> Generate Terms
+                                                </button>
+                                            </form>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        {% endif %}
+                    </div>
+                    
+                    <!-- All Contracts Table -->
+                    <h5><i class="fas fa-list"></i> All Contracts</h5>
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Document</th>
+                                    <th>Type</th>
+                                    <th>Status</th>
+                                    <th>Sent</th>
+                                    <th>Completed</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% if contracts %}
+                                    {% for contract in contracts %}
+                                    <tr>
+                                        <td>
+                                            <strong>{{ contract.document_name }}</strong>
+                                            {% if contract.work_request_id %}
+                                                <br><small class="text-muted">Project ID: {{ contract.work_request_id }}</small>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            <span class="badge bg-secondary">
+                                                {{ contract.document_type.replace('_', ' ').title() }}
+                                            </span>
+                                        </td>
+                                        <td>
+                                            {% if contract.status == 'completed' %}
+                                                <span class="badge bg-success">✓ Completed</span>
+                                            {% elif contract.status == 'signed' %}
+                                                <span class="badge bg-info">Signed</span>
+                                            {% elif contract.status == 'delivered' %}
+                                                <span class="badge bg-warning">📬 Delivered</span>
+                                            {% elif contract.status == 'sent' %}
+                                                <span class="badge bg-primary">📤 Sent</span>
+                                            {% elif contract.status == 'declined' %}
+                                                <span class="badge bg-danger">❌ Declined</span>
+                                            {% else %}
+                                                <span class="badge bg-secondary">{{ contract.status.title() }}</span>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            {% if contract.sent_at %}
+                                                {{ contract.sent_at.strftime('%m/%d/%Y') }}
+                                                <br><small class="text-muted">{{ contract.sent_at.strftime('%I:%M %p') }}</small>
+                                            {% else %}
+                                                -
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            {% if contract.completed_at %}
+                                                {{ contract.completed_at.strftime('%m/%d/%Y') }}
+                                                <br><small class="text-muted">{{ contract.completed_at.strftime('%I:%M %p') }}</small>
+                                            {% else %}
+                                                -
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            <div class="btn-group btn-group-sm" role="group">
+                                                {% if contract.status in ['sent', 'delivered'] %}
+                                                    <button class="btn btn-primary btn-sm" 
+                                                            onclick="openDocuSignEnvelope('{{ contract.envelope_id }}')">
+                                                        <i class="fas fa-pen"></i> Sign
+                                                    </button>
+                                                {% endif %}
+                                                
+                                                {% if contract.status == 'completed' and contract.completed_document_url %}
+                                                    <a href="{{ url_for('download_contract', contract_id=contract.id) }}" 
+                                                       class="btn btn-success btn-sm">
+                                                        <i class="fas fa-download"></i> Download
+                                                    </a>
+                                                {% endif %}
+                                                
+                                                <button class="btn btn-info btn-sm" 
+                                                        onclick="checkContractStatus({{ contract.id }})">
+                                                    <i class="fas fa-sync"></i> Refresh
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                {% else %}
+                                    <tr>
+                                        <td colspan="6" class="text-center text-muted">
+                                            <i class="fas fa-file-contract fa-3x mb-3"></i>
+                                            <p>No contracts found</p>
+                                        </td>
+                                    </tr>
+                                {% endif %}
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <hr>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <a href="{{ url_for('dashboard') }}" class="btn btn-outline-secondary">
+                                <i class="fas fa-arrow-left"></i> Back to Dashboard
+                            </a>
+                        </div>
+                        <div class="col-md-6 text-end">
+                            <button class="btn btn-outline-info" onclick="refreshAllContracts()">
+                                <i class="fas fa-sync"></i> Refresh All Status
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Help Section -->
+            <div class="card mt-4">
+                <div class="card-body">
+                    <h6><i class="fas fa-question-circle"></i> Contract Help</h6>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <p class="small">
+                                <strong>Signing Process:</strong>
+                                <br>• Click "Sign Now" to open DocuSign
+                                <br>• Review the document carefully
+                                <br>• Sign and date where indicated
+                                <br>• Submit to complete the process
+                            </p>
+                        </div>
+                        <div class="col-md-6">
+                            <p class="small">
+                                <strong>Need Help?</strong>
+                                <br>📧 contracts@laborlooker.com
+                                <br>📞 1-800-LABOR-01
+                                <br>💬 Live chat support
+                                <br>🕒 Business hours: 9 AM - 6 PM EST
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function openDocuSignEnvelope(envelopeId) {
+    // This would open DocuSign signing interface
+    const docusignUrl = `https://demo.docusign.net/signing/${envelopeId}`;
+    window.open(docusignUrl, '_blank', 'width=800,height=600');
+}
+
+function checkContractStatus(contractId) {
+    fetch(`/contracts/status/${contractId}`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            location.reload();
+        } else {
+            alert('Failed to refresh contract status: ' + data.error);
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Failed to refresh contract status');
+    });
+}
+
+function refreshAllContracts() {
+    const refreshBtn = document.querySelector('button[onclick="refreshAllContracts()"]');
+    refreshBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Refreshing...';
+    refreshBtn.disabled = true;
+    
+    fetch('/contracts/refresh-all', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            location.reload();
+        } else {
+            alert('Failed to refresh contracts: ' + data.error);
+            refreshBtn.innerHTML = '<i class="fas fa-sync"></i> Refresh All Status';
+            refreshBtn.disabled = false;
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Failed to refresh contracts');
+        refreshBtn.innerHTML = '<i class="fas fa-sync"></i> Refresh All Status';
+        refreshBtn.disabled = false;
+    });
+}
+
+// Auto-refresh every 30 seconds for pending contracts
+setInterval(function() {
+    const pendingContracts = document.querySelectorAll('.badge.bg-primary, .badge.bg-warning');
+    if (pendingContracts.length > 0) {
+        refreshAllContracts();
+    }
+}, 30000);
+</script>
+{% endblock %}

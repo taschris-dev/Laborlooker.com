@@ -1,0 +1,192 @@
+{% extends "base.html" %}
+
+{% block title %}Privacy Settings{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto">
+    <h1 class="text-2xl font-bold mb-6">Privacy & Data Protection Settings</h1>
+    
+    <div class="bg-blue-50 border-l-4 border-blue-400 p-4 mb-6">
+        <div class="flex">
+            <div class="flex-shrink-0">
+                <svg class="h-5 w-5 text-blue-400" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
+                </svg>
+            </div>
+            <div class="ml-3">
+                <p class="text-sm text-blue-700">
+                    <strong>Your Privacy Matters:</strong> These settings control how your personal information is displayed and shared. Changes are logged for your security.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <form method="POST" class="space-y-8">
+        <!-- Profile Visibility -->
+        <div class="bg-white shadow rounded-lg p-6">
+            <h2 class="text-lg font-medium text-gray-900 mb-4">Profile Visibility</h2>
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Who can see your profile?</label>
+                    <select name="profile_visibility" class="w-full border border-gray-300 rounded-md px-3 py-2">
+                        <option value="public" {% if pii_settings.profile_visibility == 'public' %}selected{% endif %}>Public - Anyone can view</option>
+                        <option value="limited" {% if pii_settings.profile_visibility == 'limited' %}selected{% endif %}>Limited - Registered users only</option>
+                        <option value="private" {% if pii_settings.profile_visibility == 'private' %}selected{% endif %}>Private - Only you can view</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <!-- Data Sharing Preferences -->
+        <div class="bg-white shadow rounded-lg p-6">
+            <h2 class="text-lg font-medium text-gray-900 mb-4">Data Sharing</h2>
+            <div class="space-y-4">
+                <div class="flex items-start">
+                    <div class="flex items-center h-5">
+                        <input type="checkbox" name="allow_contact_info_sharing" 
+                               {% if pii_settings.allow_contact_info_sharing %}checked{% endif %}
+                               class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500">
+                    </div>
+                    <div class="ml-3 text-sm">
+                        <label class="font-medium text-gray-700">Allow contact information sharing</label>
+                        <p class="text-gray-500">Allow other users to see your email and phone number when relevant</p>
+                    </div>
+                </div>
+                
+                <div class="flex items-start">
+                    <div class="flex items-center h-5">
+                        <input type="checkbox" name="allow_location_sharing" 
+                               {% if pii_settings.allow_location_sharing %}checked{% endif %}
+                               class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500">
+                    </div>
+                    <div class="ml-3 text-sm">
+                        <label class="font-medium text-gray-700">Allow location sharing</label>
+                        <p class="text-gray-500">Show your business location and service area</p>
+                    </div>
+                </div>
+                
+                <div class="flex items-start">
+                    <div class="flex items-center h-5">
+                        <input type="checkbox" name="allow_work_history_sharing" 
+                               {% if pii_settings.allow_work_history_sharing %}checked{% endif %}
+                               class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500">
+                    </div>
+                    <div class="ml-3 text-sm">
+                        <label class="font-medium text-gray-700">Allow work history sharing</label>
+                        <p class="text-gray-500">Show your completed projects and work history</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Data Masking -->
+        <div class="bg-white shadow rounded-lg p-6">
+            <h2 class="text-lg font-medium text-gray-900 mb-4">Personal Information Masking</h2>
+            <p class="text-sm text-gray-600 mb-4">Control how your personal information appears to other users</p>
+            
+            <div class="space-y-4">
+                <div class="flex items-start">
+                    <div class="flex items-center h-5">
+                        <input type="checkbox" name="mask_email" 
+                               {% if pii_settings.mask_email %}checked{% endif %}
+                               class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500">
+                    </div>
+                    <div class="ml-3 text-sm">
+                        <label class="font-medium text-gray-700">Mask email address</label>
+                        <p class="text-gray-500">Show only domain (example@domain.com → @domain.com)</p>
+                    </div>
+                </div>
+                
+                <div class="flex items-start">
+                    <div class="flex items-center h-5">
+                        <input type="checkbox" name="mask_phone_number" 
+                               {% if pii_settings.mask_phone_number %}checked{% endif %}
+                               class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500">
+                    </div>
+                    <div class="ml-3 text-sm">
+                        <label class="font-medium text-gray-700">Mask phone number</label>
+                        <p class="text-gray-500">Show only last 4 digits (555-123-4567 → ***-4567)</p>
+                    </div>
+                </div>
+                
+                <div class="flex items-start">
+                    <div class="flex items-center h-5">
+                        <input type="checkbox" name="mask_full_name" 
+                               {% if pii_settings.mask_full_name %}checked{% endif %}
+                               class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500">
+                    </div>
+                    <div class="ml-3 text-sm">
+                        <label class="font-medium text-gray-700">Mask full name</label>
+                        <p class="text-gray-500">Show first name and last initial only (John Smith → John S.)</p>
+                    </div>
+                </div>
+                
+                <div class="flex items-start">
+                    <div class="flex items-center h-5">
+                        <input type="checkbox" name="mask_address" 
+                               {% if pii_settings.mask_address %}checked{% endif %}
+                               class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500">
+                    </div>
+                    <div class="ml-3 text-sm">
+                        <label class="font-medium text-gray-700">Mask address</label>
+                        <p class="text-gray-500">Show only city and state (123 Main St, Charleston, SC → Charleston, SC)</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Data Retention -->
+        <div class="bg-white shadow rounded-lg p-6">
+            <h2 class="text-lg font-medium text-gray-900 mb-4">Data Retention</h2>
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Data retention period (days)</label>
+                    <input type="number" name="data_retention_days" 
+                           value="{{ pii_settings.data_retention_days }}"
+                           min="30" max="3650"
+                           class="w-32 border border-gray-300 rounded-md px-3 py-2">
+                    <p class="text-sm text-gray-500 mt-1">How long to keep your data (minimum 30 days, maximum 10 years)</p>
+                </div>
+                
+                <div class="flex items-start">
+                    <div class="flex items-center h-5">
+                        <input type="checkbox" name="auto_delete_enabled" 
+                               {% if pii_settings.auto_delete_enabled %}checked{% endif %}
+                               class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500">
+                    </div>
+                    <div class="ml-3 text-sm">
+                        <label class="font-medium text-gray-700">Enable automatic data deletion</label>
+                        <p class="text-gray-500">Automatically delete your data after the retention period expires</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Submit Button -->
+        <div class="flex justify-end">
+            <button type="submit" class="bg-blue-600 text-white px-6 py-2 rounded-md hover:bg-blue-700 transition-colors">
+                Save Privacy Settings
+            </button>
+        </div>
+    </form>
+
+    <!-- Quick Actions -->
+    <div class="mt-8 bg-gray-50 rounded-lg p-6">
+        <h2 class="text-lg font-medium text-gray-900 mb-4">Data Management</h2>
+        <div class="flex flex-wrap gap-4">
+            <a href="{{ url_for('export_user_data') }}" 
+               class="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 transition-colors">
+                📥 Export My Data
+            </a>
+            <a href="{{ url_for('data_consent') }}" 
+               class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition-colors">
+                ⚙️ Manage Consent
+            </a>
+            <a href="{{ url_for('delete_account') }}" 
+               class="bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700 transition-colors">
+                🗑️ Delete Account
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

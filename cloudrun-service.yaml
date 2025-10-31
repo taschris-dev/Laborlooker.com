@@ -1,0 +1,129 @@
+# Cloud Run Service Configuration for Labor Lookers Platform
+# Optimized B2B/B2C Architecture with Auto-scaling
+
+apiVersion: serving.knative.dev/v1
+kind: Service
+metadata:
+  name: laborlookers-app
+  annotations:
+    run.googleapis.com/ingress: all
+    run.googleapis.com/execution-environment: gen2
+    cloud.google.com/location: us-central1
+spec:
+  template:
+    metadata:
+      annotations:
+        # Performance optimizations
+        run.googleapis.com/cpu-throttling: "false"
+        run.googleapis.com/memory: "2Gi"
+        run.googleapis.com/cpu: "2"
+        run.googleapis.com/max-scale: "100"
+        run.googleapis.com/min-scale: "1"
+        autoscaling.knative.dev/maxScale: "100"
+        autoscaling.knative.dev/minScale: "1"
+        
+        # Security
+        run.googleapis.com/vpc-access-connector: projects/PROJECT_ID/locations/us-central1/connectors/laborlookers-connector
+        run.googleapis.com/vpc-access-egress: private-ranges-only
+        
+        # Timeout and concurrency
+        run.googleapis.com/timeout: "300s"
+        run.googleapis.com/execution-environment: gen2
+        
+    spec:
+      containerConcurrency: 100
+      timeoutSeconds: 300
+      containers:
+      - image: gcr.io/PROJECT_ID/laborlookers-app:latest
+        ports:
+        - containerPort: 8080
+          name: http1
+        env:
+        # Application settings
+        - name: FLASK_ENV
+          value: "production"
+        - name: PORT
+          value: "8080"
+        - name: PYTHONUNBUFFERED
+          value: "1"
+          
+        # Database connection
+        - name: DATABASE_URL
+          valueFrom:
+            secretKeyRef:
+              name: laborlookers-secrets
+              key: database-url
+              
+        # Application secrets
+        - name: SECRET_KEY
+          valueFrom:
+            secretKeyRef:
+              name: laborlookers-secrets
+              key: secret-key
+              
+        # Email configuration
+        - name: MAIL_SERVER
+          value: "smtp.gmail.com"
+        - name: MAIL_PORT
+          value: "587"
+        - name: MAIL_USE_TLS
+          value: "true"
+        - name: MAIL_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: laborlookers-secrets
+              key: mail-username
+        - name: MAIL_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: laborlookers-secrets
+              key: mail-password
+              
+        # PayPal configuration
+        - name: PAYPAL_CLIENT_ID
+          valueFrom:
+            secretKeyRef:
+              name: laborlookers-secrets
+              key: paypal-client-id
+        - name: PAYPAL_CLIENT_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: laborlookers-secrets
+              key: paypal-client-secret
+        - name: PAYPAL_MODE
+          value: "live"
+          
+        # Performance settings
+        - name: WORKERS
+          value: "2"
+        - name: THREADS
+          value: "4"
+        - name: WORKER_CLASS
+          value: "gthread"
+          
+        resources:
+          limits:
+            cpu: "2"
+            memory: "2Gi"
+          requests:
+            cpu: "1"
+            memory: "1Gi"
+            
+        # Health checks
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8080
+          initialDelaySeconds: 30
+          periodSeconds: 30
+          timeoutSeconds: 10
+          failureThreshold: 3
+          
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 8080
+          initialDelaySeconds: 10
+          periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 3

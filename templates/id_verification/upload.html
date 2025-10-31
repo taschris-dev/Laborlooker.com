@@ -1,0 +1,155 @@
+{% extends "base.html" %}
+
+{% block title %}ID Verification - Upload{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">
+                        <i class="fas fa-id-card"></i> ID Verification
+                    </h4>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-info">
+                        <h5><i class="fas fa-info-circle"></i> Why Verify Your ID?</h5>
+                        <ul class="mb-0">
+                            <li>Build trust with contractors and customers</li>
+                            <li>Access premium features and higher-value projects</li>
+                            <li>Comply with platform security requirements</li>
+                            <li>Protect against fraud and identity theft</li>
+                        </ul>
+                    </div>
+
+                    <form method="POST" enctype="multipart/form-data" id="idVerificationForm">
+                        <div class="mb-3">
+                            <label for="document_type" class="form-label">
+                                <strong>Document Type</strong> <span class="text-danger">*</span>
+                            </label>
+                            <select class="form-select" id="document_type" name="document_type" required>
+                                <option value="">Select Document Type</option>
+                                <option value="drivers_license">Driver's License</option>
+                                <option value="state_id">State ID Card</option>
+                                <option value="passport">US Passport</option>
+                                <option value="military_id">Military ID</option>
+                            </select>
+                            <div class="form-text">Choose the type of government-issued ID you want to upload.</div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="id_document" class="form-label">
+                                <strong>Upload Document</strong> <span class="text-danger">*</span>
+                            </label>
+                            <input type="file" class="form-control" id="id_document" name="id_document" 
+                                   accept=".jpg,.jpeg,.png,.pdf" required>
+                            <div class="form-text">
+                                <strong>Requirements:</strong>
+                                <ul class="mb-0 small">
+                                    <li>Clear, high-quality image or PDF</li>
+                                    <li>All text must be readable</li>
+                                    <li>Document must not be expired</li>
+                                    <li>Maximum file size: 10MB</li>
+                                    <li>Accepted formats: JPG, PNG, PDF</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="alert alert-warning">
+                            <h6><i class="fas fa-shield-alt"></i> Security & Privacy</h6>
+                            <p class="mb-0 small">
+                                Your document will be encrypted and stored securely. We only extract necessary 
+                                information for verification purposes. Personal data is protected according to 
+                                our <a href="#" class="alert-link">Privacy Policy</a>.
+                            </p>
+                        </div>
+
+                        <div class="mb-3">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="consent" required>
+                                <label class="form-check-label" for="consent">
+                                    I consent to the processing of my ID document for verification purposes 
+                                    and agree to the <a href="#" target="_blank">Terms of Service</a> and 
+                                    <a href="#" target="_blank">Privacy Policy</a>. <span class="text-danger">*</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary btn-lg" id="submitBtn">
+                                <i class="fas fa-upload"></i> Upload & Verify ID
+                            </button>
+                            <a href="{{ url_for('dashboard') }}" class="btn btn-outline-secondary">
+                                <i class="fas fa-arrow-left"></i> Back to Dashboard
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Document Type Information -->
+            <div class="row mt-4">
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-body">
+                            <h6 class="card-title"><i class="fas fa-camera"></i> Photo Tips</h6>
+                            <ul class="small mb-0">
+                                <li>Use good lighting</li>
+                                <li>Avoid glare and shadows</li>
+                                <li>Ensure all text is readable</li>
+                                <li>Keep document flat</li>
+                                <li>Fill the entire frame</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-body">
+                            <h6 class="card-title"><i class="fas fa-clock"></i> Processing Time</h6>
+                            <ul class="small mb-0">
+                                <li>Automatic: 1-2 minutes</li>
+                                <li>Manual review: 1-2 business days</li>
+                                <li>High-quality documents process faster</li>
+                                <li>You'll receive email notification</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.getElementById('idVerificationForm').addEventListener('submit', function(e) {
+    const submitBtn = document.getElementById('submitBtn');
+    const fileInput = document.getElementById('id_document');
+    
+    if (fileInput.files.length > 0) {
+        const file = fileInput.files[0];
+        const maxSize = 10 * 1024 * 1024; // 10MB
+        
+        if (file.size > maxSize) {
+            e.preventDefault();
+            alert('File size too large. Maximum 10MB allowed.');
+            return;
+        }
+    }
+    
+    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Uploading...';
+    submitBtn.disabled = true;
+});
+
+// Show file preview
+document.getElementById('id_document').addEventListener('change', function(e) {
+    const file = e.target.files[0];
+    if (file) {
+        const fileName = file.name;
+        const fileSize = (file.size / 1024 / 1024).toFixed(2);
+        console.log(`Selected: ${fileName} (${fileSize} MB)`);
+    }
+});
+</script>
+{% endblock %}

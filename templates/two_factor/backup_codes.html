@@ -1,0 +1,277 @@
+{% extends "base.html" %}
+
+{% block title %}Backup Codes Generated{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header bg-success text-white">
+                    <h4 class="mb-0">
+                        <i class="fas fa-shield-alt"></i> Two-Factor Authentication Enabled
+                    </h4>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-success">
+                        <h5><i class="fas fa-check-circle"></i> Setup Complete!</h5>
+                        <p class="mb-0">Two-factor authentication is now enabled for your account. Your security has been enhanced.</p>
+                    </div>
+
+                    <div class="alert alert-warning">
+                        <h5><i class="fas fa-key"></i> Important: Save Your Backup Codes</h5>
+                        <p class="mb-2">These backup codes can be used to access your account if you lose access to your email. Each code can only be used once.</p>
+                        <p class="mb-0"><strong>Store these codes in a safe place immediately!</strong></p>
+                    </div>
+
+                    <!-- Backup Codes Display -->
+                    <div class="card border-warning mb-4">
+                        <div class="card-header bg-warning text-dark">
+                            <h6 class="mb-0">
+                                <i class="fas fa-key"></i> Your Backup Codes
+                                <button class="btn btn-sm btn-outline-dark float-end" onclick="copyAllCodes()">
+                                    <i class="fas fa-copy"></i> Copy All
+                                </button>
+                            </h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="row" id="backupCodesContainer">
+                                {% for code in backup_codes %}
+                                <div class="col-md-6 mb-2">
+                                    <div class="input-group">
+                                        <span class="input-group-text">{{ loop.index }}.</span>
+                                        <input type="text" class="form-control backup-code" 
+                                               value="{{ code }}" readonly 
+                                               style="font-family: monospace; font-weight: bold;">
+                                        <button class="btn btn-outline-secondary" type="button" 
+                                                onclick="copyCode('{{ code }}')" 
+                                                title="Copy code">
+                                            <i class="fas fa-copy"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Storage Instructions -->
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <div class="card border-info">
+                                <div class="card-body">
+                                    <h6 class="card-title">
+                                        <i class="fas fa-check-circle text-success"></i> Recommended Storage
+                                    </h6>
+                                    <ul class="small mb-0">
+                                        <li>Password manager (1Password, LastPass, etc.)</li>
+                                        <li>Secure note-taking app</li>
+                                        <li>Encrypted file on your computer</li>
+                                        <li>Physical safe or lockbox</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card border-danger">
+                                <div class="card-body">
+                                    <h6 class="card-title">
+                                        <i class="fas fa-times-circle text-danger"></i> Avoid These Locations
+                                    </h6>
+                                    <ul class="small mb-0">
+                                        <li>Screenshots on your phone</li>
+                                        <li>Unencrypted text files</li>
+                                        <li>Email drafts or messages</li>
+                                        <li>Sticky notes or paper (unless secured)</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Actions -->
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="confirmSaved" required>
+                                <label class="form-check-label" for="confirmSaved">
+                                    I have securely saved these backup codes
+                                </label>
+                            </div>
+                        </div>
+                        <div class="col-md-6 text-end">
+                            <button class="btn btn-warning" onclick="printCodes()">
+                                <i class="fas fa-print"></i> Print Codes
+                            </button>
+                            <button class="btn btn-info" onclick="downloadCodes()">
+                                <i class="fas fa-download"></i> Download
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="d-grid gap-2">
+                        <button type="button" class="btn btn-success btn-lg" id="continueBtn" 
+                                onclick="continueToDashboard()" disabled>
+                            <i class="fas fa-arrow-right"></i> Continue to Dashboard
+                        </button>
+                        <a href="{{ url_for('two_factor_settings') }}" class="btn btn-outline-secondary">
+                            <i class="fas fa-cog"></i> Manage 2FA Settings
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Security Tips -->
+            <div class="card mt-4">
+                <div class="card-body">
+                    <h6><i class="fas fa-lightbulb"></i> Security Tips</h6>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <p class="small">
+                                <strong>Using Backup Codes:</strong>
+                                <br>• Use only when you can't access email
+                                <br>• Each code works only once
+                                <br>• Generate new codes when you run low
+                                <br>• Never share codes with anyone
+                            </p>
+                        </div>
+                        <div class="col-md-6">
+                            <p class="small">
+                                <strong>What's Next:</strong>
+                                <br>• You'll receive codes via email when signing in
+                                <br>• Codes expire after 10 minutes
+                                <br>• You can manage settings anytime
+                                <br>• Contact support if you're locked out
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Hidden textarea for copying -->
+<textarea id="copyHelper" style="position: absolute; left: -9999px;"></textarea>
+
+<script>
+// Enable continue button when codes are confirmed saved
+document.getElementById('confirmSaved').addEventListener('change', function() {
+    document.getElementById('continueBtn').disabled = !this.checked;
+});
+
+function copyCode(code) {
+    const textarea = document.getElementById('copyHelper');
+    textarea.value = code;
+    textarea.select();
+    document.execCommand('copy');
+    
+    // Show feedback
+    const button = event.target.closest('button');
+    const originalHtml = button.innerHTML;
+    button.innerHTML = '<i class="fas fa-check text-success"></i>';
+    setTimeout(() => {
+        button.innerHTML = originalHtml;
+    }, 2000);
+}
+
+function copyAllCodes() {
+    const codes = [{% for code in backup_codes %}'{{ code }}'{% if not loop.last %}, {% endif %}{% endfor %}];
+    const allCodes = codes.map((code, index) => `${index + 1}. ${code}`).join('\n');
+    
+    const textarea = document.getElementById('copyHelper');
+    textarea.value = allCodes;
+    textarea.select();
+    document.execCommand('copy');
+    
+    // Show feedback
+    const button = event.target.closest('button');
+    const originalHtml = button.innerHTML;
+    button.innerHTML = '<i class="fas fa-check text-success"></i> Copied!';
+    setTimeout(() => {
+        button.innerHTML = '<i class="fas fa-copy"></i> Copy All';
+    }, 3000);
+}
+
+function printCodes() {
+    const codes = [{% for code in backup_codes %}'{{ code }}'{% if not loop.last %}, {% endif %}{% endfor %}];
+    const printContent = `
+        <html>
+        <head>
+            <title>LaborLooker Backup Codes</title>
+            <style>
+                body { font-family: Arial, sans-serif; margin: 20px; }
+                .header { text-align: center; margin-bottom: 30px; }
+                .codes { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 20px 0; }
+                .code { padding: 8px; border: 1px solid #ccc; font-family: monospace; font-weight: bold; }
+                .warning { background: #fff3cd; padding: 15px; border: 1px solid #ffeaa7; margin-top: 20px; }
+            </style>
+        </head>
+        <body>
+            <div class="header">
+                <h1>LaborLooker Backup Codes</h1>
+                <p>Account: {{ current_user.email }}</p>
+                <p>Generated: ${new Date().toLocaleDateString()}</p>
+            </div>
+            <div class="codes">
+                ${codes.map((code, index) => `<div class="code">${index + 1}. ${code}</div>`).join('')}
+            </div>
+            <div class="warning">
+                <strong>Important:</strong>
+                <ul>
+                    <li>Each code can only be used once</li>
+                    <li>Store this document in a secure location</li>
+                    <li>Never share these codes with anyone</li>
+                    <li>Destroy this document when no longer needed</li>
+                </ul>
+            </div>
+        </body>
+        </html>
+    `;
+    
+    const printWindow = window.open('', '_blank');
+    printWindow.document.write(printContent);
+    printWindow.document.close();
+    printWindow.print();
+}
+
+function downloadCodes() {
+    const codes = [{% for code in backup_codes %}'{{ code }}'{% if not loop.last %}, {% endif %}{% endfor %}];
+    const content = [
+        'LaborLooker Backup Codes',
+        `Account: {{ current_user.email }}`,
+        `Generated: ${new Date().toISOString()}`,
+        '',
+        'Backup Codes:',
+        ...codes.map((code, index) => `${index + 1}. ${code}`),
+        '',
+        'IMPORTANT:',
+        '- Each code can only be used once',
+        '- Store this file in a secure location',
+        '- Never share these codes with anyone',
+        '- Delete this file when no longer needed'
+    ].join('\n');
+    
+    const blob = new Blob([content], { type: 'text/plain' });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'laborlooker-backup-codes.txt';
+    a.click();
+    window.URL.revokeObjectURL(url);
+}
+
+function continueToDashboard() {
+    window.location.href = '{{ url_for("dashboard") }}';
+}
+
+// Auto-select all codes on page load for easy copying
+window.addEventListener('load', function() {
+    // Focus first code input to make it clear these can be copied
+    const firstCode = document.querySelector('.backup-code');
+    if (firstCode) {
+        firstCode.focus();
+    }
+});
+</script>
+{% endblock %}

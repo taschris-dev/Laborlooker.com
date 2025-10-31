@@ -1,0 +1,26 @@
+# LaborLooker Production Requirements - FULL FUNCTIONALITY
+Flask==3.0.3
+Flask-SQLAlchemy==3.1.1
+Flask-Login==0.6.3
+Werkzeug==3.0.4
+itsdangerous==2.2.0
+python-dotenv==1.0.0
+pandas==2.0.3
+shortuuid==1.0.11
+qrcode==7.4.2
+paypalrestsdk==1.13.3
+Pillow==10.0.0
+numpy==1.24.3
+
+# DocuSign Integration Dependencies
+docusign-esign==3.24.0
+PyJWT==2.8.0
+cryptography==41.0.7
+requests==2.31.0
+
+# Production server
+gunicorn==21.2.0
+
+# Additional production dependencies
+psycopg2-binary==2.9.9
+Flask-Mail==0.9.1

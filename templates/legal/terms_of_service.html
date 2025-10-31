@@ -1,0 +1,310 @@
+{% extends "base.html" %}
+
+{% block title %}Terms of Service - LaborLooker{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <h1 class="text-3xl font-bold mb-6">Terms of Service</h1>
+    
+    <div class="bg-white shadow-lg rounded-lg p-6 mb-8">
+        <div class="prose max-w-none">
+            <p class="text-sm text-gray-600 mb-6"><strong>Last Updated:</strong> {{ moment().format('MMMM DD, YYYY') }}</p>
+            
+            <section class="mb-8">
+                <h2 class="text-2xl font-semibold mb-4">1. Acceptance of Terms</h2>
+                <p class="mb-4">By accessing or using LaborLooker's services, you agree to be bound by these Terms of Service and our Privacy Policy. If you do not agree to these terms, please do not use our platform.</p>
+                
+                <div class="bg-blue-50 border-l-4 border-blue-500 p-4 mb-4">
+                    <p class="text-blue-800"><strong>Important:</strong> These terms constitute a legally binding agreement between you and LaborLooker.</p>
+                </div>
+            </section>
+
+            <section class="mb-8">
+                <h2 class="text-2xl font-semibold mb-4">2. Service Description</h2>
+                <p class="mb-4">LaborLooker is a platform that connects customers with qualified contractors for home improvement and construction services. Our services include:</p>
+                <ul class="list-disc pl-6 mb-4">
+                    <li>Contractor-customer matching and referral services</li>
+                    <li>Project management and communication tools</li>
+                    <li>Payment processing and commission management</li>
+                    <li>Rating and review systems</li>
+                    <li>Document management and digital signatures</li>
+                </ul>
+            </section>
+
+            <section class="mb-8">
+                <h2 class="text-2xl font-semibold mb-4">3. User Accounts and Responsibilities</h2>
+                
+                <h3 class="text-xl font-medium mb-3">Account Types</h3>
+                <ul class="list-disc pl-6 mb-4">
+                    <li><strong>Customers:</strong> Property owners seeking contractor services</li>
+                    <li><strong>Contractors:</strong> Licensed professionals providing construction services</li>
+                    <li><strong>Developers/Network Managers:</strong> Business development professionals managing contractor networks</li>
+                </ul>
+
+                <h3 class="text-xl font-medium mb-3">User Responsibilities</h3>
+                <ul class="list-disc pl-6 mb-4">
+                    <li><strong>Accurate Information:</strong> Provide truthful and current information</li>
+                    <li><strong>Account Security:</strong> Maintain confidentiality of login credentials</li>
+                    <li><strong>Authorized Use:</strong> Use the platform only for legitimate purposes</li>
+                    <li><strong>Legal Compliance:</strong> Comply with all applicable laws and regulations</li>
+                </ul>
+            </section>
+
+            <section class="mb-8">
+                <h2 class="text-2xl font-semibold mb-4">4. Contractor Terms and Responsibilities</h2>
+                
+                <div class="bg-orange-50 border-l-4 border-orange-500 p-4 mb-4">
+                    <p class="text-orange-800"><strong>Professional Standards:</strong> Contractors must maintain professional licensing, insurance, and quality standards.</p>
+                </div>
+
+                <h3 class="text-xl font-medium mb-3">Licensing and Insurance</h3>
+                <ul class="list-disc pl-6 mb-4">
+                    <li>Maintain valid business licenses in all operating jurisdictions</li>
+                    <li>Carry adequate general liability insurance ($1M minimum recommended)</li>
+                    <li>Provide proof of workers' compensation coverage</li>
+                    <li>Comply with bonding requirements where applicable</li>
+                </ul>
+
+                <h3 class="text-xl font-medium mb-3">Service Quality Standards</h3>
+                <ul class="list-disc pl-6 mb-4">
+                    <li><strong>Professional Work:</strong> Perform all work according to industry standards and local codes</li>
+                    <li><strong>Timely Completion:</strong> Complete projects within agreed timeframes</li>
+                    <li><strong>Safety Compliance:</strong> Follow all safety regulations and best practices</li>
+                    <li><strong>Customer Communication:</strong> Maintain professional and timely communication</li>
+                </ul>
+
+                <h3 class="text-xl font-medium mb-3">Independent Contractor Status</h3>
+                <div class="bg-yellow-50 border border-yellow-200 p-4 mb-4">
+                    <p class="text-yellow-800"><strong>Important:</strong> Contractors are independent businesses, not employees of LaborLooker. All work is performed under direct contract with customers.</p>
+                </div>
+            </section>
+
+            <section class="mb-8">
+                <h2 class="text-2xl font-semibold mb-4">5. Customer Terms and Responsibilities</h2>
+                
+                <h3 class="text-xl font-medium mb-3">Project Requirements</h3>
+                <ul class="list-disc pl-6 mb-4">
+                    <li><strong>Accurate Descriptions:</strong> Provide complete and accurate project details</li>
+                    <li><strong>Site Access:</strong> Ensure contractors have necessary access to work areas</li>
+                    <li><strong>Permits and Approvals:</strong> Obtain required permits (unless contractor responsibility)</li>
+                    <li><strong>Payment Obligations:</strong> Pay contractors according to agreed terms</li>
+                </ul>
+
+                <h3 class="text-xl font-medium mb-3">Safety and Cooperation</h3>
+                <ul class="list-disc pl-6 mb-4">
+                    <li>Maintain safe working conditions on property</li>
+                    <li>Disclose known hazards or special conditions</li>
+                    <li>Cooperate with contractor safety requirements</li>
+                    <li>Provide timely responses to contractor communications</li>
+                </ul>
+            </section>
+
+            <section class="mb-8">
+                <h2 class="text-2xl font-semibold mb-4">6. Platform Fees and Payment Terms</h2>
+                
+                <h3 class="text-xl font-medium mb-3">Commission Structure</h3>
+                <ul class="list-disc pl-6 mb-4">
+                    <li><strong>Standard Commission:</strong> 10% of contract value for independent contractors</li>
+                    <li><strong>Network Commission:</strong> 8% to network manager, 2% to platform for networked contractors</li>
+                    <li><strong>Subscription Plans:</strong> Reduced commission rates for monthly subscribers</li>
+                </ul>
+
+                <h3 class="text-xl font-medium mb-3">Payment Processing</h3>
+                <ul class="list-disc pl-6 mb-4">
+                    <li>Commissions automatically calculated and deducted</li>
+                    <li>Monthly billing cycles for subscription plans</li>
+                    <li>Secure payment processing through verified providers</li>
+                    <li>Tax reporting assistance for contractors</li>
+                </ul>
+            </section>
+
+            <section class="mb-8">
+                <h2 class="text-2xl font-semibold mb-4">7. Liability Limitations and Disclaimers</h2>
+                
+                <div class="bg-red-50 border border-red-200 p-6 rounded-lg mb-6">
+                    <h3 class="text-lg font-medium mb-4 text-red-800">Important Liability Limitations</h3>
+                    
+                    <h4 class="font-medium mb-2 text-red-700">Platform Role</h4>
+                    <p class="mb-4 text-sm text-red-700">LaborLooker is a marketplace platform that facilitates connections between customers and contractors. We do not perform construction work or guarantee the quality of contractor services.</p>
+                    
+                    <h4 class="font-medium mb-2 text-red-700">Service Disclaimers</h4>
+                    <p class="mb-4 text-sm text-red-700">THE PLATFORM IS PROVIDED "AS IS" WITHOUT WARRANTIES OF ANY KIND. WE DISCLAIM ALL WARRANTIES, EXPRESS OR IMPLIED, INCLUDING WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.</p>
+                    
+                    <h4 class="font-medium mb-2 text-red-700">Limitation of Damages</h4>
+                    <p class="text-sm text-red-700">LABORLOOKER'S TOTAL LIABILITY SHALL NOT EXCEED THE AMOUNT PAID BY THE USER IN THE TWELVE MONTHS PRECEDING THE CLAIM. WE ARE NOT LIABLE FOR INDIRECT, INCIDENTAL, OR CONSEQUENTIAL DAMAGES.</p>
+                </div>
+
+                <h3 class="text-xl font-medium mb-3">Contractor Work Liability</h3>
+                <ul class="list-disc pl-6 mb-4">
+                    <li>Contractors are solely responsible for the quality and safety of their work</li>
+                    <li>LaborLooker does not warrant contractor performance or work quality</li>
+                    <li>All warranties and guarantees are between contractor and customer</li>
+                    <li>Property damage claims should be directed to contractor's insurance</li>
+                </ul>
+            </section>
+
+            <section class="mb-8">
+                <h2 class="text-2xl font-semibold mb-4">8. Prohibited Uses and Conduct</h2>
+                
+                <h3 class="text-xl font-medium mb-3">Prohibited Activities</h3>
+                <ul class="list-disc pl-6 mb-4">
+                    <li><strong>Illegal Activities:</strong> Using the platform for any illegal purpose</li>
+                    <li><strong>Fraud:</strong> Providing false information or misrepresenting qualifications</li>
+                    <li><strong>Circumvention:</strong> Attempting to bypass platform fees or processes</li>
+                    <li><strong>Harassment:</strong> Threatening, harassing, or abusing other users</li>
+                    <li><strong>Spam:</strong> Sending unsolicited communications or advertisements</li>
+                </ul>
+
+                <h3 class="text-xl font-medium mb-3">Content Standards</h3>
+                <ul class="list-disc pl-6 mb-4">
+                    <li>All content must be accurate and truthful</li>
+                    <li>No offensive, discriminatory, or inappropriate content</li>
+                    <li>Respect intellectual property rights of others</li>
+                    <li>No misleading or deceptive advertising</li>
+                </ul>
+            </section>
+
+            <section class="mb-8">
+                <h2 class="text-2xl font-semibold mb-4">9. Dispute Resolution</h2>
+                
+                <h3 class="text-xl font-medium mb-3">Platform Disputes</h3>
+                <p class="mb-4">Disputes with LaborLooker must be resolved through:</p>
+                <ol class="list-decimal pl-6 mb-4">
+                    <li><strong>Direct Communication:</strong> Contact our support team first</li>
+                    <li><strong>Mediation:</strong> Good faith mediation if direct resolution fails</li>
+                    <li><strong>Arbitration:</strong> Binding arbitration under AAA Commercial Rules</li>
+                </ol>
+
+                <h3 class="text-xl font-medium mb-3">Customer-Contractor Disputes</h3>
+                <p class="mb-4">For work-related disputes between customers and contractors:</p>
+                <ul class="list-disc pl-6 mb-4">
+                    <li>LaborLooker may provide mediation assistance</li>
+                    <li>Parties should first attempt direct resolution</li>
+                    <li>Professional arbitration services may be recommended</li>
+                    <li>Legal remedies remain available to all parties</li>
+                </ul>
+            </section>
+
+            <section class="mb-8">
+                <h2 class="text-2xl font-semibold mb-4">10. Privacy and Data Protection</h2>
+                <p class="mb-4">Your privacy is important to us. Our comprehensive Privacy Policy describes how we collect, use, and protect your personal information, including:</p>
+                <ul class="list-disc pl-6 mb-4">
+                    <li>PII masking and protection features</li>
+                    <li>User privacy controls and settings</li>
+                    <li>GDPR and CCPA compliance measures</li>
+                    <li>Data security and retention practices</li>
+                </ul>
+                
+                <p class="mb-4">View our complete Privacy Policy: <a href="{{ url_for('privacy_policy') }}" class="text-blue-600 underline">Privacy Policy</a></p>
+            </section>
+
+            <section class="mb-8">
+                <h2 class="text-2xl font-semibold mb-4">11. Intellectual Property</h2>
+                
+                <h3 class="text-xl font-medium mb-3">Platform IP</h3>
+                <ul class="list-disc pl-6 mb-4">
+                    <li>LaborLooker owns all platform technology and content</li>
+                    <li>Users receive limited license to use the platform</li>
+                    <li>No transfer of intellectual property rights</li>
+                    <li>Respect for LaborLooker trademarks and branding</li>
+                </ul>
+
+                <h3 class="text-xl font-medium mb-3">User Content</h3>
+                <ul class="list-disc pl-6 mb-4">
+                    <li>Users retain ownership of their content and documents</li>
+                    <li>Users grant LaborLooker license to process content for service delivery</li>
+                    <li>Users responsible for ensuring rights to uploaded content</li>
+                    <li>LaborLooker respects confidentiality of user information</li>
+                </ul>
+            </section>
+
+            <section class="mb-8">
+                <h2 class="text-2xl font-semibold mb-4">12. Account Termination</h2>
+                
+                <h3 class="text-xl font-medium mb-3">User Termination</h3>
+                <ul class="list-disc pl-6 mb-4">
+                    <li>Users may close accounts at any time</li>
+                    <li>Outstanding obligations survive termination</li>
+                    <li>Data export available for 90 days after closure</li>
+                    <li>Some information retained for legal compliance</li>
+                </ul>
+
+                <h3 class="text-xl font-medium mb-3">LaborLooker Termination</h3>
+                <ul class="list-disc pl-6 mb-4">
+                    <li>We may suspend or terminate accounts for Terms violations</li>
+                    <li>Notice provided when possible</li>
+                    <li>Immediate termination for serious violations</li>
+                    <li>Appeal process available for disputed terminations</li>
+                </ul>
+            </section>
+
+            <section class="mb-8">
+                <h2 class="text-2xl font-semibold mb-4">13. Indemnification</h2>
+                <p class="mb-4">Users agree to indemnify and hold harmless LaborLooker from claims arising out of:</p>
+                <ul class="list-disc pl-6 mb-4">
+                    <li>User's violation of these Terms or applicable law</li>
+                    <li>User's use of the platform or services</li>
+                    <li>Work performed by contractors (contractors indemnify)</li>
+                    <li>Content uploaded or transmitted through the platform</li>
+                    <li>Disputes with other users or third parties</li>
+                </ul>
+            </section>
+
+            <section class="mb-8">
+                <h2 class="text-2xl font-semibold mb-4">14. Governing Law and Jurisdiction</h2>
+                <ul class="list-disc pl-6 mb-4">
+                    <li>These Terms are governed by [Your State] law</li>
+                    <li>Federal laws apply where applicable</li>
+                    <li>Disputes subject to arbitration as specified above</li>
+                    <li>Courts of [Your State] have jurisdiction for non-arbitrated matters</li>
+                </ul>
+            </section>
+
+            <section class="mb-8">
+                <h2 class="text-2xl font-semibold mb-4">15. Changes to Terms</h2>
+                <p class="mb-4">We may update these Terms periodically. Material changes will be communicated through:</p>
+                <ul class="list-disc pl-6 mb-4">
+                    <li>Email notification to registered users</li>
+                    <li>In-platform notices and announcements</li>
+                    <li>Updated terms posted with revision date</li>
+                </ul>
+                
+                <p class="mb-4">Continued use of the platform after changes constitutes acceptance of new Terms.</p>
+            </section>
+
+            <section class="mb-8">
+                <h2 class="text-2xl font-semibold mb-4">16. Contact Information</h2>
+                
+                <div class="bg-gray-100 p-4 rounded-lg mb-4">
+                    <h3 class="text-lg font-medium mb-3">Legal and Terms Questions</h3>
+                    <p class="mb-2"><strong>Email:</strong> <a href="mailto:legal@laborlooker.com" class="text-blue-600 underline">legal@laborlooker.com</a></p>
+                    <p class="mb-2"><strong>Phone:</strong> 1-800-LEGAL-99 (1-800-534-2599)</p>
+                    <p class="mb-2"><strong>Mail:</strong> LaborLooker Legal Department<br>
+                    123 Legal Lane<br>
+                    Service City, SC 12345</p>
+                    <p><strong>Business Hours:</strong> Monday-Friday, 9:00 AM - 5:00 PM EST</p>
+                </div>
+
+                <h3 class="text-xl font-medium mb-3">Customer Support</h3>
+                <ul class="list-disc pl-6 mb-4">
+                    <li><strong>General Support:</strong> <a href="mailto:support@laborlooker.com" class="text-blue-600 underline">support@laborlooker.com</a></li>
+                    <li><strong>Billing Questions:</strong> <a href="mailto:billing@laborlooker.com" class="text-blue-600 underline">billing@laborlooker.com</a></li>
+                    <li><strong>Technical Issues:</strong> <a href="mailto:tech@laborlooker.com" class="text-blue-600 underline">tech@laborlooker.com</a></li>
+                </ul>
+            </section>
+
+            <div class="bg-blue-50 border border-blue-200 p-6 rounded-lg">
+                <h3 class="text-lg font-medium mb-4">Acknowledgment</h3>
+                <p class="mb-4">By using LaborLooker's services, you acknowledge that you have read, understood, and agree to be bound by these Terms of Service and our Privacy Policy.</p>
+                
+                <p class="text-sm text-gray-600">If you have questions about these Terms or need clarification, please contact our legal team before using the platform.</p>
+            </div>
+
+            <div class="text-center mt-8 pt-6 border-t border-gray-200">
+                <p class="text-sm text-gray-600">For questions about these Terms, contact us at <a href="mailto:legal@laborlooker.com" class="text-blue-600 underline">legal@laborlooker.com</a></p>
+                <p class="text-xs text-gray-500 mt-2">© 2024 LaborLooker. All rights reserved.</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

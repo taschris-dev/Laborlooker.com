@@ -1,0 +1,109 @@
+{
+  "common": {
+    "appName": "LaborLooker",
+    "tagline": "Find trusted local contractors instantly",
+    "description": "LaborLooker connects homeowners with vetted, highly-rated local contractors for all home improvement needs. Get instant quotes, read verified reviews, and book services with confidence.",
+    "categories": {
+      "primary": "Home & Garden",
+      "secondary": ["Business", "Productivity", "Lifestyle"]
+    },
+    "keywords": [
+      "contractors",
+      "home improvement",
+      "local services",
+      "handyman",
+      "construction",
+      "reviews",
+      "quotes",
+      "renovation",
+      "repair",
+      "professionals"
+    ],
+    "contentRating": "4+",
+    "supportEmail": "support@laborlooker.com",
+    "privacyPolicyUrl": "https://laborlooker.com/privacy",
+    "termsOfServiceUrl": "https://laborlooker.com/terms"
+  },
+  "googlePlayStore": {
+    "packageName": "com.laborlooker.app",
+    "title": "LaborLooker - Local Contractors",
+    "shortDescription": "Find trusted local contractors instantly with verified reviews and instant quotes",
+    "fullDescription": "Transform your home improvement experience with LaborLooker - the premier platform connecting homeowners with verified, highly-rated local contractors.\n\n🔍 FIND THE RIGHT CONTRACTOR\n• Browse thousands of vetted professionals in your area\n• Filter by specialty, rating, and availability\n• View detailed profiles with verified credentials\n• Get instant availability and pricing estimates\n\n⭐ TRUSTED REVIEWS & RATINGS\n• Read authentic reviews from verified customers\n• See photo galleries of completed projects\n• Access detailed contractor histories and certifications\n• Make informed decisions with transparent feedback\n\n💬 SEAMLESS COMMUNICATION\n• Message contractors directly through the app\n• Schedule consultations and site visits\n• Track project progress and milestones\n• Receive real-time updates and notifications\n\n🔒 SECURE & RELIABLE\n• All contractors background checked and insured\n• Secure payment processing and escrow options\n• 24/7 customer support and dispute resolution\n• Satisfaction guarantee on all completed work\n\nWhether you need plumbing, electrical work, landscaping, renovation, or any home service, LaborLooker makes finding the perfect contractor simple, safe, and stress-free.\n\nDownload now and discover why thousands of homeowners trust LaborLooker for their home improvement needs!",
+    "releaseNotes": "Initial release with core contractor search, ratings, and messaging features",
+    "targetSdkVersion": 34,
+    "permissions": {
+      "required": [
+        "INTERNET",
+        "ACCESS_NETWORK_STATE",
+        "ACCESS_FINE_LOCATION",
+        "ACCESS_COARSE_LOCATION",
+        "CAMERA",
+        "READ_EXTERNAL_STORAGE",
+        "WRITE_EXTERNAL_STORAGE"
+      ],
+      "optional": [
+        "CALL_PHONE",
+        "SEND_SMS",
+        "ACCESS_NOTIFICATION_POLICY"
+      ]
+    }
+  },
+  "appleAppStore": {
+    "bundleId": "com.laborlooker.app",
+    "title": "LaborLooker: Local Contractors",
+    "subtitle": "Trusted home improvement pros",
+    "description": "Transform your home improvement experience with LaborLooker - the premier platform connecting homeowners with verified, highly-rated local contractors.\n\nFIND THE RIGHT CONTRACTOR\n• Browse thousands of vetted professionals in your area\n• Filter by specialty, rating, and availability\n• View detailed profiles with verified credentials\n• Get instant availability and pricing estimates\n\nTRUSTED REVIEWS & RATINGS\n• Read authentic reviews from verified customers\n• See photo galleries of completed projects\n• Access detailed contractor histories and certifications\n• Make informed decisions with transparent feedback\n\nSEAMLESS COMMUNICATION\n• Message contractors directly through the app\n• Schedule consultations and site visits\n• Track project progress and milestones\n• Receive real-time updates and notifications\n\nSECURE & RELIABLE\n• All contractors background checked and insured\n• Secure payment processing and escrow options\n• 24/7 customer support and dispute resolution\n• Satisfaction guarantee on all completed work\n\nWhether you need plumbing, electrical work, landscaping, renovation, or any home service, LaborLooker makes finding the perfect contractor simple, safe, and stress-free.\n\nDownload now and discover why thousands of homeowners trust LaborLooker for their home improvement needs!",
+    "releaseNotes": "Welcome to LaborLooker! Find trusted local contractors with verified reviews, instant quotes, and seamless communication. Your home improvement journey starts here.",
+    "targetOsVersion": "14.0",
+    "capabilities": [
+      "location",
+      "camera",
+      "push-notifications",
+      "background-app-refresh"
+    ],
+    "appTransportSecurity": {
+      "allowArbitraryLoads": false,
+      "exceptionDomains": {
+        "laborlooker.com": {
+          "includeSubdomains": true,
+          "minimumTLSVersion": "1.2"
+        }
+      }
+    }
+  },
+  "assetRequirements": {
+    "icons": {
+      "android": [
+        {"size": "48x48", "density": "mdpi"},
+        {"size": "72x72", "density": "hdpi"},
+        {"size": "96x96", "density": "xhdpi"},
+        {"size": "144x144", "density": "xxhdpi"},
+        {"size": "192x192", "density": "xxxhdpi"},
+        {"size": "512x512", "type": "feature_graphic"}
+      ],
+      "ios": [
+        {"size": "20x20", "scale": "2x,3x"},
+        {"size": "29x29", "scale": "2x,3x"},
+        {"size": "40x40", "scale": "2x,3x"},
+        {"size": "60x60", "scale": "2x,3x"},
+        {"size": "76x76", "scale": "1x,2x"},
+        {"size": "83.5x83.5", "scale": "2x"},
+        {"size": "1024x1024", "scale": "1x"}
+      ]
+    },
+    "screenshots": {
+      "android": {
+        "phone": ["1080x1920", "minimum 2 images, maximum 8"],
+        "tablet": ["1200x1920", "minimum 1 image, maximum 8"]
+      },
+      "ios": {
+        "iphone": ["1284x2778", "minimum 1 image, maximum 10"],
+        "ipad": ["2048x2732", "minimum 1 image, maximum 10"]
+      }
+    },
+    "featureGraphic": {
+      "android": "1024x500",
+      "ios": "Not required"
+    }
+  }
+}

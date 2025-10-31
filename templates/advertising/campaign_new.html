@@ -1,0 +1,642 @@
+{% extends "base.html" %}
+
+{% block title %}Create Advertising Campaign - Labor Lookers{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <h2><i class="fas fa-plus"></i> Create New Advertising Campaign</h2>
+            <p class="text-muted">Build a comprehensive marketing campaign with professional help</p>
+        </div>
+    </div>
+
+    <form method="POST" action="{{ url_for('new_advertising_campaign') }}" id="campaignForm">
+        <div class="row">
+            <!-- Campaign Basics -->
+            <div class="col-lg-8">
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5><i class="fas fa-info-circle"></i> Campaign Details</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label" for="campaign_name">Campaign Name *</label>
+                                <input type="text" class="form-control" id="campaign_name" name="campaign_name" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label" for="campaign_budget">Campaign Budget *</label>
+                                <div class="input-group">
+                                    <span class="input-group-text">$</span>
+                                    <input type="number" class="form-control" id="campaign_budget" name="campaign_budget" 
+                                           min="100" step="50" required>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label" for="campaign_description">Campaign Description</label>
+                            <textarea class="form-control" id="campaign_description" name="campaign_description" 
+                                      rows="3" placeholder="Describe your campaign goals, target audience, and key messages..."></textarea>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label" for="campaign_duration_days">Duration (Days) *</label>
+                                <select class="form-select" id="campaign_duration_days" name="campaign_duration_days" required>
+                                    <option value="">Select duration</option>
+                                    <option value="7">1 Week</option>
+                                    <option value="14">2 Weeks</option>
+                                    <option value="30">1 Month</option>
+                                    <option value="60">2 Months</option>
+                                    <option value="90">3 Months</option>
+                                    <option value="180">6 Months</option>
+                                    <option value="365">1 Year</option>
+                                </select>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label" for="desired_start_date">Desired Start Date</label>
+                                <input type="date" class="form-control" id="desired_start_date" name="desired_start_date">
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label" for="deadline">Campaign Deadline</label>
+                                <input type="date" class="form-control" id="deadline" name="deadline">
+                            </div>
+                        </div>
+
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="is_rush_order" name="is_rush_order">
+                            <label class="form-check-label" for="is_rush_order">
+                                <i class="fas fa-bolt text-warning"></i> Rush Order (Additional fees may apply)
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Professional Selection Tabs -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <ul class="nav nav-tabs card-header-tabs" id="professionalTabs" role="tablist">
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link active" id="physical-tab" data-bs-toggle="tab" data-bs-target="#physical" 
+                                        type="button" role="tab" aria-controls="physical" aria-selected="true">
+                                    <i class="fas fa-print"></i> Physical Media
+                                </button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="web-tab" data-bs-toggle="tab" data-bs-target="#web" 
+                                        type="button" role="tab" aria-controls="web" aria-selected="false">
+                                    <i class="fas fa-globe"></i> Web Advertising
+                                </button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="marketing-tab" data-bs-toggle="tab" data-bs-target="#marketing" 
+                                        type="button" role="tab" aria-controls="marketing" aria-selected="false">
+                                    <i class="fas fa-chart-line"></i> Marketing Management
+                                </button>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="card-body">
+                        <div class="tab-content" id="professionalTabContent">
+                            <!-- Physical Media Tab -->
+                            <div class="tab-pane fade show active" id="physical" role="tabpanel" aria-labelledby="physical-tab">
+                                <h6 class="mb-3">Select Physical Media Professionals</h6>
+                                {% if physical_professionals %}
+                                    <div class="row">
+                                        {% for professional in physical_professionals %}
+                                        <div class="col-md-6 mb-3">
+                                            <div class="card professional-select-card">
+                                                <div class="card-body">
+                                                    <div class="form-check mb-2">
+                                                        <input class="form-check-input" type="checkbox" 
+                                                               name="selected_professionals" 
+                                                               value="{{ professional.id }}"
+                                                               id="physical_{{ professional.id }}">
+                                                        <label class="form-check-label fw-bold" for="physical_{{ professional.id }}">
+                                                            {{ professional.business_name }}
+                                                        </label>
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="col-6">
+                                                            <small class="text-muted">Rate: ${{ professional.base_hourly_rate }}/hr</small>
+                                                        </div>
+                                                        <div class="col-6">
+                                                            <div class="rating">
+                                                                {% for i in range(5) %}
+                                                                    {% if i < professional.average_rating %}
+                                                                        <i class="fas fa-star text-warning"></i>
+                                                                    {% else %}
+                                                                        <i class="far fa-star text-muted"></i>
+                                                                    {% endif %}
+                                                                {% endfor %}
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        {% endfor %}
+                                    </div>
+
+                                    <!-- Physical Media Quantities -->
+                                    <div class="physical-media-options" style="display: none;">
+                                        <hr>
+                                        <h6>Physical Media Quantities</h6>
+                                        <div class="row">
+                                            <div class="col-md-3 mb-3">
+                                                <label class="form-label">Stickers</label>
+                                                <input type="number" class="form-control" name="physical_stickers" 
+                                                       min="0" placeholder="Quantity">
+                                                <small class="text-muted">~$0.50 each</small>
+                                            </div>
+                                            <div class="col-md-3 mb-3">
+                                                <label class="form-label">Flyers</label>
+                                                <input type="number" class="form-control" name="physical_flyers" 
+                                                       min="0" placeholder="Quantity">
+                                                <small class="text-muted">~$0.25 each</small>
+                                            </div>
+                                            <div class="col-md-3 mb-3">
+                                                <label class="form-label">Business Cards</label>
+                                                <input type="number" class="form-control" name="physical_business_cards" 
+                                                       min="0" placeholder="Quantity">
+                                                <small class="text-muted">~$0.10 each</small>
+                                            </div>
+                                            <div class="col-md-3 mb-3">
+                                                <label class="form-label">Brochures</label>
+                                                <input type="number" class="form-control" name="physical_brochures" 
+                                                       min="0" placeholder="Quantity">
+                                                <small class="text-muted">~$1.50 each</small>
+                                            </div>
+                                            <div class="col-md-3 mb-3">
+                                                <label class="form-label">Banners</label>
+                                                <input type="number" class="form-control" name="physical_banners" 
+                                                       min="0" placeholder="Quantity">
+                                                <small class="text-muted">~$25.00 each</small>
+                                            </div>
+                                            <div class="col-md-3 mb-3">
+                                                <label class="form-label">Yard Signs</label>
+                                                <input type="number" class="form-control" name="physical_yard_signs" 
+                                                       min="0" placeholder="Quantity">
+                                                <small class="text-muted">~$8.00 each</small>
+                                            </div>
+                                            <div class="col-md-3 mb-3">
+                                                <label class="form-label">Promotional Items</label>
+                                                <input type="number" class="form-control" name="physical_promotional_items" 
+                                                       min="0" placeholder="Quantity">
+                                                <small class="text-muted">~$3.00 each</small>
+                                            </div>
+                                            <div class="col-md-3 mb-3">
+                                                <label class="form-label">Apparel</label>
+                                                <input type="number" class="form-control" name="physical_apparel" 
+                                                       min="0" placeholder="Quantity">
+                                                <small class="text-muted">~$12.00 each</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% else %}
+                                    <div class="alert alert-info">
+                                        <i class="fas fa-info-circle"></i> No physical media professionals are currently available.
+                                    </div>
+                                {% endif %}
+                            </div>
+
+                            <!-- Web Advertising Tab -->
+                            <div class="tab-pane fade" id="web" role="tabpanel" aria-labelledby="web-tab">
+                                <h6 class="mb-3">Select Web Advertising Professionals</h6>
+                                {% if web_professionals %}
+                                    <div class="row">
+                                        {% for professional in web_professionals %}
+                                        <div class="col-md-6 mb-3">
+                                            <div class="card professional-select-card">
+                                                <div class="card-body">
+                                                    <div class="form-check mb-2">
+                                                        <input class="form-check-input" type="checkbox" 
+                                                               name="selected_professionals" 
+                                                               value="{{ professional.id }}"
+                                                               id="web_{{ professional.id }}">
+                                                        <label class="form-check-label fw-bold" for="web_{{ professional.id }}">
+                                                            {{ professional.business_name }}
+                                                        </label>
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="col-6">
+                                                            <small class="text-muted">Rate: ${{ professional.base_hourly_rate }}/hr</small>
+                                                        </div>
+                                                        <div class="col-6">
+                                                            <div class="rating">
+                                                                {% for i in range(5) %}
+                                                                    {% if i < professional.average_rating %}
+                                                                        <i class="fas fa-star text-warning"></i>
+                                                                    {% else %}
+                                                                        <i class="far fa-star text-muted"></i>
+                                                                    {% endif %}
+                                                                {% endfor %}
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        {% endfor %}
+                                    </div>
+
+                                    <!-- Web Advertising Requirements -->
+                                    <div class="web-advertising-options" style="display: none;">
+                                        <hr>
+                                        <h6>Web Advertising Requirements</h6>
+                                        <div class="row">
+                                            <div class="col-md-6 mb-3">
+                                                <label class="form-label">Target Platforms</label>
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="checkbox" name="web_google_ads" id="web_google_ads">
+                                                    <label class="form-check-label" for="web_google_ads">Google Ads</label>
+                                                </div>
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="checkbox" name="web_facebook_ads" id="web_facebook_ads">
+                                                    <label class="form-check-label" for="web_facebook_ads">Facebook/Instagram Ads</label>
+                                                </div>
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="checkbox" name="web_linkedin_ads" id="web_linkedin_ads">
+                                                    <label class="form-check-label" for="web_linkedin_ads">LinkedIn Ads</label>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6 mb-3">
+                                                <label class="form-label">Ad Spend Budget</label>
+                                                <div class="input-group">
+                                                    <span class="input-group-text">$</span>
+                                                    <input type="number" class="form-control" name="web_ad_spend" 
+                                                           min="100" placeholder="Monthly ad spend">
+                                                </div>
+                                                <small class="text-muted">This is separate from management fees</small>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6 mb-3">
+                                                <label class="form-label">Campaign Type</label>
+                                                <select class="form-select" name="web_campaign_type">
+                                                    <option value="">Select type</option>
+                                                    <option value="lead_generation">Lead Generation</option>
+                                                    <option value="brand_awareness">Brand Awareness</option>
+                                                    <option value="ecommerce">E-commerce Sales</option>
+                                                    <option value="local_business">Local Business</option>
+                                                    <option value="app_promotion">App Promotion</option>
+                                                </select>
+                                            </div>
+                                            <div class="col-md-6 mb-3">
+                                                <label class="form-label">Target Audience</label>
+                                                <input type="text" class="form-control" name="web_target_audience" 
+                                                       placeholder="e.g., Age 25-45, Local area, Interests">
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% else %}
+                                    <div class="alert alert-info">
+                                        <i class="fas fa-info-circle"></i> No web advertising professionals are currently available.
+                                    </div>
+                                {% endif %}
+                            </div>
+
+                            <!-- Marketing Management Tab -->
+                            <div class="tab-pane fade" id="marketing" role="tabpanel" aria-labelledby="marketing-tab">
+                                <h6 class="mb-3">Select Marketing Management Professionals</h6>
+                                {% if marketing_professionals %}
+                                    <div class="row">
+                                        {% for professional in marketing_professionals %}
+                                        <div class="col-md-6 mb-3">
+                                            <div class="card professional-select-card">
+                                                <div class="card-body">
+                                                    <div class="form-check mb-2">
+                                                        <input class="form-check-input" type="checkbox" 
+                                                               name="selected_professionals" 
+                                                               value="{{ professional.id }}"
+                                                               id="marketing_{{ professional.id }}">
+                                                        <label class="form-check-label fw-bold" for="marketing_{{ professional.id }}">
+                                                            {{ professional.business_name }}
+                                                        </label>
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="col-6">
+                                                            <small class="text-muted">Rate: ${{ professional.base_hourly_rate }}/hr</small>
+                                                        </div>
+                                                        <div class="col-6">
+                                                            <div class="rating">
+                                                                {% for i in range(5) %}
+                                                                    {% if i < professional.average_rating %}
+                                                                        <i class="fas fa-star text-warning"></i>
+                                                                    {% else %}
+                                                                        <i class="far fa-star text-muted"></i>
+                                                                    {% endif %}
+                                                                {% endfor %}
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        {% endfor %}
+                                    </div>
+
+                                    <!-- Marketing Management Scope -->
+                                    <div class="marketing-management-options" style="display: none;">
+                                        <hr>
+                                        <h6>Marketing Management Scope</h6>
+                                        <div class="row">
+                                            <div class="col-md-6 mb-3">
+                                                <label class="form-label">Required Services</label>
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="checkbox" name="marketing_strategy" id="marketing_strategy">
+                                                    <label class="form-check-label" for="marketing_strategy">Marketing Strategy</label>
+                                                </div>
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="checkbox" name="marketing_campaign_management" id="marketing_campaign_management">
+                                                    <label class="form-check-label" for="marketing_campaign_management">Campaign Management</label>
+                                                </div>
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="checkbox" name="marketing_content_creation" id="marketing_content_creation">
+                                                    <label class="form-check-label" for="marketing_content_creation">Content Creation</label>
+                                                </div>
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="checkbox" name="marketing_brand_development" id="marketing_brand_development">
+                                                    <label class="form-check-label" for="marketing_brand_development">Brand Development</label>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6 mb-3">
+                                                <label class="form-label">Industry Experience Needed</label>
+                                                <select class="form-select" name="marketing_industry">
+                                                    <option value="">Any Industry</option>
+                                                    <option value="healthcare">Healthcare</option>
+                                                    <option value="retail">Retail</option>
+                                                    <option value="restaurants">Restaurants</option>
+                                                    <option value="professional_services">Professional Services</option>
+                                                    <option value="real_estate">Real Estate</option>
+                                                    <option value="automotive">Automotive</option>
+                                                    <option value="technology">Technology</option>
+                                                    <option value="manufacturing">Manufacturing</option>
+                                                    <option value="nonprofit">Non-profit</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label">Campaign Goals</label>
+                                            <textarea class="form-control" name="marketing_goals" rows="3" 
+                                                      placeholder="Describe your marketing goals, target metrics, and success criteria..."></textarea>
+                                        </div>
+                                    </div>
+                                {% else %}
+                                    <div class="alert alert-info">
+                                        <i class="fas fa-info-circle"></i> No marketing management professionals are currently available.
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Cost Summary Sidebar -->
+            <div class="col-lg-4">
+                <div class="card sticky-top">
+                    <div class="card-header">
+                        <h5><i class="fas fa-calculator"></i> Cost Summary</h5>
+                    </div>
+                    <div class="card-body">
+                        <div id="costBreakdown">
+                            <div class="text-center text-muted py-4">
+                                <i class="fas fa-info-circle"></i>
+                                <p>Select professionals and services to see cost breakdown</p>
+                            </div>
+                        </div>
+                        
+                        <hr>
+                        
+                        <div class="d-flex justify-content-between mb-2">
+                            <span>Subtotal:</span>
+                            <span id="subtotal">$0.00</span>
+                        </div>
+                        <div class="d-flex justify-content-between mb-2">
+                            <span>Platform Fee (10%):</span>
+                            <span id="platformFee">$0.00</span>
+                        </div>
+                        <div class="d-flex justify-content-between fw-bold border-top pt-2">
+                            <span>Total Cost:</span>
+                            <span id="totalCost">$0.00</span>
+                        </div>
+                        
+                        <div class="mt-3">
+                            <small class="text-muted">
+                                <i class="fas fa-shield-alt"></i> Payment processed securely<br>
+                                <i class="fas fa-undo"></i> 30-day satisfaction guarantee<br>
+                                <i class="fas fa-headset"></i> 24/7 support included
+                            </small>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <button type="submit" class="btn btn-success w-100 btn-lg" id="submitBtn" disabled>
+                            <i class="fas fa-rocket"></i> Launch Campaign
+                        </button>
+                        <small class="text-muted d-block text-center mt-2">
+                            You'll review details before final payment
+                        </small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+<style>
+.professional-select-card {
+    transition: all 0.2s;
+    cursor: pointer;
+}
+
+.professional-select-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+.professional-select-card.selected {
+    border-color: #0d6efd;
+    background-color: #f8f9ff;
+}
+
+.rating .fas.fa-star,
+.rating .far.fa-star {
+    font-size: 0.8rem;
+}
+
+.sticky-top {
+    top: 20px;
+}
+
+#costBreakdown .cost-item {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 0.5rem;
+    padding: 0.25rem 0;
+    border-bottom: 1px dotted #dee2e6;
+}
+
+.form-check-input:checked ~ .form-check-label {
+    font-weight: bold;
+    color: #0d6efd;
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('campaignForm');
+    const submitBtn = document.getElementById('submitBtn');
+    const costBreakdown = document.getElementById('costBreakdown');
+    const subtotalEl = document.getElementById('subtotal');
+    const platformFeeEl = document.getElementById('platformFee');
+    const totalCostEl = document.getElementById('totalCost');
+
+    // Professional selection handling
+    document.querySelectorAll('input[name="selected_professionals"]').forEach(checkbox => {
+        checkbox.addEventListener('change', function() {
+            const card = this.closest('.professional-select-card');
+            if (this.checked) {
+                card.classList.add('selected');
+                showServiceOptions(this.closest('.tab-pane').id);
+            } else {
+                card.classList.remove('selected');
+                hideServiceOptions(this.closest('.tab-pane').id);
+            }
+            updateCostCalculation();
+            updateSubmitButton();
+        });
+    });
+
+    // Service option inputs
+    document.querySelectorAll('input[type="number"], select, input[type="checkbox"]').forEach(input => {
+        input.addEventListener('change', updateCostCalculation);
+    });
+
+    function showServiceOptions(tabId) {
+        const optionsDiv = document.querySelector(`.${tabId.replace('-', '_')}-options`);
+        if (optionsDiv) {
+            optionsDiv.style.display = 'block';
+        }
+    }
+
+    function hideServiceOptions(tabId) {
+        const checkedBoxes = document.querySelectorAll(`#${tabId} input[name="selected_professionals"]:checked`);
+        if (checkedBoxes.length === 0) {
+            const optionsDiv = document.querySelector(`.${tabId.replace('-', '_')}-options`);
+            if (optionsDiv) {
+                optionsDiv.style.display = 'none';
+            }
+        }
+    }
+
+    function updateCostCalculation() {
+        let subtotal = 0;
+        const breakdown = [];
+
+        // Calculate physical media costs
+        const physicalProfessionals = document.querySelectorAll('#physical input[name="selected_professionals"]:checked');
+        if (physicalProfessionals.length > 0) {
+            const stickers = parseInt(document.querySelector('input[name="physical_stickers"]')?.value || 0);
+            const flyers = parseInt(document.querySelector('input[name="physical_flyers"]')?.value || 0);
+            const businessCards = parseInt(document.querySelector('input[name="physical_business_cards"]')?.value || 0);
+            const brochures = parseInt(document.querySelector('input[name="physical_brochures"]')?.value || 0);
+            const banners = parseInt(document.querySelector('input[name="physical_banners"]')?.value || 0);
+            const yardSigns = parseInt(document.querySelector('input[name="physical_yard_signs"]')?.value || 0);
+            const promoItems = parseInt(document.querySelector('input[name="physical_promotional_items"]')?.value || 0);
+            const apparel = parseInt(document.querySelector('input[name="physical_apparel"]')?.value || 0);
+
+            const physicalCost = (stickers * 0.50) + (flyers * 0.25) + (businessCards * 0.10) + 
+                               (brochures * 1.50) + (banners * 25.00) + (yardSigns * 8.00) + 
+                               (promoItems * 3.00) + (apparel * 12.00);
+
+            if (physicalCost > 0) {
+                subtotal += physicalCost;
+                breakdown.push({ name: 'Physical Media', cost: physicalCost });
+            }
+        }
+
+        // Calculate web advertising costs
+        const webProfessionals = document.querySelectorAll('#web input[name="selected_professionals"]:checked');
+        if (webProfessionals.length > 0) {
+            const duration = parseInt(document.querySelector('#campaign_duration_days')?.value || 30);
+            const months = Math.max(1, Math.ceil(duration / 30));
+            
+            const setupFee = 500; // Default setup fee
+            const monthlyFee = 1000; // Default monthly management fee
+            const webCost = setupFee + (monthlyFee * months);
+            
+            subtotal += webCost;
+            breakdown.push({ name: 'Web Advertising Setup & Management', cost: webCost });
+        }
+
+        // Calculate marketing management costs
+        const marketingProfessionals = document.querySelectorAll('#marketing input[name="selected_professionals"]:checked');
+        if (marketingProfessionals.length > 0) {
+            const duration = parseInt(document.querySelector('#campaign_duration_days')?.value || 30);
+            const months = Math.max(1, Math.ceil(duration / 30));
+            
+            const retainer = 3000; // Default retainer
+            const monthlyFee = 2000; // Default monthly management fee
+            const marketingCost = retainer + (monthlyFee * months);
+            
+            subtotal += marketingCost;
+            breakdown.push({ name: 'Marketing Management', cost: marketingCost });
+        }
+
+        // Update display
+        const platformFee = subtotal * 0.10;
+        const total = subtotal + platformFee;
+
+        // Update breakdown display
+        if (breakdown.length > 0) {
+            costBreakdown.innerHTML = breakdown.map(item => 
+                `<div class="cost-item">
+                    <span>${item.name}</span>
+                    <span>$${item.cost.toFixed(2)}</span>
+                </div>`
+            ).join('');
+        } else {
+            costBreakdown.innerHTML = `
+                <div class="text-center text-muted py-4">
+                    <i class="fas fa-info-circle"></i>
+                    <p>Select professionals and services to see cost breakdown</p>
+                </div>
+            `;
+        }
+
+        subtotalEl.textContent = `$${subtotal.toFixed(2)}`;
+        platformFeeEl.textContent = `$${platformFee.toFixed(2)}`;
+        totalCostEl.textContent = `$${total.toFixed(2)}`;
+    }
+
+    function updateSubmitButton() {
+        const selectedProfessionals = document.querySelectorAll('input[name="selected_professionals"]:checked');
+        const campaignName = document.querySelector('#campaign_name').value.trim();
+        const campaignBudget = document.querySelector('#campaign_budget').value;
+        const campaignDuration = document.querySelector('#campaign_duration_days').value;
+
+        const isValid = selectedProfessionals.length > 0 && campaignName && campaignBudget && campaignDuration;
+        
+        submitBtn.disabled = !isValid;
+        if (isValid) {
+            submitBtn.classList.remove('btn-secondary');
+            submitBtn.classList.add('btn-success');
+        } else {
+            submitBtn.classList.remove('btn-success');
+            submitBtn.classList.add('btn-secondary');
+        }
+    }
+
+    // Initial state
+    updateSubmitButton();
+
+    // Form validation
+    document.querySelectorAll('#campaign_name, #campaign_budget, #campaign_duration_days').forEach(input => {
+        input.addEventListener('input', updateSubmitButton);
+    });
+});
+</script>
+{% endblock %}

@@ -1,0 +1,316 @@
+{% extends "base.html" %}
+
+{% block title %}Find Work - Job Seeker Dashboard{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-gray-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        
+        <!-- Header Section -->
+        <div class="bg-white rounded-lg shadow-sm p-6 mb-6">
+            <div class="flex items-center justify-between">
+                <div>
+                    <h1 class="text-3xl font-bold text-gray-900">Find Work Dashboard</h1>
+                    <p class="text-gray-600 mt-2">Discover opportunities, apply for jobs, and track your applications</p>
+                </div>
+                <div class="flex space-x-4">
+                    <a href="/job_seeker/profile" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors">
+                        <i class="fas fa-user mr-2"></i>Update Profile
+                    </a>
+                    <a href="/job_seeker/find-work" class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors">
+                        <i class="fas fa-search mr-2"></i>Find Work
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            
+            <!-- Main Content -->
+            <div class="lg:col-span-2 space-y-6">
+                
+                <!-- Available Jobs Section -->
+                <div class="bg-white rounded-lg shadow-sm">
+                    <div class="p-6 border-b border-gray-200">
+                        <div class="flex items-center justify-between">
+                            <h2 class="text-xl font-semibold text-gray-900">
+                                <i class="fas fa-briefcase text-blue-600 mr-2"></i>Available Opportunities
+                            </h2>
+                            <span class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm font-medium">
+                                {{ available_jobs|length }} Jobs
+                            </span>
+                        </div>
+                    </div>
+                    
+                    <div class="p-6">
+                        {% if available_jobs %}
+                            <div class="space-y-4">
+                                {% for job in available_jobs %}
+                                <div class="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow">
+                                    <div class="flex items-start justify-between">
+                                        <div class="flex-1">
+                                            <h3 class="font-semibold text-gray-900 mb-2">{{ job.title }}</h3>
+                                            <div class="flex items-center space-x-4 text-sm text-gray-600 mb-3">
+                                                <span>
+                                                    <i class="fas fa-tools mr-1"></i>{{ job.labor_category }}
+                                                </span>
+                                                <span>
+                                                    <i class="fas fa-map-marker-alt mr-1"></i>{{ job.location }}
+                                                </span>
+                                                <span>
+                                                    <i class="fas fa-signal mr-1"></i>{{ job.experience_level|title }}
+                                                </span>
+                                            </div>
+                                            <p class="text-gray-700 mb-3">{{ job.description[:150] }}{% if job.description|length > 150 %}...{% endif %}</p>
+                                            <div class="flex items-center space-x-4">
+                                                <span class="bg-green-100 text-green-800 px-2 py-1 rounded text-sm font-medium">
+                                                    {% if job.pay_type == 'hourly' %}
+                                                        ${{ job.pay_amount }}/hour
+                                                    {% elif job.pay_type == 'salary' %}
+                                                        ${{ job.pay_range_min }}-${{ job.pay_range_max }}/year
+                                                    {% else %}
+                                                        {{ job.pay_type|title }}
+                                                    {% endif %}
+                                                </span>
+                                                <span class="text-sm text-gray-500">
+                                                    <i class="fas fa-clock mr-1"></i>{{ job.job_type|title }}
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <div class="ml-4">
+                                            <button onclick="applyToJob({{ job.id }})" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors">
+                                                Apply Now
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            <div class="text-center py-8">
+                                <i class="fas fa-search text-4xl text-gray-300 mb-4"></i>
+                                <h3 class="text-lg font-medium text-gray-900 mb-2">No Jobs Available Yet</h3>
+                                <p class="text-gray-600 mb-4">Complete your profile to get matched with relevant opportunities.</p>
+                                <a href="/job_seeker/profile" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors">
+                                    Complete Profile
+                                </a>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- Active Applications Section -->
+                <div class="bg-white rounded-lg shadow-sm">
+                    <div class="p-6 border-b border-gray-200">
+                        <h2 class="text-xl font-semibold text-gray-900">
+                            <i class="fas fa-file-alt text-purple-600 mr-2"></i>Your Applications
+                        </h2>
+                    </div>
+                    
+                    <div class="p-6">
+                        {% if job_matches %}
+                            <div class="space-y-4">
+                                {% for match in job_matches %}
+                                <div class="border border-gray-200 rounded-lg p-4">
+                                    <div class="flex items-start justify-between">
+                                        <div class="flex-1">
+                                            <h3 class="font-semibold text-gray-900 mb-2">{{ match.job_posting.title }}</h3>
+                                            <div class="flex items-center space-x-4 text-sm text-gray-600 mb-3">
+                                                <span>{{ match.job_posting.labor_category }}</span>
+                                                <span>{{ match.job_posting.location }}</span>
+                                                <span class="bg-{{ 'green' if match.status == 'hired' else 'yellow' if match.status == 'interview' else 'blue' }}-100 text-{{ 'green' if match.status == 'hired' else 'yellow' if match.status == 'interview' else 'blue' }}-800 px-2 py-1 rounded text-xs">
+                                                    {{ match.status|title }}
+                                                </span>
+                                            </div>
+                                            <p class="text-gray-600 text-sm">Applied {{ match.matched_at.strftime('%B %d, %Y') }}</p>
+                                        </div>
+                                        <div class="ml-4">
+                                            {% if match.status == 'matched' %}
+                                                <button onclick="respondToMatch({{ match.id }}, 'interested')" class="bg-green-600 text-white px-3 py-1 rounded text-sm hover:bg-green-700 transition-colors mr-2">
+                                                    Accept
+                                                </button>
+                                                <button onclick="respondToMatch({{ match.id }}, 'not_interested')" class="bg-gray-300 text-gray-700 px-3 py-1 rounded text-sm hover:bg-gray-400 transition-colors">
+                                                    Decline
+                                                </button>
+                                            {% elif match.status == 'interview' %}
+                                                <span class="text-blue-600 font-medium">Interview Scheduled</span>
+                                            {% elif match.status == 'hired' %}
+                                                <span class="text-green-600 font-medium">🎉 Hired!</span>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            <div class="text-center py-8">
+                                <i class="fas fa-clipboard-list text-4xl text-gray-300 mb-4"></i>
+                                <h3 class="text-lg font-medium text-gray-900 mb-2">No Applications Yet</h3>
+                                <p class="text-gray-600">Start applying to jobs to see your applications here.</p>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sidebar -->
+            <div class="space-y-6">
+                
+                <!-- Profile Completion -->
+                <div class="bg-white rounded-lg shadow-sm p-6">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-4">
+                        <i class="fas fa-user-check text-green-600 mr-2"></i>Profile Status
+                    </h3>
+                    {% if current_user.job_seeker_profile %}
+                        {% set profile = current_user.job_seeker_profile %}
+                        {% set completion = 0 %}
+                        {% if profile.first_name %}{% set completion = completion + 20 %}{% endif %}
+                        {% if profile.desired_labor_categories %}{% set completion = completion + 30 %}{% endif %}
+                        {% if profile.experience_level %}{% set completion = completion + 20 %}{% endif %}
+                        {% if profile.skills %}{% set completion = completion + 20 %}{% endif %}
+                        {% if current_user.id_verification_status == 'verified' %}{% set completion = completion + 10 %}{% endif %}
+                        
+                        <div class="mb-4">
+                            <div class="flex items-center justify-between mb-2">
+                                <span class="text-sm text-gray-600">Completion</span>
+                                <span class="text-sm font-medium text-gray-900">{{ completion }}%</span>
+                            </div>
+                            <div class="w-full bg-gray-200 rounded-full h-2">
+                                <div class="bg-green-600 h-2 rounded-full" style="width: {{ completion }}%"></div>
+                            </div>
+                        </div>
+                        
+                        <div class="space-y-2 text-sm">
+                            <div class="flex items-center">
+                                <i class="fas fa-{{ 'check text-green-600' if profile.first_name else 'times text-red-500' }} w-4 mr-2"></i>
+                                Basic Information
+                            </div>
+                            <div class="flex items-center">
+                                <i class="fas fa-{{ 'check text-green-600' if profile.desired_labor_categories else 'times text-red-500' }} w-4 mr-2"></i>
+                                Job Preferences
+                            </div>
+                            <div class="flex items-center">
+                                <i class="fas fa-{{ 'check text-green-600' if profile.skills else 'times text-red-500' }} w-4 mr-2"></i>
+                                Skills & Experience
+                            </div>
+                            <div class="flex items-center">
+                                <i class="fas fa-{{ 'check text-green-600' if current_user.id_verification_status == 'verified' else 'times text-red-500' }} w-4 mr-2"></i>
+                                ID Verification
+                            </div>
+                        </div>
+                    {% else %}
+                        <p class="text-gray-600 mb-4">Complete your profile to get started.</p>
+                    {% endif %}
+                    
+                    <a href="/job_seeker/profile" class="block w-full bg-blue-600 text-white text-center px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors mt-4">
+                        Update Profile
+                    </a>
+                </div>
+
+                <!-- Quick Stats -->
+                <div class="bg-white rounded-lg shadow-sm p-6">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-4">
+                        <i class="fas fa-chart-bar text-blue-600 mr-2"></i>Quick Stats
+                    </h3>
+                    <div class="space-y-3">
+                        <div class="flex items-center justify-between">
+                            <span class="text-gray-600">Applications Sent</span>
+                            <span class="font-semibold text-gray-900">{{ job_matches|length }}</span>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <span class="text-gray-600">Interview Requests</span>
+                            <span class="font-semibold text-gray-900">{{ job_matches|selectattr('status', 'equalto', 'interview')|list|length }}</span>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <span class="text-gray-600">Jobs Hired For</span>
+                            <span class="font-semibold text-green-600">{{ job_matches|selectattr('status', 'equalto', 'hired')|list|length }}</span>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <span class="text-gray-600">Available Jobs</span>
+                            <span class="font-semibold text-blue-600">{{ available_jobs|length }}</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Resources -->
+                <div class="bg-white rounded-lg shadow-sm p-6">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-4">
+                        <i class="fas fa-graduation-cap text-purple-600 mr-2"></i>Resources
+                    </h3>
+                    <div class="space-y-3">
+                        <a href="/resources/resume-builder" class="block text-blue-600 hover:text-blue-800 transition-colors">
+                            <i class="fas fa-file-alt mr-2"></i>Resume Builder
+                        </a>
+                        <a href="/resources/interview-tips" class="block text-blue-600 hover:text-blue-800 transition-colors">
+                            <i class="fas fa-comments mr-2"></i>Interview Tips
+                        </a>
+                        <a href="/resources/skill-training" class="block text-blue-600 hover:text-blue-800 transition-colors">
+                            <i class="fas fa-tools mr-2"></i>Skill Training
+                        </a>
+                        <a href="/resources/apprenticeships" class="block text-blue-600 hover:text-blue-800 transition-colors">
+                            <i class="fas fa-handshake mr-2"></i>Apprenticeship Programs
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function applyToJob(jobId) {
+    // AJAX call to apply to job
+    fetch('/job_seeker/apply', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': '{{ csrf_token() }}'
+        },
+        body: JSON.stringify({
+            job_id: jobId
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert('Application submitted successfully!');
+            location.reload();
+        } else {
+            alert('Error submitting application: ' + data.message);
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Error submitting application');
+    });
+}
+
+function respondToMatch(matchId, response) {
+    // AJAX call to respond to job match
+    fetch('/job_seeker/respond-to-match', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': '{{ csrf_token() }}'
+        },
+        body: JSON.stringify({
+            match_id: matchId,
+            response: response
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert('Response submitted successfully!');
+            location.reload();
+        } else {
+            alert('Error submitting response: ' + data.message);
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Error submitting response');
+    });
+}
+</script>
+{% endblock %}

@@ -1,0 +1,188 @@
+{% extends "base.html" %}
+
+{% block title %}Required Documents - LaborLooker{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header bg-warning text-white">
+                    <h4 class="mb-0">
+                        <i class="fas fa-file-contract"></i> Required Documents
+                    </h4>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-info">
+                        <h5><i class="fas fa-info-circle"></i> Document Requirements</h5>
+                        <p>To use the LaborLooker platform, all contractors must complete the following required documents:</p>
+                        <ul>
+                            <li><strong>Contractor Service Agreement</strong> - Platform terms and commission structure</li>
+                            <li><strong>Liability Waiver</strong> - Risk acknowledgment and platform protection</li>
+                        </ul>
+                        <p class="mb-0">Documents are sent via DocuSign for secure digital signing. Check your email for signing links.</p>
+                    </div>
+
+                    {% if pending_contracts %}
+                    <div class="card mb-4">
+                        <div class="card-header bg-warning text-white">
+                            <h5 class="mb-0">
+                                <i class="fas fa-clock"></i> Pending Documents ({{ pending_contracts|length }})
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th>Document</th>
+                                            <th>Status</th>
+                                            <th>Sent Date</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for contract in pending_contracts %}
+                                        <tr>
+                                            <td>
+                                                <strong>{{ contract.document_name }}</strong>
+                                                <br>
+                                                <small class="text-muted">{{ contract.document_type|replace('_', ' ')|title }}</small>
+                                            </td>
+                                            <td>
+                                                <span class="badge badge-warning">
+                                                    {{ contract.status|title }}
+                                                </span>
+                                            </td>
+                                            <td>{{ contract.sent_at.strftime('%B %d, %Y at %I:%M %p') }}</td>
+                                            <td>
+                                                <button class="btn btn-sm btn-outline-primary" onclick="checkEmail()">
+                                                    <i class="fas fa-envelope"></i> Check Email
+                                                </button>
+                                                {% if config.FLASK_ENV == 'development' %}
+                                                <a href="{{ url_for('simulate_document_completion', contract_id=contract.id) }}" 
+                                                   class="btn btn-sm btn-outline-success">
+                                                    <i class="fas fa-check"></i> Simulate Complete
+                                                </a>
+                                                {% endif %}
+                                            </td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    {% if completed_contracts %}
+                    <div class="card mb-4">
+                        <div class="card-header bg-success text-white">
+                            <h5 class="mb-0">
+                                <i class="fas fa-check-circle"></i> Completed Documents ({{ completed_contracts|length }})
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th>Document</th>
+                                            <th>Completed Date</th>
+                                            <th>Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for contract in completed_contracts %}
+                                        <tr>
+                                            <td>
+                                                <strong>{{ contract.document_name }}</strong>
+                                                <br>
+                                                <small class="text-muted">{{ contract.document_type|replace('_', ' ')|title }}</small>
+                                            </td>
+                                            <td>
+                                                {% if contract.completed_at %}
+                                                {{ contract.completed_at.strftime('%B %d, %Y at %I:%M %p') }}
+                                                {% else %}
+                                                {{ contract.sent_at.strftime('%B %d, %Y at %I:%M %p') }}
+                                                {% endif %}
+                                            </td>
+                                            <td>
+                                                <span class="badge badge-success">
+                                                    <i class="fas fa-check"></i> Completed
+                                                </span>
+                                            </td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    {% if not pending_contracts and not completed_contracts %}
+                    <div class="alert alert-warning">
+                        <h5><i class="fas fa-exclamation-triangle"></i> No Documents Found</h5>
+                        <p>No documents have been sent yet. This may indicate a system issue.</p>
+                        <p>Please contact support or try refreshing your contractor profile.</p>
+                    </div>
+                    {% endif %}
+
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="mb-0">
+                                <i class="fas fa-question-circle"></i> Need Help?
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <h6>Didn't receive the email?</h6>
+                            <ul>
+                                <li>Check your spam/junk folder</li>
+                                <li>Ensure emails from noreply@docusign.com are not blocked</li>
+                                <li>Add docusign.com to your email whitelist</li>
+                                <li>Contact support if documents are still missing</li>
+                            </ul>
+
+                            <h6>Technical Issues?</h6>
+                            <ul>
+                                <li>Try signing from a different browser or device</li>
+                                <li>Disable browser extensions that might block DocuSign</li>
+                                <li>Ensure JavaScript is enabled in your browser</li>
+                            </ul>
+
+                            <div class="mt-3">
+                                <a href="mailto:support@laborlooker.net" class="btn btn-outline-primary">
+                                    <i class="fas fa-envelope"></i> Contact Support
+                                </a>
+                                <a href="{{ url_for('contractor_dashboard') }}" class="btn btn-secondary">
+                                    <i class="fas fa-arrow-left"></i> Back to Dashboard
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function checkEmail() {
+    alert('Please check your email for the DocuSign signing link. If you don\'t see it, check your spam folder.');
+}
+
+// Auto-refresh status every 30 seconds
+setInterval(function() {
+    fetch('/contractor/documents/status')
+        .then(response => response.json())
+        .then(data => {
+            if (data.documents_complete) {
+                // Redirect to dashboard if all documents are complete
+                window.location.href = "{{ url_for('contractor_dashboard') }}";
+            }
+        })
+        .catch(error => console.log('Status check failed:', error));
+}, 30000);
+</script>
+{% endblock %}

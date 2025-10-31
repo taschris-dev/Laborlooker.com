@@ -1,0 +1,148 @@
+{% extends "base.html" %}
+
+{% block title %}Marketing Technology Platform - Welcome{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
+    <!-- Hero Section -->
+    <div class="container mx-auto px-4 py-16">
+        <div class="text-center max-w-4xl mx-auto">
+            <h1 class="text-5xl font-bold text-gray-900 mb-6">
+                Marketing Technology Platform
+            </h1>
+            <p class="text-xl text-gray-600 mb-8">
+                Connecting businesses through trackable campaigns, comprehensive CRM, and a powerful marketplace ecosystem
+            </p>
+            
+            <!-- Call to Action -->
+            <div class="flex flex-col sm:flex-row gap-4 justify-center mb-16">
+                <a href="{{ url_for('register') }}" 
+                   class="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-8 py-3 rounded-lg transition duration-200 text-lg">
+                    Get Started Free
+                </a>
+                <a href="{{ url_for('login') }}" 
+                   class="bg-white hover:bg-gray-50 text-blue-600 font-semibold px-8 py-3 rounded-lg border-2 border-blue-600 transition duration-200 text-lg">
+                    Sign In
+                </a>
+            </div>
+        </div>
+
+        <!-- Features Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+            <!-- Developer Features -->
+            <div class="bg-white rounded-xl shadow-lg p-8 text-center">
+                <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <span class="text-2xl">👨‍💻</span>
+                </div>
+                <h3 class="text-xl font-bold text-gray-900 mb-3">For Developers</h3>
+                <p class="text-gray-600 mb-4">
+                    Manage the entire platform, create campaigns, analyze performance, and oversee all business operations.
+                </p>
+                <ul class="text-sm text-gray-500 space-y-1">
+                    <li>✓ Campaign Management</li>
+                    <li>✓ Analytics Dashboard</li>
+                    <li>✓ User Administration</li>
+                    <li>✓ Revenue Tracking</li>
+                </ul>
+            </div>
+
+            <!-- Contractor Features -->
+            <div class="bg-white rounded-xl shadow-lg p-8 text-center">
+                <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <span class="text-2xl">🔨</span>
+                </div>
+                <h3 class="text-xl font-bold text-gray-900 mb-3">For Contractors</h3>
+                <p class="text-gray-600 mb-4">
+                    Build your profile, connect with customers, manage work requests, and grow your business.
+                </p>
+                <ul class="text-sm text-gray-500 space-y-1">
+                    <li>✓ Profile Management</li>
+                    <li>✓ Work Requests</li>
+                    <li>✓ Invoicing System</li>
+                    <li>✓ Customer Reviews</li>
+                </ul>
+            </div>
+
+            <!-- Customer Features -->
+            <div class="bg-white rounded-xl shadow-lg p-8 text-center">
+                <div class="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <span class="text-2xl">🏢</span>
+                </div>
+                <h3 class="text-xl font-bold text-gray-900 mb-3">For Customers</h3>
+                <p class="text-gray-600 mb-4">
+                    Find qualified contractors, schedule work, track progress, and manage billing - all in one place.
+                </p>
+                <ul class="text-sm text-gray-500 space-y-1">
+                    <li>✓ Contractor Matching</li>
+                    <li>✓ Work Scheduling</li>
+                    <li>✓ Progress Tracking</li>
+                    <li>✓ Secure Payments</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Business Model -->
+        <div class="mt-16 max-w-4xl mx-auto">
+            <div class="bg-white rounded-xl shadow-lg p-8">
+                <h2 class="text-2xl font-bold text-center text-gray-900 mb-6">
+                    Transparent Business Model
+                </h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div class="text-center">
+                        <div class="w-16 h-16 bg-yellow-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <span class="text-2xl">💰</span>
+                        </div>
+                        <h3 class="text-lg font-semibold mb-2">Commission Only</h3>
+                        <p class="text-3xl font-bold text-green-600 mb-2">10%</p>
+                        <p class="text-gray-600">Pay only when you earn. Perfect for getting started.</p>
+                    </div>
+                    <div class="text-center">
+                        <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <span class="text-2xl">📊</span>
+                        </div>
+                        <h3 class="text-lg font-semibold mb-2">Subscription + Commission</h3>
+                        <p class="text-lg text-gray-900 mb-2">
+                            <span class="font-bold">$30/month</span> + <span class="font-bold text-green-600">5%</span>
+                        </p>
+                        <p class="text-gray-600">Lower commission rate for active subscribers.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Stats Section -->
+        <div class="mt-16 text-center">
+            <h2 class="text-2xl font-bold text-gray-900 mb-8">Platform Statistics</h2>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-2xl mx-auto">
+                <div>
+                    <div class="text-3xl font-bold text-blue-600">24/7</div>
+                    <div class="text-gray-600">Platform Uptime</div>
+                </div>
+                <div>
+                    <div class="text-3xl font-bold text-green-600">100%</div>
+                    <div class="text-gray-600">Secure Payments</div>
+                </div>
+                <div>
+                    <div class="text-3xl font-bold text-purple-600">Real-time</div>
+                    <div class="text-gray-600">Analytics</div>
+                </div>
+                <div>
+                    <div class="text-3xl font-bold text-orange-600">Multi-user</div>
+                    <div class="text-gray-600">Marketplace</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Footer -->
+<footer class="bg-gray-900 text-white py-8">
+    <div class="container mx-auto px-4 text-center">
+        <p class="mb-4">© 2024 Marketing Technology Platform. Built for connecting businesses.</p>
+        <div class="flex justify-center space-x-6">
+            <a href="{{ url_for('register') }}" class="text-blue-400 hover:text-blue-300">Get Started</a>
+            <a href="{{ url_for('login') }}" class="text-blue-400 hover:text-blue-300">Sign In</a>
+        </div>
+    </div>
+</footer>
+{% endblock %}

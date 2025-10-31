@@ -1,0 +1,457 @@
+{% extends "base.html" %}
+
+{% block title %}Professional Dashboard - Labor Lookers{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h2><i class="fas fa-briefcase"></i> Professional Dashboard</h2>
+                    <p class="text-muted">Manage your work orders and track earnings</p>
+                </div>
+                <div>
+                    <a href="{{ url_for('advertising_marketplace') }}" class="btn btn-outline-primary">
+                        <i class="fas fa-store"></i> View Marketplace
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Professional Info & Stats -->
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="card bg-success text-white">
+                <div class="card-body text-center">
+                    <h3>${{ "%.2f"|format(net_earnings / 100) }}</h3>
+                    <p class="mb-0">Net Earnings</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-primary text-white">
+                <div class="card-body text-center">
+                    <h3>{{ completed_orders|length }}</h3>
+                    <p class="mb-0">Completed Orders</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-warning text-white">
+                <div class="card-body text-center">
+                    <h3>{{ pending_orders|length }}</h3>
+                    <p class="mb-0">Pending Orders</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-info text-white">
+                <div class="card-body text-center">
+                    <h3>{{ "%.1f"|format(professional.average_rating) }}</h3>
+                    <p class="mb-0">Average Rating</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Professional Profile Card -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h5><i class="fas fa-user-circle"></i> {{ professional.business_name }}</h5>
+                        <div>
+                            {% if professional.is_verified %}
+                                <span class="badge bg-success">
+                                    <i class="fas fa-check-circle"></i> Verified
+                                </span>
+                            {% else %}
+                                <span class="badge bg-warning">
+                                    <i class="fas fa-clock"></i> Pending Verification
+                                </span>
+                            {% endif %}
+                            <span class="badge bg-primary">
+                                {% if professional.specialization == 'physical_media' %}
+                                    Physical Media
+                                {% elif professional.specialization == 'web_advertising' %}
+                                    Web Advertising
+                                {% else %}
+                                    Marketing Management
+                                {% endif %}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-8">
+                            <p class="mb-2">{{ professional.business_description }}</p>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <small class="text-muted">Hourly Rate:</small> ${{ professional.base_hourly_rate }}<br>
+                                    <small class="text-muted">Experience:</small> {{ professional.experience_years }} years<br>
+                                    <small class="text-muted">Current Capacity:</small> {{ professional.current_capacity }} projects
+                                </div>
+                                <div class="col-md-6">
+                                    <small class="text-muted">Completed Projects:</small> {{ professional.completed_projects }}<br>
+                                    <small class="text-muted">On-Time Rate:</small> {{ professional.on_time_delivery_rate }}%<br>
+                                    <small class="text-muted">Satisfaction Score:</small> {{ professional.customer_satisfaction_score }}/5
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 text-end">
+                            <div class="rating mb-2">
+                                {% for i in range(5) %}
+                                    {% if i < professional.average_rating %}
+                                        <i class="fas fa-star text-warning"></i>
+                                    {% else %}
+                                        <i class="far fa-star text-muted"></i>
+                                    {% endif %}
+                                {% endfor %}
+                                <span class="text-muted">({{ professional.total_projects }} reviews)</span>
+                            </div>
+                            <button class="btn btn-outline-primary btn-sm">
+                                <i class="fas fa-edit"></i> Edit Profile
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Work Orders Tabs -->
+    <div class="card">
+        <div class="card-header">
+            <ul class="nav nav-tabs card-header-tabs" id="workOrderTabs" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active" id="pending-tab" data-bs-toggle="tab" data-bs-target="#pending" 
+                            type="button" role="tab" aria-controls="pending" aria-selected="true">
+                        <i class="fas fa-clock"></i> Pending Orders ({{ pending_orders|length }})
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="active-tab" data-bs-toggle="tab" data-bs-target="#active" 
+                            type="button" role="tab" aria-controls="active" aria-selected="false">
+                        <i class="fas fa-cog"></i> Active Orders ({{ active_orders|length }})
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="completed-tab" data-bs-toggle="tab" data-bs-target="#completed" 
+                            type="button" role="tab" aria-controls="completed" aria-selected="false">
+                        <i class="fas fa-check"></i> Completed Orders
+                    </button>
+                </li>
+            </ul>
+        </div>
+        <div class="card-body">
+            <div class="tab-content" id="workOrderTabContent">
+                <!-- Pending Orders -->
+                <div class="tab-pane fade show active" id="pending" role="tabpanel" aria-labelledby="pending-tab">
+                    {% if pending_orders %}
+                        <div class="row">
+                            {% for order in pending_orders %}
+                            <div class="col-lg-6 mb-4">
+                                <div class="card border-warning">
+                                    <div class="card-header">
+                                        <div class="d-flex justify-content-between align-items-start">
+                                            <div>
+                                                <h6 class="mb-1">{{ order.work_description }}</h6>
+                                                <small class="text-muted">{{ order.work_type.replace('_', ' ').title() }}</small>
+                                            </div>
+                                            <span class="badge bg-warning">New</span>
+                                        </div>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="mb-3">
+                                            <strong>Campaign:</strong> {{ order.campaign_request.campaign_name }}<br>
+                                            <strong>Client:</strong> {{ order.campaign_request.client.email }}<br>
+                                            <strong>Quote:</strong> ${{ "%.2f"|format(order.quoted_price_cents / 100) }}
+                                        </div>
+                                        
+                                        {% if order.deliverables %}
+                                            {% set deliverables_list = order.deliverables|from_json %}
+                                            <div class="mb-3">
+                                                <strong>Deliverables:</strong>
+                                                <ul class="small mb-0">
+                                                    {% for deliverable in deliverables_list %}
+                                                        <li>{{ deliverable }}</li>
+                                                    {% endfor %}
+                                                </ul>
+                                            </div>
+                                        {% endif %}
+
+                                        {% if order.deadline %}
+                                            <div class="mb-3">
+                                                <strong>Deadline:</strong> {{ order.deadline.strftime('%B %d, %Y') }}
+                                                {% if order.deadline < moment().datetime %}
+                                                    <span class="badge bg-danger ms-1">Overdue</span>
+                                                {% endif %}
+                                            </div>
+                                        {% endif %}
+
+                                        <div class="d-grid gap-2 d-md-flex">
+                                            <button class="btn btn-success btn-sm" 
+                                                    onclick="updateOrderStatus({{ order.id }}, 'accepted')">
+                                                <i class="fas fa-check"></i> Accept
+                                            </button>
+                                            <button class="btn btn-danger btn-sm" 
+                                                    onclick="declineOrder({{ order.id }})">
+                                                <i class="fas fa-times"></i> Decline
+                                            </button>
+                                            <button class="btn btn-outline-primary btn-sm" 
+                                                    data-bs-toggle="modal" 
+                                                    data-bs-target="#orderDetailModal{{ order.id }}">
+                                                <i class="fas fa-eye"></i> Details
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <div class="text-center py-4">
+                            <i class="fas fa-inbox fa-3x text-muted mb-3"></i>
+                            <h5>No pending orders</h5>
+                            <p class="text-muted">New work orders will appear here when clients send them to you.</p>
+                        </div>
+                    {% endif %}
+                </div>
+
+                <!-- Active Orders -->
+                <div class="tab-pane fade" id="active" role="tabpanel" aria-labelledby="active-tab">
+                    {% if active_orders %}
+                        <div class="row">
+                            {% for order in active_orders %}
+                            <div class="col-lg-6 mb-4">
+                                <div class="card border-primary">
+                                    <div class="card-header">
+                                        <div class="d-flex justify-content-between align-items-start">
+                                            <div>
+                                                <h6 class="mb-1">{{ order.work_description }}</h6>
+                                                <small class="text-muted">{{ order.work_type.replace('_', ' ').title() }}</small>
+                                            </div>
+                                            <span class="badge bg-primary">In Progress</span>
+                                        </div>
+                                    </div>
+                                    <div class="card-body">
+                                        <!-- Progress Bar -->
+                                        <div class="mb-3">
+                                            <div class="d-flex justify-content-between align-items-center mb-1">
+                                                <small class="text-muted">Progress</small>
+                                                <small class="text-muted">{{ order.progress_percentage }}%</small>
+                                            </div>
+                                            <div class="progress" style="height: 8px;">
+                                                <div class="progress-bar" role="progressbar" 
+                                                     style="width: {{ order.progress_percentage }}%"></div>
+                                            </div>
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <strong>Campaign:</strong> {{ order.campaign_request.campaign_name }}<br>
+                                            <strong>Value:</strong> ${{ "%.2f"|format(order.quoted_price_cents / 100) }}<br>
+                                            {% if order.deadline %}
+                                                <strong>Deadline:</strong> {{ order.deadline.strftime('%B %d, %Y') }}
+                                                {% set days_left = (order.deadline - moment().datetime).days %}
+                                                {% if days_left < 0 %}
+                                                    <span class="badge bg-danger ms-1">{{ -days_left }} days overdue</span>
+                                                {% elif days_left < 3 %}
+                                                    <span class="badge bg-warning ms-1">{{ days_left }} days left</span>
+                                                {% else %}
+                                                    <span class="badge bg-success ms-1">{{ days_left }} days left</span>
+                                                {% endif %}
+                                            {% endif %}
+                                        </div>
+
+                                        <div class="d-grid gap-2 d-md-flex">
+                                            <button class="btn btn-outline-primary btn-sm" 
+                                                    data-bs-toggle="modal" 
+                                                    data-bs-target="#progressModal{{ order.id }}">
+                                                <i class="fas fa-edit"></i> Update Progress
+                                            </button>
+                                            <button class="btn btn-success btn-sm" 
+                                                    onclick="updateOrderStatus({{ order.id }}, 'completed')">
+                                                <i class="fas fa-check"></i> Mark Complete
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <div class="text-center py-4">
+                            <i class="fas fa-tasks fa-3x text-muted mb-3"></i>
+                            <h5>No active orders</h5>
+                            <p class="text-muted">Accepted work orders will appear here for you to track and complete.</p>
+                        </div>
+                    {% endif %}
+                </div>
+
+                <!-- Completed Orders -->
+                <div class="tab-pane fade" id="completed" role="tabpanel" aria-labelledby="completed-tab">
+                    {% if completed_orders %}
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Project</th>
+                                        <th>Client</th>
+                                        <th>Completed</th>
+                                        <th>Value</th>
+                                        <th>Rating</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for order in completed_orders %}
+                                    <tr>
+                                        <td>
+                                            <strong>{{ order.work_description }}</strong><br>
+                                            <small class="text-muted">{{ order.work_type.replace('_', ' ').title() }}</small>
+                                        </td>
+                                        <td>{{ order.campaign_request.client.email }}</td>
+                                        <td>
+                                            {{ order.actual_completion_date.strftime('%m/%d/%Y') if order.actual_completion_date else 'N/A' }}
+                                        </td>
+                                        <td>${{ "%.2f"|format((order.final_price_cents or order.quoted_price_cents) / 100) }}</td>
+                                        <td>
+                                            {% if order.quality_score > 0 %}
+                                                <div class="rating">
+                                                    {% for i in range(5) %}
+                                                        {% if i < order.quality_score %}
+                                                            <i class="fas fa-star text-warning"></i>
+                                                        {% else %}
+                                                            <i class="far fa-star text-muted"></i>
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                </div>
+                                            {% else %}
+                                                <span class="text-muted">Not rated</span>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            {% if order.delivered_on_time %}
+                                                <span class="badge bg-success">On Time</span>
+                                            {% else %}
+                                                <span class="badge bg-warning">Late</span>
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    {% else %}
+                        <div class="text-center py-4">
+                            <i class="fas fa-trophy fa-3x text-muted mb-3"></i>
+                            <h5>No completed orders yet</h5>
+                            <p class="text-muted">Your completed work will be displayed here with client ratings and feedback.</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.rating .fas.fa-star,
+.rating .far.fa-star {
+    font-size: 0.9rem;
+}
+
+.card {
+    transition: all 0.2s;
+}
+
+.card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+.progress {
+    border-radius: 10px;
+    background-color: #f8f9fa;
+}
+
+.progress-bar {
+    border-radius: 10px;
+}
+</style>
+
+<script>
+function updateOrderStatus(orderId, status) {
+    const data = { status: status };
+    
+    if (status === 'completed') {
+        if (!confirm('Are you sure this work order is completed and ready for client review?')) {
+            return;
+        }
+        data.progress_percentage = 100;
+    }
+
+    fetch(`/advertising/work-order/${orderId}/update`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data)
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            location.reload();
+        } else {
+            alert('Error updating order: ' + data.error);
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Error updating order status');
+    });
+}
+
+function declineOrder(orderId) {
+    const reason = prompt('Please provide a reason for declining this order:');
+    if (!reason) return;
+
+    fetch(`/advertising/work-order/${orderId}/update`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            status: 'declined',
+            decline_reason: reason
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            location.reload();
+        } else {
+            alert('Error declining order: ' + data.error);
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Error declining order');
+    });
+}
+
+// Auto-refresh every 60 seconds for new orders
+setInterval(function() {
+    const pendingTab = document.querySelector('#pending-tab');
+    if (pendingTab && pendingTab.classList.contains('active')) {
+        // Only refresh if viewing pending orders
+        console.log('Checking for new work orders...');
+        // This would trigger a background check for new orders
+    }
+}, 60000);
+</script>
+{% endblock %}

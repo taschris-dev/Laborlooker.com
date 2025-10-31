@@ -1,0 +1,106 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="flex justify-between items-start mb-4">
+<div>
+    <h1 class="text-2xl font-semibold">{{ camp.name }}</h1>
+    <p class="text-gray-600">{{ camp.client.name }} • {{ camp.campaign_type.replace('_', ' ').title() }} Campaign</p>
+</div>
+<div class="text-right">
+    {% if camp.budget > 0 %}
+    <div class="text-sm text-gray-600">Budget: ${{ "%.2f"|format(camp.budget) }}</div>
+    {% endif %}
+    <div class="text-sm text-gray-600">Created: {{ camp.created_at.strftime('%Y-%m-%d') }}</div>
+</div>
+</div>
+
+{% if camp.incentive %}
+<div class="bg-blue-50 border border-blue-200 rounded p-3 mb-4">
+<strong>Incentive:</strong> {{ camp.incentive }}
+</div>
+{% endif %}
+
+<!-- Campaign Performance Metrics -->
+<div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+<div class="bg-white p-4 rounded shadow">
+    <div class="text-sm text-gray-500">Total Clicks</div>
+    <div class="text-2xl font-bold text-blue-600">{{ total_clicks }}</div>
+</div>
+<div class="bg-white p-4 rounded shadow">
+    <div class="text-sm text-gray-500">Total Leads</div>
+    <div class="text-2xl font-bold text-green-600">{{ total_leads }}</div>
+</div>
+<div class="bg-white p-4 rounded shadow">
+    <div class="text-sm text-gray-500">Conversion Rate</div>
+    <div class="text-2xl font-bold text-purple-600">{{ "%.1f"|format(conversion_rate) }}%</div>
+</div>
+<div class="bg-white p-4 rounded shadow">
+    <div class="text-sm text-gray-500">ROI</div>
+    <div class="text-2xl font-bold {% if roi > 0 %}text-green-600{% elif roi < 0 %}text-red-600{% else %}text-gray-600{% endif %}">{{ "%.1f"|format(roi) }}%</div>
+</div>
+</div>
+
+<div class="flex gap-3 mb-4">
+<a class="px-3 py-2 bg-blue-600 text-white rounded hover:bg-blue-700" href="/campaigns/{{ camp.id }}/export">📥 Download Assets</a>
+<a class="px-3 py-2 bg-gray-800 text-white rounded hover:bg-gray-900" href="/stickers/{{ camp.id }}">🏷️ Sticker Sheet</a>
+</div>
+
+<div class="bg-white rounded shadow overflow-x-auto">
+<table class="min-w-full">
+<thead class="bg-gray-50">
+<tr>
+<th class="text-left p-3 text-sm font-medium text-gray-600">Contact</th>
+<th class="text-left p-3 text-sm font-medium text-gray-600">Email/Phone</th>
+<th class="text-left p-3 text-sm font-medium text-gray-600">Referral URL</th>
+<th class="text-center p-3 text-sm font-medium text-gray-600">QR Code</th>
+<th class="text-right p-3 text-sm font-medium text-gray-600">Clicks</th>
+<th class="text-right p-3 text-sm font-medium text-gray-600">Leads</th>
+<th class="text-right p-3 text-sm font-medium text-gray-600">Lead Value</th>
+</tr>
+</thead>
+<tbody>
+{% for r in rows %}
+<tr class="border-t hover:bg-gray-50">
+<td class="p-3 font-medium">{{ r.link.contact.name or '—' }}</td>
+<td class="p-3 text-sm text-gray-600">
+    {% if r.link.contact.email %}{{ r.link.contact.email }}{% endif %}
+    {% if r.link.contact.phone %}<br>{{ r.link.contact.phone }}{% endif %}
+</td>
+<td class="p-3">
+    <a class="text-blue-600 hover:underline text-sm" href="{{ r.link.url }}" target="_blank">
+    {{ r.link.url }}
+    </a>
+</td>
+<td class="p-3 text-center">
+    <img src="{{ r.qr_path }}" alt="QR Code" class="h-12 w-12 mx-auto"/>
+</td>
+<td class="p-3 text-right">
+    <span class="{% if r.clicks > 0 %}text-blue-600 font-medium{% endif %}">{{ r.clicks }}</span>
+</td>
+<td class="p-3 text-right">
+    <span class="{% if r.leads > 0 %}text-green-600 font-medium{% endif %}">{{ r.leads }}</span>
+</td>
+<td class="p-3 text-right">
+    {% if r.lead_value > 0 %}
+    <span class="text-green-600 font-medium">${{ "%.2f"|format(r.lead_value) }}</span>
+    {% else %}
+    <span class="text-gray-400">$0.00</span>
+    {% endif %}
+</td>
+</tr>
+{% endfor %}
+</tbody>
+</table>
+</div>
+
+{% if camp.message %}
+<div class="mt-6 bg-white rounded shadow">
+<div class="p-4 border-b">
+    <h3 class="font-medium">Message Template</h3>
+</div>
+<div class="p-4">
+    <p class="text-gray-700">{{ camp.message }}</p>
+</div>
+</div>
+{% endif %}
+
+{% endblock %}

@@ -1,0 +1,509 @@
+{% extends "base.html" %}
+
+{% block title %}{{ professional.business_name }} - Professional Profile{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <!-- Professional Info -->
+        <div class="col-lg-8">
+            <!-- Header -->
+            <div class="card mb-4">
+                <div class="card-body">
+                    <div class="row align-items-center">
+                        <div class="col-md-8">
+                            <h2 class="mb-1">{{ professional.business_name }}</h2>
+                            <div class="d-flex align-items-center mb-2">
+                                <span class="badge bg-primary me-2">
+                                    {% if professional.specialization == 'physical_media' %}
+                                        <i class="fas fa-print"></i> Physical Media Provider
+                                    {% elif professional.specialization == 'web_advertising' %}
+                                        <i class="fas fa-globe"></i> Web Advertising Expert
+                                    {% else %}
+                                        <i class="fas fa-chart-line"></i> Marketing Management Professional
+                                    {% endif %}
+                                </span>
+                                {% if professional.is_verified %}
+                                    <span class="badge bg-success">
+                                        <i class="fas fa-check-circle"></i> Verified Professional
+                                    </span>
+                                {% endif %}
+                            </div>
+                            <div class="rating mb-2">
+                                {% for i in range(5) %}
+                                    {% if i < professional.average_rating %}
+                                        <i class="fas fa-star text-warning"></i>
+                                    {% else %}
+                                        <i class="far fa-star text-muted"></i>
+                                    {% endif %}
+                                {% endfor %}
+                                <span class="ms-2 text-muted">{{ professional.average_rating }}/5 ({{ professional.total_projects }} projects)</span>
+                            </div>
+                            <p class="text-muted mb-0">{{ professional.business_description }}</p>
+                        </div>
+                        <div class="col-md-4 text-md-end">
+                            <div class="mb-2">
+                                <h4 class="text-primary">${{ professional.base_hourly_rate }}<small class="text-muted">/hour</small></h4>
+                            </div>
+                            {% if professional.current_capacity > 0 %}
+                                <div class="alert alert-success py-2 mb-2">
+                                    <i class="fas fa-check-circle"></i> Available Now
+                                </div>
+                            {% else %}
+                                <div class="alert alert-warning py-2 mb-2">
+                                    <i class="fas fa-clock"></i> Fully Booked
+                                </div>
+                            {% endif %}
+                            <button class="btn btn-primary w-100 mb-2" data-bs-toggle="modal" data-bs-target="#contactModal">
+                                <i class="fas fa-envelope"></i> Contact Professional
+                            </button>
+                            {% if professional.current_capacity > 0 %}
+                                <a href="{{ url_for('new_advertising_campaign') }}" class="btn btn-success w-100">
+                                    <i class="fas fa-plus"></i> Start Campaign
+                                </a>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Key Stats -->
+            <div class="row mb-4">
+                <div class="col-md-3">
+                    <div class="card text-center">
+                        <div class="card-body">
+                            <h4 class="text-primary">{{ professional.experience_years }}+</h4>
+                            <small class="text-muted">Years Experience</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card text-center">
+                        <div class="card-body">
+                            <h4 class="text-success">{{ professional.completed_projects }}</h4>
+                            <small class="text-muted">Completed Projects</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card text-center">
+                        <div class="card-body">
+                            <h4 class="text-info">{{ professional.on_time_delivery_rate }}%</h4>
+                            <small class="text-muted">On-Time Delivery</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card text-center">
+                        <div class="card-body">
+                            <h4 class="text-warning">{{ professional.average_turnaround_days }}</h4>
+                            <small class="text-muted">Day Turnaround</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Services & Specializations -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5><i class="fas fa-cogs"></i> Services & Specializations</h5>
+                </div>
+                <div class="card-body">
+                    {% if professional.specialization == 'physical_media' and physical_services %}
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h6>Available Products</h6>
+                                <ul class="list-unstyled">
+                                    {% if physical_services.offers_stickers %}
+                                        <li><i class="fas fa-check text-success"></i> Stickers (${{ "%.2f"|format(physical_services.sticker_price_cents / 100) }} each)</li>
+                                    {% endif %}
+                                    {% if physical_services.offers_flyers %}
+                                        <li><i class="fas fa-check text-success"></i> Flyers (${{ "%.2f"|format(physical_services.flyer_price_cents / 100) }} each)</li>
+                                    {% endif %}
+                                    {% if physical_services.offers_business_cards %}
+                                        <li><i class="fas fa-check text-success"></i> Business Cards (${{ "%.2f"|format(physical_services.business_card_price_cents / 100) }} each)</li>
+                                    {% endif %}
+                                    {% if physical_services.offers_brochures %}
+                                        <li><i class="fas fa-check text-success"></i> Brochures (${{ "%.2f"|format(physical_services.brochure_price_cents / 100) }} each)</li>
+                                    {% endif %}
+                                    {% if physical_services.offers_banners %}
+                                        <li><i class="fas fa-check text-success"></i> Banners (${{ "%.2f"|format(physical_services.banner_price_cents / 100) }} each)</li>
+                                    {% endif %}
+                                    {% if physical_services.offers_yard_signs %}
+                                        <li><i class="fas fa-check text-success"></i> Yard Signs (${{ "%.2f"|format(physical_services.yard_sign_price_cents / 100) }} each)</li>
+                                    {% endif %}
+                                    {% if physical_services.offers_promotional_items %}
+                                        <li><i class="fas fa-check text-success"></i> Promotional Items (${{ "%.2f"|format(physical_services.promotional_item_price_cents / 100) }} each)</li>
+                                    {% endif %}
+                                    {% if physical_services.offers_apparel %}
+                                        <li><i class="fas fa-check text-success"></i> Apparel (${{ "%.2f"|format(physical_services.apparel_price_cents / 100) }} each)</li>
+                                    {% endif %}
+                                </ul>
+                            </div>
+                            <div class="col-md-6">
+                                <h6>Additional Services</h6>
+                                <ul class="list-unstyled">
+                                    {% if physical_services.design_services_included %}
+                                        <li><i class="fas fa-check text-success"></i> Design Services Included</li>
+                                    {% endif %}
+                                    {% if physical_services.rush_production_available %}
+                                        <li><i class="fas fa-check text-success"></i> Rush Production Available</li>
+                                    {% endif %}
+                                    {% if physical_services.local_delivery_available %}
+                                        <li><i class="fas fa-check text-success"></i> Local Delivery</li>
+                                    {% endif %}
+                                    {% if physical_services.shipping_available %}
+                                        <li><i class="fas fa-check text-success"></i> Nationwide Shipping</li>
+                                    {% endif %}
+                                    {% if physical_services.eco_friendly_options %}
+                                        <li><i class="fas fa-leaf text-success"></i> Eco-Friendly Options</li>
+                                    {% endif %}
+                                </ul>
+                            </div>
+                        </div>
+
+                    {% elif professional.specialization == 'web_advertising' and web_services %}
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h6>Platform Certifications</h6>
+                                <ul class="list-unstyled">
+                                    {% if web_services.google_ads_certified %}
+                                        <li><i class="fas fa-certificate text-warning"></i> Google Ads Certified</li>
+                                    {% endif %}
+                                    {% if web_services.facebook_ads_certified %}
+                                        <li><i class="fas fa-certificate text-warning"></i> Facebook Ads Certified</li>
+                                    {% endif %}
+                                    {% if web_services.linkedin_ads_certified %}
+                                        <li><i class="fas fa-certificate text-warning"></i> LinkedIn Ads Certified</li>
+                                    {% endif %}
+                                    {% if web_services.microsoft_ads_certified %}
+                                        <li><i class="fas fa-certificate text-warning"></i> Microsoft Ads Certified</li>
+                                    {% endif %}
+                                </ul>
+
+                                <h6>Service Offerings</h6>
+                                <ul class="list-unstyled">
+                                    {% if web_services.offers_search_ads %}
+                                        <li><i class="fas fa-check text-success"></i> Search Advertising</li>
+                                    {% endif %}
+                                    {% if web_services.offers_display_ads %}
+                                        <li><i class="fas fa-check text-success"></i> Display Advertising</li>
+                                    {% endif %}
+                                    {% if web_services.offers_social_media_ads %}
+                                        <li><i class="fas fa-check text-success"></i> Social Media Advertising</li>
+                                    {% endif %}
+                                    {% if web_services.offers_retargeting %}
+                                        <li><i class="fas fa-check text-success"></i> Retargeting Campaigns</li>
+                                    {% endif %}
+                                    {% if web_services.offers_landing_pages %}
+                                        <li><i class="fas fa-check text-success"></i> Landing Page Creation</li>
+                                    {% endif %}
+                                </ul>
+                            </div>
+                            <div class="col-md-6">
+                                <h6>Pricing & Guarantees</h6>
+                                <ul class="list-unstyled">
+                                    <li><strong>Setup Fee:</strong> ${{ "%.2f"|format(web_services.setup_fee_cents / 100) }}</li>
+                                    <li><strong>Monthly Management:</strong> ${{ "%.2f"|format(web_services.monthly_management_fee_cents / 100) }}</li>
+                                    <li><strong>Minimum Ad Spend:</strong> ${{ "%.2f"|format(web_services.minimum_ad_spend_cents / 100) }}/month</li>
+                                </ul>
+
+                                {% if web_services.guarantees_roas %}
+                                    <div class="alert alert-info py-2 mt-3">
+                                        <i class="fas fa-shield-alt"></i> Guarantees {{ web_services.guaranteed_roas_percentage }}% ROAS
+                                    </div>
+                                {% endif %}
+
+                                <h6>Specializations</h6>
+                                <ul class="list-unstyled">
+                                    {% if web_services.specializes_in_lead_generation %}
+                                        <li><i class="fas fa-check text-success"></i> Lead Generation</li>
+                                    {% endif %}
+                                    {% if web_services.specializes_in_local_business %}
+                                        <li><i class="fas fa-check text-success"></i> Local Business</li>
+                                    {% endif %}
+                                    {% if web_services.specializes_in_ecommerce %}
+                                        <li><i class="fas fa-check text-success"></i> E-commerce</li>
+                                    {% endif %}
+                                    {% if web_services.specializes_in_b2b %}
+                                        <li><i class="fas fa-check text-success"></i> B2B Marketing</li>
+                                    {% endif %}
+                                </ul>
+                            </div>
+                        </div>
+
+                    {% elif professional.specialization == 'marketing_management' and marketing_services %}
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h6>Expertise Areas</h6>
+                                <ul class="list-unstyled">
+                                    {% if marketing_services.specializes_in_strategy %}
+                                        <li><i class="fas fa-check text-success"></i> Marketing Strategy</li>
+                                    {% endif %}
+                                    {% if marketing_services.specializes_in_branding %}
+                                        <li><i class="fas fa-check text-success"></i> Brand Development</li>
+                                    {% endif %}
+                                    {% if marketing_services.specializes_in_content_marketing %}
+                                        <li><i class="fas fa-check text-success"></i> Content Marketing</li>
+                                    {% endif %}
+                                    {% if marketing_services.specializes_in_email_marketing %}
+                                        <li><i class="fas fa-check text-success"></i> Email Marketing</li>
+                                    {% endif %}
+                                    {% if marketing_services.specializes_in_social_media %}
+                                        <li><i class="fas fa-check text-success"></i> Social Media Marketing</li>
+                                    {% endif %}
+                                    {% if marketing_services.specializes_in_seo %}
+                                        <li><i class="fas fa-check text-success"></i> SEO Strategy</li>
+                                    {% endif %}
+                                </ul>
+
+                                <h6>Service Packages</h6>
+                                <ul class="list-unstyled">
+                                    {% if marketing_services.offers_strategy_consultation %}
+                                        <li><i class="fas fa-check text-success"></i> Strategy Consultation (${{ "%.2f"|format(marketing_services.strategy_consultation_fee_cents / 100) }})</li>
+                                    {% endif %}
+                                    {% if marketing_services.offers_campaign_management %}
+                                        <li><i class="fas fa-check text-success"></i> Campaign Management (${{ "%.2f"|format(marketing_services.campaign_management_fee_cents / 100) }}/month)</li>
+                                    {% endif %}
+                                    {% if marketing_services.offers_content_creation %}
+                                        <li><i class="fas fa-check text-success"></i> Content Creation (${{ "%.2f"|format(marketing_services.content_creation_fee_cents / 100) }}/month)</li>
+                                    {% endif %}
+                                    {% if marketing_services.offers_brand_development %}
+                                        <li><i class="fas fa-check text-success"></i> Brand Development (${{ "%.2f"|format(marketing_services.brand_development_fee_cents / 100) }})</li>
+                                    {% endif %}
+                                </ul>
+                            </div>
+                            <div class="col-md-6">
+                                <h6>Industry Experience</h6>
+                                <ul class="list-unstyled">
+                                    {% if marketing_services.experience_healthcare %}
+                                        <li><i class="fas fa-check text-success"></i> Healthcare</li>
+                                    {% endif %}
+                                    {% if marketing_services.experience_retail %}
+                                        <li><i class="fas fa-check text-success"></i> Retail</li>
+                                    {% endif %}
+                                    {% if marketing_services.experience_restaurants %}
+                                        <li><i class="fas fa-check text-success"></i> Restaurants</li>
+                                    {% endif %}
+                                    {% if marketing_services.experience_professional_services %}
+                                        <li><i class="fas fa-check text-success"></i> Professional Services</li>
+                                    {% endif %}
+                                    {% if marketing_services.experience_real_estate %}
+                                        <li><i class="fas fa-check text-success"></i> Real Estate</li>
+                                    {% endif %}
+                                    {% if marketing_services.experience_technology %}
+                                        <li><i class="fas fa-check text-success"></i> Technology</li>
+                                    {% endif %}
+                                </ul>
+
+                                <h6>Team & Resources</h6>
+                                <ul class="list-unstyled">
+                                    {% if marketing_services.has_design_team %}
+                                        <li><i class="fas fa-check text-success"></i> In-House Design Team</li>
+                                    {% endif %}
+                                    {% if marketing_services.has_copywriting_team %}
+                                        <li><i class="fas fa-check text-success"></i> Professional Copywriters</li>
+                                    {% endif %}
+                                    {% if marketing_services.has_video_production %}
+                                        <li><i class="fas fa-check text-success"></i> Video Production</li>
+                                    {% endif %}
+                                    {% if marketing_services.has_data_analytics %}
+                                        <li><i class="fas fa-check text-success"></i> Data Analytics Team</li>
+                                    {% endif %}
+                                    {% if marketing_services.has_web_development %}
+                                        <li><i class="fas fa-check text-success"></i> Web Development</li>
+                                    {% endif %}
+                                </ul>
+
+                                {% if marketing_services.requires_retainer %}
+                                    <div class="alert alert-warning py-2 mt-3">
+                                        <i class="fas fa-info-circle"></i> Requires ${{ "%.2f"|format(marketing_services.retainer_amount_cents / 100) }} retainer
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Recent Work -->
+            {% if recent_work %}
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5><i class="fas fa-portfolio"></i> Recent Work</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        {% for work in recent_work %}
+                        <div class="col-md-6 mb-3">
+                            <div class="border rounded p-3">
+                                <h6>{{ work.work_description }}</h6>
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <span class="badge bg-success">Completed</span>
+                                    <small class="text-muted">{{ work.actual_completion_date.strftime('%B %Y') }}</small>
+                                </div>
+                                <div class="d-flex justify-content-between">
+                                    <div>
+                                        <small class="text-muted">Quality Score:</small>
+                                        <span class="fw-bold">{{ work.quality_score }}/5</span>
+                                    </div>
+                                    <div>
+                                        {% if work.delivered_on_time %}
+                                            <span class="badge bg-success">On Time</span>
+                                        {% else %}
+                                            <span class="badge bg-warning">Late</span>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+
+        <!-- Sidebar -->
+        <div class="col-lg-4">
+            <!-- Professional Details -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h6><i class="fas fa-info-circle"></i> Professional Details</h6>
+                </div>
+                <div class="card-body">
+                    <ul class="list-unstyled">
+                        <li class="mb-2">
+                            <strong>Years in Business:</strong> {{ professional.years_in_business }}
+                        </li>
+                        <li class="mb-2">
+                            <strong>Team Size:</strong> {{ professional.team_size }} {{ 'person' if professional.team_size == 1 else 'people' }}
+                        </li>
+                        <li class="mb-2">
+                            <strong>Service Radius:</strong> {{ professional.service_area_radius }} miles
+                        </li>
+                        <li class="mb-2">
+                            <strong>Remote Services:</strong> 
+                            {% if professional.remote_services_available %}
+                                <span class="text-success">Available</span>
+                            {% else %}
+                                <span class="text-muted">Not Available</span>
+                            {% endif %}
+                        </li>
+                        <li class="mb-2">
+                            <strong>Rush Orders:</strong> 
+                            {% if professional.accepts_rush_orders %}
+                                <span class="text-success">Accepted</span>
+                            {% else %}
+                                <span class="text-muted">Not Accepted</span>
+                            {% endif %}
+                        </li>
+                        <li class="mb-2">
+                            <strong>Project Minimum:</strong> ${{ professional.project_minimum }}
+                        </li>
+                    </ul>
+
+                    {% if professional.portfolio_url %}
+                        <a href="{{ professional.portfolio_url }}" target="_blank" class="btn btn-outline-primary w-100 mb-2">
+                            <i class="fas fa-external-link-alt"></i> View Portfolio
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="card">
+                <div class="card-header">
+                    <h6><i class="fas fa-bolt"></i> Quick Actions</h6>
+                </div>
+                <div class="card-body">
+                    <a href="{{ url_for('new_advertising_campaign') }}" class="btn btn-success w-100 mb-2">
+                        <i class="fas fa-plus"></i> Start New Campaign
+                    </a>
+                    <button class="btn btn-outline-primary w-100 mb-2" data-bs-toggle="modal" data-bs-target="#contactModal">
+                        <i class="fas fa-envelope"></i> Send Message
+                    </button>
+                    <a href="{{ url_for('advertising_marketplace') }}" class="btn btn-outline-secondary w-100">
+                        <i class="fas fa-arrow-left"></i> Back to Marketplace
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Contact Modal -->
+<div class="modal fade" id="contactModal" tabindex="-1" aria-labelledby="contactModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="contactModalLabel">
+                    <i class="fas fa-envelope"></i> Contact {{ professional.business_name }}
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="mb-3">
+                        <label class="form-label" for="subject">Subject</label>
+                        <input type="text" class="form-control" id="subject" placeholder="Project inquiry">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label" for="message">Message</label>
+                        <textarea class="form-control" id="message" rows="4" 
+                                  placeholder="Tell the professional about your project requirements..."></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label" for="budget">Estimated Budget</label>
+                        <div class="input-group">
+                            <span class="input-group-text">$</span>
+                            <input type="number" class="form-control" id="budget" placeholder="Optional">
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label" for="timeline">Desired Timeline</label>
+                        <select class="form-select" id="timeline">
+                            <option value="">Select timeline</option>
+                            <option value="asap">ASAP</option>
+                            <option value="1_week">Within 1 week</option>
+                            <option value="2_weeks">Within 2 weeks</option>
+                            <option value="1_month">Within 1 month</option>
+                            <option value="flexible">Flexible</option>
+                        </select>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary">
+                    <i class="fas fa-paper-plane"></i> Send Message
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.rating .fas.fa-star,
+.rating .far.fa-star {
+    font-size: 1.1rem;
+}
+
+.card {
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.alert {
+    font-size: 0.9rem;
+}
+
+.border {
+    transition: all 0.2s;
+}
+
+.border:hover {
+    border-color: #0d6efd !important;
+    background-color: #f8f9ff;
+}
+</style>
+{% endblock %}

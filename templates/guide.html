@@ -1,0 +1,137 @@
+{% extends 'base.html' %}
+{% block content %}
+<h1 class="text-2xl font-semibold mb-6">Marketing Technology Platform - User Guide</h1>
+
+<div class="space-y-6">
+
+<!-- Overview -->
+<div class="bg-white rounded shadow p-6">
+<h2 class="text-xl font-semibold mb-4 text-blue-600">🎯 What This Platform Does</h2>
+<p class="text-gray-700 mb-4">
+This marketing technology platform helps you connect local businesses with their customers through 
+trackable marketing campaigns. You can plug client CRM data into our system and create multi-channel 
+campaigns with full ROI tracking.
+</p>
+<div class="bg-blue-50 border border-blue-200 rounded p-4">
+<strong>Perfect for:</strong> HVAC companies, plumbers, restaurants, dentists, auto shops, and any local business 
+that wants to grow through referrals and targeted marketing.
+</div>
+</div>
+
+<!-- Quick Start -->
+<div class="bg-white rounded shadow p-6">
+<h2 class="text-xl font-semibold mb-4 text-green-600">🚀 Quick Start Guide</h2>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+<div>
+<h3 class="font-medium mb-3">Step 1: Add Your Client</h3>
+<ol class="text-sm text-gray-700 space-y-1">
+<li>• Click "Add Client" button</li>
+<li>• Enter business name and industry</li>
+<li>• Add website and notes</li>
+<li>• Save client profile</li>
+</ol>
+</div>
+<div>
+<h3 class="font-medium mb-3">Step 2: Upload CRM Data</h3>
+<ol class="text-sm text-gray-700 space-y-1">
+<li>• Export customer list as CSV</li>
+<li>• Include columns: name, email, phone</li>
+<li>• Upload to create contact database</li>
+<li>• System validates and imports data</li>
+</ol>
+</div>
+<div>
+<h3 class="font-medium mb-3">Step 3: Create Campaign</h3>
+<ol class="text-sm text-gray-700 space-y-1">
+<li>• Choose campaign type (referral, direct mail, etc.)</li>
+<li>• Set budget and incentive</li>
+<li>• Write message template</li>
+<li>• Generate tracking links and QR codes</li>
+</ol>
+</div>
+<div>
+<h3 class="font-medium mb-3">Step 4: Track Results</h3>
+<ol class="text-sm text-gray-700 space-y-1">
+<li>• Monitor clicks and leads in real-time</li>
+<li>• Calculate ROI and conversion rates</li>
+<li>• Export reports and assets</li>
+<li>• Optimize based on performance</li>
+</ol>
+</div>
+</div>
+</div>
+
+<!-- Campaign Types -->
+<div class="bg-white rounded shadow p-6">
+<h2 class="text-xl font-semibold mb-4 text-purple-600">📊 Campaign Types</h2>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+<div class="border rounded p-4 bg-blue-50">
+<h3 class="font-medium text-blue-700">🔗 Referral Campaigns</h3>
+<p class="text-sm text-gray-600 mt-2">Customer-to-customer referral programs with incentives and tracking.</p>
+</div>
+<div class="border rounded p-4 bg-green-50">
+<h3 class="font-medium text-green-700">📬 Direct Mail</h3>
+<p class="text-sm text-gray-600 mt-2">Physical mail campaigns with QR codes for digital tracking.</p>
+</div>
+<div class="border rounded p-4 bg-yellow-50">
+<h3 class="font-medium text-yellow-700">🏷️ Sticker Campaigns</h3>
+<p class="text-sm text-gray-600 mt-2">Physical marketing materials with scannable codes.</p>
+</div>
+<div class="border rounded p-4 bg-purple-50">
+<h3 class="font-medium text-purple-700">📺 Media Campaigns</h3>
+<p class="text-sm text-gray-600 mt-2">Multi-channel media campaigns with attribution tracking.</p>
+</div>
+<div class="border rounded p-4 bg-red-50">
+<h3 class="font-medium text-red-700">💻 Digital Campaigns</h3>
+<p class="text-sm text-gray-600 mt-2">Online marketing campaigns with pixel tracking.</p>
+</div>
+</div>
+</div>
+
+<!-- Key Features -->
+<div class="bg-white rounded shadow p-6">
+<h2 class="text-xl font-semibold mb-4 text-orange-600">⭐ Key Features</h2>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+<div>
+<h3 class="font-medium mb-3">Marketing Technology</h3>
+<ul class="text-sm text-gray-700 space-y-1">
+<li>• CRM integration and data import</li>
+<li>• Automatic QR code generation</li>
+<li>• Unique tracking links per contact</li>
+<li>• Real-time analytics dashboard</li>
+<li>• Campaign performance metrics</li>
+</ul>
+</div>
+<div>
+<h3 class="font-medium mb-3">Business Intelligence</h3>
+<ul class="text-sm text-gray-700 space-y-1">
+<li>• ROI calculation and tracking</li>
+<li>• Conversion rate optimization</li>
+<li>• Lead value estimation</li>
+<li>• Client portfolio management</li>
+<li>• Export capabilities</li>
+</ul>
+</div>
+</div>
+</div>
+
+<!-- Demo Data -->
+<div class="bg-white rounded shadow p-6">
+<h2 class="text-xl font-semibold mb-4 text-gray-600">🧪 Demo & Testing</h2>
+<div class="flex gap-4">
+<a href="/demo/populate" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+Load Demo Data
+</a>
+<a href="/demo/clear" onclick="return confirm('Clear all data?')" 
+   class="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700">
+Clear All Data
+</a>
+</div>
+<p class="text-sm text-gray-600 mt-3">
+Use demo data to explore features, then clear and add your real client data.
+</p>
+</div>
+
+</div>
+
+{% endblock %}

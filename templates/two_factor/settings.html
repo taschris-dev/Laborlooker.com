@@ -1,0 +1,270 @@
+{% extends "base.html" %}
+
+{% block title %}Two-Factor Authentication Settings{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="mb-0">
+                        <i class="fas fa-shield-alt"></i> Two-Factor Authentication Settings
+                    </h4>
+                </div>
+                <div class="card-body">
+                    {% if two_fa and two_fa.enabled %}
+                    <!-- 2FA Enabled -->
+                    <div class="alert alert-success">
+                        <h5><i class="fas fa-check-shield"></i> Two-Factor Authentication is Enabled</h5>
+                        <p class="mb-0">Your account is protected with two-factor authentication. A verification code will be sent to your email when you sign in.</p>
+                    </div>
+
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <div class="card border-success">
+                                <div class="card-body">
+                                    <h6 class="card-title">
+                                        <i class="fas fa-envelope text-success"></i> Email Authentication
+                                    </h6>
+                                    <p class="card-text small">
+                                        Verification codes are sent to: <strong>{{ current_user.email }}</strong>
+                                    </p>
+                                    {% if two_fa.phone_number %}
+                                    <p class="card-text small">
+                                        Backup phone: <strong>{{ two_fa.phone_number }}</strong>
+                                    </p>
+                                    {% endif %}
+                                    <p class="small text-muted">
+                                        Enabled on: {{ two_fa.created_at.strftime('%B %d, %Y at %I:%M %p') }}
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card border-warning">
+                                <div class="card-body">
+                                    <h6 class="card-title">
+                                        <i class="fas fa-key text-warning"></i> Backup Codes
+                                    </h6>
+                                    <p class="card-text small">
+                                        Emergency codes for account recovery when you can't access email.
+                                    </p>
+                                    <button class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#regenerateCodesModal">
+                                        <i class="fas fa-redo"></i> Regenerate Codes
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Actions -->
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h6>Security Actions</h6>
+                            <button class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#disableModal">
+                                <i class="fas fa-times"></i> Disable 2FA
+                            </button>
+                        </div>
+                        <div class="col-md-6">
+                            <h6>Account Management</h6>
+                            <button class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#regenerateCodesModal">
+                                <i class="fas fa-key"></i> Regenerate Backup Codes
+                            </button>
+                        </div>
+                    </div>
+
+                    {% else %}
+                    <!-- 2FA Disabled -->
+                    <div class="alert alert-warning">
+                        <h5><i class="fas fa-exclamation-triangle"></i> Two-Factor Authentication is Disabled</h5>
+                        <p class="mb-3">Your account security could be improved by enabling two-factor authentication. This adds an extra layer of protection by requiring a verification code from your email in addition to your password.</p>
+                        <a href="{{ url_for('two_factor_setup') }}" class="btn btn-success">
+                            <i class="fas fa-shield-alt"></i> Enable Two-Factor Authentication
+                        </a>
+                    </div>
+
+                    <!-- Benefits Section -->
+                    <div class="row mt-4">
+                        <div class="col-md-6">
+                            <div class="card border-info">
+                                <div class="card-body">
+                                    <h6 class="card-title">
+                                        <i class="fas fa-plus-circle text-success"></i> Benefits
+                                    </h6>
+                                    <ul class="small mb-0">
+                                        <li>Prevents unauthorized access</li>
+                                        <li>Protects against password theft</li>
+                                        <li>Email-based verification</li>
+                                        <li>Backup codes for emergencies</li>
+                                        <li>Industry-standard security</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card border-primary">
+                                <div class="card-body">
+                                    <h6 class="card-title">
+                                        <i class="fas fa-info-circle text-primary"></i> How It Works
+                                    </h6>
+                                    <ol class="small mb-0">
+                                        <li>Enter email and password</li>
+                                        <li>Receive code via email</li>
+                                        <li>Enter 6-digit code</li>
+                                        <li>Access your account</li>
+                                        <li>Use backup codes if needed</li>
+                                    </ol>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    <!-- Return to Dashboard -->
+                    <div class="mt-4">
+                        <a href="{{ url_for('dashboard') }}" class="btn btn-outline-secondary">
+                            <i class="fas fa-arrow-left"></i> Back to Dashboard
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Security Tips -->
+            <div class="card mt-4">
+                <div class="card-body">
+                    <h6><i class="fas fa-lightbulb"></i> Security Tips</h6>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <p class="small">
+                                <strong>Strong Passwords:</strong>
+                                <br>• Use unique passwords
+                                <br>• Include numbers & symbols
+                                <br>• Change regularly
+                                <br>• Use a password manager
+                            </p>
+                        </div>
+                        <div class="col-md-4">
+                            <p class="small">
+                                <strong>Safe Computing:</strong>
+                                <br>• Keep software updated
+                                <br>• Avoid public WiFi for login
+                                <br>• Log out when finished
+                                <br>• Clear browser data
+                            </p>
+                        </div>
+                        <div class="col-md-4">
+                            <p class="small">
+                                <strong>Backup Codes:</strong>
+                                <br>• Store in secure location
+                                <br>• Don't share with anyone
+                                <br>• Generate new codes regularly
+                                <br>• Keep multiple copies
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Disable 2FA Modal -->
+<div class="modal fade" id="disableModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title">
+                    <i class="fas fa-exclamation-triangle"></i> Disable Two-Factor Authentication
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <form method="POST" action="{{ url_for('two_factor_disable') }}">
+                <div class="modal-body">
+                    <div class="alert alert-warning">
+                        <strong>Warning:</strong> Disabling two-factor authentication will reduce your account security.
+                    </div>
+                    
+                    <p>Are you sure you want to disable two-factor authentication? This will:</p>
+                    <ul>
+                        <li>Remove the requirement for verification codes</li>
+                        <li>Invalidate all backup codes</li>
+                        <li>Reduce your account protection</li>
+                    </ul>
+                    
+                    <div class="mb-3">
+                        <label for="confirmPassword" class="form-label">
+                            Confirm your password to disable 2FA:
+                        </label>
+                        <input type="password" class="form-control" id="confirmPassword" 
+                               name="password" required placeholder="Enter your current password">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        Cancel
+                    </button>
+                    <button type="submit" class="btn btn-danger">
+                        <i class="fas fa-times"></i> Disable 2FA
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Regenerate Backup Codes Modal -->
+<div class="modal fade" id="regenerateCodesModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-warning text-dark">
+                <h5 class="modal-title">
+                    <i class="fas fa-key"></i> Regenerate Backup Codes
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form method="POST" action="{{ url_for('two_factor_regenerate_codes') }}">
+                <div class="modal-body">
+                    <div class="alert alert-info">
+                        <strong>Important:</strong> Generating new backup codes will invalidate all existing codes.
+                    </div>
+                    
+                    <p>This will create 10 new backup codes and invalidate your current ones. Make sure to:</p>
+                    <ul>
+                        <li>Save the new codes in a secure location</li>
+                        <li>Update any stored copies</li>
+                        <li>Delete old codes securely</li>
+                    </ul>
+                    
+                    <div class="mb-3">
+                        <label for="regeneratePassword" class="form-label">
+                            Confirm your password to regenerate codes:
+                        </label>
+                        <input type="password" class="form-control" id="regeneratePassword" 
+                               name="password" required placeholder="Enter your current password">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        Cancel
+                    </button>
+                    <button type="submit" class="btn btn-warning">
+                        <i class="fas fa-redo"></i> Generate New Codes
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+// Auto-focus password inputs when modals open
+document.getElementById('disableModal').addEventListener('shown.bs.modal', function () {
+    document.getElementById('confirmPassword').focus();
+});
+
+document.getElementById('regenerateCodesModal').addEventListener('shown.bs.modal', function () {
+    document.getElementById('regeneratePassword').focus();
+});
+</script>
+{% endblock %}

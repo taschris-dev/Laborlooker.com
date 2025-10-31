@@ -1,0 +1,193 @@
+{% extends "base.html" %}
+
+{% block title %}{{ client.business_name }} - Billing Details{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <div class="flex justify-between items-center mb-8">
+        <h1 class="text-3xl font-bold text-gray-900">{{ client.business_name }} - Billing Details</h1>
+        <a href="{{ url_for('billing_overview') }}" 
+           class="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg transition duration-200">
+            ← Back to Billing
+        </a>
+    </div>
+
+    <!-- Client Billing Plan Info -->
+    <div class="bg-white rounded-lg shadow-md p-6 mb-8">
+        <h2 class="text-xl font-semibold text-gray-900 mb-4">Billing Plan Details</h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div>
+                <label class="block text-sm font-medium text-gray-700">Billing Plan</label>
+                {% if client.billing_plan == "commission_only" %}
+                    <div class="mt-1">
+                        <span class="inline-flex px-3 py-1 text-sm font-semibold rounded-full bg-blue-100 text-blue-800">
+                            Commission Only Plan
+                        </span>
+                        <p class="text-xs text-gray-500 mt-1">10% commission per successful job</p>
+                    </div>
+                {% else %}
+                    <div class="mt-1">
+                        <span class="inline-flex px-3 py-1 text-sm font-semibold rounded-full bg-green-100 text-green-800">
+                            Commission + Subscription Plan
+                        </span>
+                        <p class="text-xs text-gray-500 mt-1">5% commission + $30/month subscription</p>
+                    </div>
+                {% endif %}
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-700">Commission Rate</label>
+                <p class="mt-1 text-lg font-semibold text-gray-900">{{ client.commission_rate }}%</p>
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-700">Monthly Subscription</label>
+                {% if client.monthly_subscription > 0 %}
+                    <p class="mt-1 text-lg font-semibold text-gray-900">${{ "%.2f"|format(client.monthly_subscription) }}</p>
+                {% else %}
+                    <p class="mt-1 text-lg font-semibold text-gray-500">None</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Current Month Summary -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        <div class="bg-white p-6 rounded-lg shadow-md border-l-4 border-blue-500">
+            <h3 class="text-lg font-semibold text-gray-700 mb-2">Jobs Completed</h3>
+            <p class="text-3xl font-bold text-blue-600">{{ current_month_work|length }}</p>
+            <p class="text-sm text-gray-500">This month</p>
+        </div>
+        
+        <div class="bg-white p-6 rounded-lg shadow-md border-l-4 border-green-500">
+            <h3 class="text-lg font-semibold text-gray-700 mb-2">Revenue Generated</h3>
+            <p class="text-3xl font-bold text-green-600">${{ "%.2f"|format(total_revenue) }}</p>
+            <p class="text-sm text-gray-500">Job value total</p>
+        </div>
+        
+        <div class="bg-white p-6 rounded-lg shadow-md border-l-4 border-purple-500">
+            <h3 class="text-lg font-semibold text-gray-700 mb-2">Commission Earned</h3>
+            <p class="text-3xl font-bold text-purple-600">${{ "%.2f"|format(total_commission) }}</p>
+            <p class="text-sm text-gray-500">Our earnings</p>
+        </div>
+    </div>
+
+    <!-- Current Month Work Details -->
+    {% if current_month_work %}
+    <div class="bg-white rounded-lg shadow-md mb-8">
+        <div class="px-6 py-4 border-b border-gray-200">
+            <h2 class="text-xl font-semibold text-gray-900">Current Month Completed Work</h2>
+        </div>
+        <div class="overflow-x-auto">
+            <table class="min-w-full table-auto">
+                <thead class="bg-gray-50">
+                    <tr>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date Completed</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Service Type</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Customer</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Job Value</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Commission</th>
+                    </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200">
+                    {% for work in current_month_work %}
+                    <tr class="hover:bg-gray-50">
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                            {{ work.completed_at.strftime('%m/%d/%Y') }}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                            {{ work.service_type }}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                            {{ work.customer_name }}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                            ${{ "%.2f"|format(work.actual_value) }}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-green-600">
+                            ${{ "%.2f"|format(work.commission_charged) }}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Invoice History -->
+    <div class="bg-white rounded-lg shadow-md">
+        <div class="px-6 py-4 border-b border-gray-200">
+            <h2 class="text-xl font-semibold text-gray-900">Invoice History</h2>
+        </div>
+        {% if invoices %}
+        <div class="overflow-x-auto">
+            <table class="min-w-full table-auto">
+                <thead class="bg-gray-50">
+                    <tr>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Invoice #</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Period</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Jobs</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Subscription</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Commission</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Total</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Created</th>
+                    </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200">
+                    {% for invoice in invoices %}
+                    <tr class="hover:bg-gray-50">
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                            #{{ invoice.id }}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                            {{ invoice.billing_period_start.strftime('%m/%d') }} - {{ invoice.billing_period_end.strftime('%m/%d/%Y') }}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                            {{ invoice.commission_jobs }}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                            {% if invoice.subscription_fee > 0 %}
+                                ${{ "%.2f"|format(invoice.subscription_fee) }}
+                            {% else %}
+                                <span class="text-gray-500">-</span>
+                            {% endif %}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                            ${{ "%.2f"|format(invoice.commission_total) }}
+                            <div class="text-xs text-gray-500">{{ invoice.commission_rate }}% rate</div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                            ${{ "%.2f"|format(invoice.total_amount) }}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            {% if invoice.status == "paid" %}
+                                <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800">
+                                    Paid
+                                </span>
+                            {% elif invoice.status == "sent" %}
+                                <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-yellow-100 text-yellow-800">
+                                    Sent
+                                </span>
+                            {% else %}
+                                <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-gray-100 text-gray-800">
+                                    Draft
+                                </span>
+                            {% endif %}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                            {{ invoice.created_at.strftime('%m/%d/%Y') }}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="px-6 py-8 text-center">
+            <p class="text-gray-500">No invoices for this client yet.</p>
+            <p class="text-sm text-gray-400 mt-2">Invoices will be generated automatically for completed work.</p>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

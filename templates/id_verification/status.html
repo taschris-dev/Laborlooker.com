@@ -1,0 +1,264 @@
+{% extends "base.html" %}
+
+{% block title %}ID Verification Status{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">
+                        <i class="fas fa-id-card"></i> ID Verification Status
+                    </h4>
+                </div>
+                <div class="card-body">
+                    {% if verification %}
+                        <div class="row mb-4">
+                            <div class="col-md-6">
+                                <h6>Verification ID:</h6>
+                                <p class="text-muted">{{ verification.verification_id }}</p>
+                            </div>
+                            <div class="col-md-6">
+                                <h6>Document Type:</h6>
+                                <p class="text-muted">{{ verification.document_type.replace('_', ' ').title() }}</p>
+                            </div>
+                        </div>
+
+                        {% if verification.status == 'verified' %}
+                            <div class="alert alert-success">
+                                <h5><i class="fas fa-check-circle"></i> Verification Completed</h5>
+                                <p class="mb-2">Your ID has been successfully verified!</p>
+                                <small class="text-muted">
+                                    Verified on: {{ verification.verified_at.strftime('%B %d, %Y at %I:%M %p') }}
+                                    {% if verification.confidence_score %}
+                                        <br>Confidence Score: {{ (verification.confidence_score * 100)|round(1) }}%
+                                    {% endif %}
+                                </small>
+                            </div>
+                            
+                            <div class="alert alert-info">
+                                <h6><i class="fas fa-star"></i> Benefits Unlocked</h6>
+                                <ul class="mb-0">
+                                    <li>✅ Access to premium job listings</li>
+                                    <li>✅ Higher trust rating with customers</li>
+                                    <li>✅ Reduced platform fees</li>
+                                    <li>✅ Priority customer support</li>
+                                    <li>✅ Advanced profile features</li>
+                                </ul>
+                            </div>
+                            
+                        {% elif verification.status == 'pending' or verification.status == 'processing' %}
+                            <div class="alert alert-warning">
+                                <h5><i class="fas fa-clock"></i> Verification In Progress</h5>
+                                <p class="mb-2">Your ID document is being processed.</p>
+                                <small class="text-muted">
+                                    Submitted: {{ verification.submitted_at.strftime('%B %d, %Y at %I:%M %p') }}
+                                    {% if verification.confidence_score and verification.confidence_score > 0.7 %}
+                                        <br>Initial scan successful - proceeding with verification
+                                    {% elif verification.confidence_score and verification.confidence_score > 0.3 %}
+                                        <br>Document detected - undergoing manual review
+                                    {% endif %}
+                                </small>
+                            </div>
+                            
+                            <div class="progress mb-3">
+                                {% if verification.status == 'processing' %}
+                                    <div class="progress-bar progress-bar-striped progress-bar-animated" 
+                                         role="progressbar" style="width: 75%">Processing...</div>
+                                {% else %}
+                                    <div class="progress-bar progress-bar-striped progress-bar-animated" 
+                                         role="progressbar" style="width: 25%">In Queue...</div>
+                                {% endif %}
+                            </div>
+                            
+                            <p class="text-muted">
+                                <strong>Expected completion:</strong> 
+                                {% if verification.confidence_score and verification.confidence_score > 0.8 %}
+                                    Within 5 minutes (automatic verification)
+                                {% else %}
+                                    1-2 business days (manual review)
+                                {% endif %}
+                            </p>
+                            
+                        {% elif verification.status == 'rejected' %}
+                            <div class="alert alert-danger">
+                                <h5><i class="fas fa-times-circle"></i> Verification Failed</h5>
+                                <p class="mb-2">Unfortunately, we couldn't verify your ID document.</p>
+                                {% if verification.rejection_reason %}
+                                    <p><strong>Reason:</strong> {{ verification.rejection_reason }}</p>
+                                {% endif %}
+                                <small class="text-muted">
+                                    Processed: {{ verification.rejected_at.strftime('%B %d, %Y at %I:%M %p') if verification.rejected_at else 'Recently' }}
+                                </small>
+                            </div>
+                            
+                            <div class="alert alert-info">
+                                <h6><i class="fas fa-redo"></i> What's Next?</h6>
+                                <ul class="mb-0">
+                                    <li>Check that your document is clear and readable</li>
+                                    <li>Ensure the document hasn't expired</li>
+                                    <li>Try uploading a different document type</li>
+                                    <li>Contact support if you need assistance</li>
+                                </ul>
+                            </div>
+                            
+                            <div class="d-grid gap-2">
+                                <a href="{{ url_for('id_verification.upload_id') }}" class="btn btn-primary">
+                                    <i class="fas fa-upload"></i> Upload New Document
+                                </a>
+                            </div>
+                            
+                        {% elif verification.status == 'expired' %}
+                            <div class="alert alert-warning">
+                                <h5><i class="fas fa-exclamation-triangle"></i> Verification Expired</h5>
+                                <p class="mb-2">Your ID verification has expired and needs to be renewed.</p>
+                                <small class="text-muted">
+                                    Verified: {{ verification.verified_at.strftime('%B %d, %Y') if verification.verified_at else 'Previously' }}
+                                    <br>Expired: {{ verification.expires_at.strftime('%B %d, %Y') if verification.expires_at else 'Recently' }}
+                                </small>
+                            </div>
+                            
+                            <div class="d-grid gap-2">
+                                <a href="{{ url_for('id_verification.upload_id') }}" class="btn btn-warning">
+                                    <i class="fas fa-sync"></i> Renew Verification
+                                </a>
+                            </div>
+                        {% endif %}
+                        
+                        <!-- Extracted Information (if available) -->
+                        {% if verification.extracted_data and verification.status == 'verified' %}
+                            <div class="card mt-4">
+                                <div class="card-header">
+                                    <h6 class="mb-0">Verified Information</h6>
+                                </div>
+                                <div class="card-body">
+                                    {% set data = verification.extracted_data|from_json %}
+                                    {% if data %}
+                                        <div class="row">
+                                            {% if data.name %}
+                                            <div class="col-md-6">
+                                                <strong>Name:</strong> {{ data.name }}
+                                            </div>
+                                            {% endif %}
+                                            {% if data.date_of_birth %}
+                                            <div class="col-md-6">
+                                                <strong>Date of Birth:</strong> {{ data.date_of_birth }}
+                                            </div>
+                                            {% endif %}
+                                            {% if data.license_number or data.passport_number %}
+                                            <div class="col-md-6">
+                                                <strong>Document Number:</strong> 
+                                                ***{{ (data.license_number or data.passport_number)[-4:] }}
+                                            </div>
+                                            {% endif %}
+                                            {% if data.expiration %}
+                                            <div class="col-md-6">
+                                                <strong>Expires:</strong> {{ data.expiration }}
+                                            </div>
+                                            {% endif %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        {% endif %}
+                        
+                    {% else %}
+                        <div class="alert alert-info">
+                            <h5><i class="fas fa-info-circle"></i> No Verification Found</h5>
+                            <p class="mb-2">You haven't submitted any ID verification yet.</p>
+                        </div>
+                        
+                        <div class="alert alert-warning">
+                            <h6><i class="fas fa-lock"></i> Verification Required</h6>
+                            <p class="mb-0">
+                                Many features require ID verification for security and trust. 
+                                Get verified to unlock the full platform experience.
+                            </p>
+                        </div>
+                        
+                        <div class="d-grid gap-2">
+                            <a href="{{ url_for('id_verification.upload_id') }}" class="btn btn-primary btn-lg">
+                                <i class="fas fa-id-card"></i> Start Verification Process
+                            </a>
+                        </div>
+                    {% endif %}
+                    
+                    <hr class="my-4">
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="d-grid">
+                                <a href="{{ url_for('dashboard') }}" class="btn btn-outline-secondary">
+                                    <i class="fas fa-arrow-left"></i> Back to Dashboard
+                                </a>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            {% if verification and verification.status in ['pending', 'processing'] %}
+                                <div class="d-grid">
+                                    <button class="btn btn-outline-info" onclick="checkStatus()">
+                                        <i class="fas fa-sync"></i> Refresh Status
+                                    </button>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Help Section -->
+            <div class="card mt-4">
+                <div class="card-body">
+                    <h6><i class="fas fa-question-circle"></i> Need Help?</h6>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <p class="small">
+                                <strong>Common Issues:</strong>
+                                <br>• Document image too blurry
+                                <br>• Poor lighting or glare
+                                <br>• Document expired
+                                <br>• Unsupported document type
+                            </p>
+                        </div>
+                        <div class="col-md-6">
+                            <p class="small">
+                                <strong>Contact Support:</strong>
+                                <br>📧 support@laborlooker.com
+                                <br>📞 1-800-LABOR-01
+                                <br>💬 Live chat (24/7)
+                                <br>🕒 Response time: 2-4 hours
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function checkStatus() {
+    fetch('/id-verification/api/verify-status')
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'verified' || data.status === 'rejected') {
+                location.reload();
+            } else {
+                // Update status display if needed
+                console.log('Status checked:', data.status);
+            }
+        })
+        .catch(error => {
+            console.error('Error checking status:', error);
+        });
+}
+
+// Auto-refresh for pending verifications
+{% if verification and verification.status in ['pending', 'processing'] %}
+    setTimeout(function() {
+        checkStatus();
+    }, 30000); // Check every 30 seconds
+{% endif %}
+</script>
+{% endblock %}

@@ -1,0 +1,96 @@
+{% extends "base.html" %}
+
+{% block title %}Rate User - LaborLooker{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-md-6 offset-md-3">
+            <h2>Rate Your Experience</h2>
+            <p class="lead">Please rate your experience with {{ ratee.email.split('@')[0] }} for this job.</p>
+            
+            <div class="card">
+                <div class="card-header">
+                    <h5>Job Details</h5>
+                </div>
+                <div class="card-body">
+                    <p><strong>Service:</strong> {{ work_request.service_category }}</p>
+                    <p><strong>Description:</strong> {{ work_request.description[:100] }}{% if work_request.description|length > 100 %}...{% endif %}</p>
+                    <p><strong>Date:</strong> {{ work_request.created_at.strftime('%B %d, %Y') }}</p>
+                </div>
+            </div>
+            
+            <form method="POST" class="mt-4">
+                <div class="form-group">
+                    <label for="rating">Rating *</label>
+                    <div class="rating-stars mb-3">
+                        <input type="radio" id="star5" name="rating" value="5" required>
+                        <label for="star5" class="star">★</label>
+                        <input type="radio" id="star4" name="rating" value="4" required>
+                        <label for="star4" class="star">★</label>
+                        <input type="radio" id="star3" name="rating" value="3" required>
+                        <label for="star3" class="star">★</label>
+                        <input type="radio" id="star2" name="rating" value="2" required>
+                        <label for="star2" class="star">★</label>
+                        <input type="radio" id="star1" name="rating" value="1" required>
+                        <label for="star1" class="star">★</label>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="comment">Review Comment (Optional)</label>
+                    <textarea class="form-control" id="comment" name="comment" rows="4" 
+                              placeholder="Share your experience to help other users..."></textarea>
+                    <small class="form-text text-muted">
+                        Your review will be visible to other users to help them make informed decisions.
+                    </small>
+                </div>
+                
+                <button type="submit" class="btn btn-primary btn-lg">Submit Rating</button>
+                <a href="{{ url_for('dashboard') }}" class="btn btn-outline-secondary btn-lg ml-2">Cancel</a>
+            </form>
+        </div>
+    </div>
+</div>
+
+<style>
+.rating-stars {
+    direction: rtl;
+    display: inline-flex;
+    font-size: 2rem;
+}
+
+.rating-stars input[type=radio] {
+    display: none;
+}
+
+.rating-stars label {
+    color: #ddd;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+.rating-stars label:hover,
+.rating-stars label:hover ~ label,
+.rating-stars input[type=radio]:checked ~ label {
+    color: #ffc107;
+}
+
+.rating-stars input[type=radio]:checked ~ label {
+    color: #ffc107 !important;
+}
+</style>
+
+<script>
+// Reverse the order for proper RTL behavior
+document.addEventListener('DOMContentLoaded', function() {
+    const stars = document.querySelectorAll('.rating-stars label');
+    stars.forEach((star, index) => {
+        star.addEventListener('click', function() {
+            const value = this.getAttribute('for').replace('star', '');
+            document.getElementById('star' + value).checked = true;
+        });
+    });
+});
+</script>
+{% endblock %}

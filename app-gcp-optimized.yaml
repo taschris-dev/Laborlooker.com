@@ -1,0 +1,150 @@
+# Google App Engine Configuration - LaborLooker Production
+# Optimized for Rating System and High Performance
+
+runtime: python311
+
+# High-performance instance class
+instance_class: F4_1G
+
+# Environment variables for production
+env_variables:
+  # Flask Configuration
+  FLASK_ENV: "production"
+  FLASK_DEBUG: "0"
+  PYTHONUNBUFFERED: "1"
+  
+  # Application Settings
+  SECRET_KEY: "production-secret-key-change-me"
+  
+  # Database Configuration
+  # Use Cloud SQL for production (recommended)
+  # CLOUD_SQL_CONNECTION_NAME: "your-project:region:instance-name"
+  # DB_USER: "dbuser"
+  # DB_PASSWORD: "secure-password"
+  # DB_NAME: "laborlooker"
+  
+  # For now, using SQLite (development/testing)
+  DATABASE_URL: "sqlite:///laborlooker.db"
+  
+  # Email Configuration (using Gmail SMTP)
+  MAIL_SERVER: "smtp.gmail.com"
+  MAIL_PORT: "587"
+  MAIL_USE_TLS: "True"
+  MAIL_USERNAME: "your-email@gmail.com"
+  MAIL_PASSWORD: "your-app-password"
+  
+  # PayPal Configuration
+  PAYPAL_CLIENT_ID: "your-paypal-client-id"
+  PAYPAL_CLIENT_SECRET: "your-paypal-client-secret"
+  PAYPAL_MODE: "sandbox"  # Change to "live" for production
+  
+  # Google Cloud Project
+  GOOGLE_CLOUD_PROJECT: "your-project-id"
+  GAE_ENV: "standard"
+  
+  # Performance Settings
+  REQUEST_TIMEOUT: "60"
+  MAX_CONTENT_LENGTH: "16777216"  # 16MB max upload
+  
+  # Security Settings
+  SESSION_COOKIE_SECURE: "True"
+  SESSION_COOKIE_HTTPONLY: "True"
+  SESSION_COOKIE_SAMESITE: "Lax"
+
+# URL handlers with security
+handlers:
+# Health check endpoints
+- url: /_ah/health
+  script: main.app
+  secure: always
+  
+- url: /_ah/start  
+  script: main.app
+  secure: always
+
+# Static files with caching
+- url: /static/css
+  static_dir: static/css
+  secure: always
+  expiration: "7d"
+  
+- url: /static/js
+  static_dir: static/js
+  secure: always
+  expiration: "7d"
+  
+- url: /static/images
+  static_dir: static/images
+  secure: always
+  expiration: "30d"
+  
+- url: /static/qr
+  static_dir: static/qr
+  secure: always
+  expiration: "1d"
+
+- url: /static
+  static_dir: static
+  secure: always
+  expiration: "1d"
+
+# Main application
+- url: /.*
+  script: main.app
+  secure: always
+
+# Auto-scaling configuration
+automatic_scaling:
+  min_instances: 1
+  max_instances: 20
+  min_idle_instances: 1
+  max_idle_instances: 5
+  target_cpu_utilization: 0.6
+  target_throughput_utilization: 0.7
+
+# Resource allocation
+resources:
+  cpu: 1
+  memory_gb: 1
+
+# Health checks
+readiness_check:
+  path: "/_ah/health"
+  check_interval_sec: 5
+  timeout_sec: 4
+  failure_threshold: 2
+  success_threshold: 2
+  app_start_timeout_sec: 300
+
+liveness_check:
+  path: "/_ah/health"
+  check_interval_sec: 30
+  timeout_sec: 4
+  failure_threshold: 2
+  success_threshold: 2
+
+# Network settings
+network:
+  forwarded_ports:
+  - 8080
+
+# Beta features for enhanced performance
+beta_settings:
+  cloud_sql_instances: "your-project:region:instance-name"
+  
+# Skip files to reduce deployment size
+skip_files:
+- ^(.*/)?#.*#$
+- ^(.*/)?.*~$
+- ^(.*/)?.*\.pyc$
+- ^(.*/)?.*/RCS/.*$
+- ^(.*/)?\..*$
+- ^(.*/)?tests/.*$
+- ^(.*/)?test_.*\.py$
+- node_modules/
+- ^(.*/)?\.git/.*$
+- ^(.*/)?\.vscode/.*$
+- ^(.*/)?venv/.*$
+- ^(.*/)?\.venv/.*$
+- ^(.*/)?env/.*$
+- ^(.*/)?__pycache__/.*$

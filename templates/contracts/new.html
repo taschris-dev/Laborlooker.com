@@ -1,0 +1,223 @@
+{% extends "base.html" %}
+
+{% block title %}Create Contract{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="mb-0">
+                        <i class="fas fa-file-contract"></i> Create New Contract
+                    </h4>
+                </div>
+                <div class="card-body">
+                    <form method="POST">
+                        <!-- Contract Type Selection -->
+                        <div class="mb-4">
+                            <label for="contract_type" class="form-label">Contract Type *</label>
+                            <select class="form-select" id="contract_type" name="contract_type" required onchange="updateFormFields()">
+                                <option value="">Select contract type...</option>
+                                {% if user_type in ['contractor', 'developer'] %}
+                                <option value="contractor_agreement" {{ 'selected' if request.args.get('type') == 'contractor_agreement' }}>
+                                    Contractor Service Agreement
+                                </option>
+                                {% endif %}
+                                {% if user_type in ['customer', 'developer'] %}
+                                <option value="client_agreement" {{ 'selected' if request.args.get('type') == 'client_agreement' }}>
+                                    Client Terms of Service
+                                </option>
+                                {% endif %}
+                                {% if user_type in ['contractor', 'customer', 'developer'] %}
+                                <option value="project_contract" {{ 'selected' if request.args.get('type') == 'project_contract' }}>
+                                    Project-Specific Contract
+                                </option>
+                                {% endif %}
+                            </select>
+                            <div class="form-text">
+                                Choose the type of contract you want to create and send for signature.
+                            </div>
+                        </div>
+
+                        <!-- Contract Descriptions -->
+                        <div id="contractDescriptions" class="mb-4" style="display: none;">
+                            <div id="contractorDesc" class="alert alert-info" style="display: none;">
+                                <h6><i class="fas fa-handshake"></i> Contractor Service Agreement</h6>
+                                <p class="mb-0">Standard agreement for contractors providing services through the LaborLooker platform. Includes terms for payment, liability, and service standards.</p>
+                            </div>
+                            <div id="clientDesc" class="alert alert-success" style="display: none;">
+                                <h6><i class="fas fa-user-tie"></i> Client Terms of Service</h6>
+                                <p class="mb-0">Terms of service agreement for clients using the LaborLooker platform. Covers platform usage, payment terms, and user responsibilities.</p>
+                            </div>
+                            <div id="projectDesc" class="alert alert-warning" style="display: none;">
+                                <h6><i class="fas fa-project-diagram"></i> Project-Specific Contract</h6>
+                                <p class="mb-0">Detailed contract for a specific project or job. Includes project scope, timeline, payment schedule, and specific terms for the work.</p>
+                            </div>
+                        </div>
+
+                        <!-- Recipient Information -->
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="recipient_name" class="form-label">Recipient Name *</label>
+                                    <input type="text" class="form-control" id="recipient_name" name="recipient_name" 
+                                           placeholder="Full name of the person signing" required>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="recipient_email" class="form-label">Recipient Email *</label>
+                                    <input type="email" class="form-control" id="recipient_email" name="recipient_email" 
+                                           placeholder="email@example.com" required>
+                                    <div class="form-text">
+                                        DocuSign will send the contract to this email address.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Project Selection (for project contracts) -->
+                        <div id="projectSelection" class="mb-3" style="display: none;">
+                            <label for="work_request_id" class="form-label">Related Work Request</label>
+                            <select class="form-select" id="work_request_id" name="work_request_id">
+                                <option value="">Select work request (optional)...</option>
+                                {% for request in work_requests %}
+                                <option value="{{ request.id }}">
+                                    #{{ request.id }} - {{ request.description[:50] }}{% if request.description|length > 50 %}...{% endif %}
+                                    ({{ request.geographic_area }})
+                                </option>
+                                {% endfor %}
+                            </select>
+                            <div class="form-text">
+                                Link this contract to a specific work request for better organization.
+                            </div>
+                        </div>
+
+                        <!-- Project Details -->
+                        <div class="mb-3">
+                            <label for="project_details" class="form-label">
+                                <span id="projectDetailsLabel">Project Details</span>
+                            </label>
+                            <textarea class="form-control" id="project_details" name="project_details" rows="4"
+                                      placeholder="Describe the project, scope of work, special requirements, or additional terms..."></textarea>
+                            <div class="form-text">
+                                Provide any specific details, requirements, or special terms for this contract.
+                            </div>
+                        </div>
+
+                        <!-- Contract Preview -->
+                        <div class="mb-4">
+                            <div class="card border-secondary">
+                                <div class="card-header bg-light">
+                                    <h6 class="mb-0"><i class="fas fa-eye"></i> Contract Preview</h6>
+                                </div>
+                                <div class="card-body">
+                                    <div id="contractPreview" class="text-muted">
+                                        Select a contract type to see preview information...
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Action Buttons -->
+                        <div class="d-flex justify-content-between">
+                            <a href="{{ url_for('contracts_dashboard') }}" class="btn btn-outline-secondary">
+                                <i class="fas fa-arrow-left"></i> Back to Contracts
+                            </a>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-paper-plane"></i> Send Contract for Signature
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Help Section -->
+            <div class="card mt-4">
+                <div class="card-body">
+                    <h6><i class="fas fa-question-circle"></i> How DocuSign Integration Works</h6>
+                    <div class="row">
+                        <div class="col-md-3 text-center">
+                            <i class="fas fa-file-alt fa-2x text-primary mb-2"></i>
+                            <h6>1. Create</h6>
+                            <p class="small">Fill out contract details and recipient information</p>
+                        </div>
+                        <div class="col-md-3 text-center">
+                            <i class="fas fa-envelope fa-2x text-warning mb-2"></i>
+                            <h6>2. Send</h6>
+                            <p class="small">DocuSign sends secure email to recipient</p>
+                        </div>
+                        <div class="col-md-3 text-center">
+                            <i class="fas fa-signature fa-2x text-success mb-2"></i>
+                            <h6>3. Sign</h6>
+                            <p class="small">Recipient signs electronically using DocuSign</p>
+                        </div>
+                        <div class="col-md-3 text-center">
+                            <i class="fas fa-check-circle fa-2x text-info mb-2"></i>
+                            <h6>4. Complete</h6>
+                            <p class="small">Both parties receive completed, legally binding contract</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function updateFormFields() {
+    const contractType = document.getElementById('contract_type').value;
+    const descriptions = document.getElementById('contractDescriptions');
+    const projectSelection = document.getElementById('projectSelection');
+    const projectDetailsLabel = document.getElementById('projectDetailsLabel');
+    const contractPreview = document.getElementById('contractPreview');
+    
+    // Hide all descriptions
+    document.querySelectorAll('#contractDescriptions .alert').forEach(el => el.style.display = 'none');
+    
+    if (contractType) {
+        descriptions.style.display = 'block';
+        
+        // Show relevant description
+        if (contractType === 'contractor_agreement') {
+            document.getElementById('contractorDesc').style.display = 'block';
+            projectDetailsLabel.textContent = 'Service Details';
+            projectSelection.style.display = 'none';
+            contractPreview.innerHTML = `
+                <strong>Contract Type:</strong> Contractor Service Agreement<br>
+                <strong>Purpose:</strong> Establishes terms for providing services through LaborLooker<br>
+                <strong>Includes:</strong> Payment terms, liability coverage, service standards, dispute resolution
+            `;
+        } else if (contractType === 'client_agreement') {
+            document.getElementById('clientDesc').style.display = 'block';
+            projectDetailsLabel.textContent = 'Additional Terms';
+            projectSelection.style.display = 'none';
+            contractPreview.innerHTML = `
+                <strong>Contract Type:</strong> Client Terms of Service<br>
+                <strong>Purpose:</strong> Governs use of the LaborLooker platform<br>
+                <strong>Includes:</strong> Platform usage rules, payment policies, privacy terms, user responsibilities
+            `;
+        } else if (contractType === 'project_contract') {
+            document.getElementById('projectDesc').style.display = 'block';
+            projectDetailsLabel.textContent = 'Project Scope & Requirements';
+            projectSelection.style.display = 'block';
+            contractPreview.innerHTML = `
+                <strong>Contract Type:</strong> Project-Specific Contract<br>
+                <strong>Purpose:</strong> Detailed agreement for a specific project or job<br>
+                <strong>Includes:</strong> Project scope, timeline, payment schedule, materials, deliverables
+            `;
+        }
+    } else {
+        descriptions.style.display = 'none';
+        projectSelection.style.display = 'none';
+        contractPreview.innerHTML = 'Select a contract type to see preview information...';
+    }
+}
+
+// Initialize on page load
+document.addEventListener('DOMContentLoaded', function() {
+    updateFormFields();
+});
+</script>
+{% endblock %}

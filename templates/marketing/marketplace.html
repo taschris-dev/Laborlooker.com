@@ -1,0 +1,324 @@
+{% extends "base.html" %}
+
+{% block title %}Marketing Services Marketplace{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-12">
+            <!-- Header -->
+            <div class="text-center mb-5">
+                <h1 class="display-4">🎯 Marketing Services Marketplace</h1>
+                <p class="lead">Professional multimedia marketing campaigns designed to grow your business</p>
+                <div class="mt-4">
+                    <a href="{{ url_for('custom_marketing_quote') }}" class="btn btn-primary btn-lg me-3">
+                        <i class="fas fa-quote-left"></i> Get Custom Quote
+                    </a>
+                    <a href="{{ url_for('marketing_campaigns') }}" class="btn btn-outline-secondary btn-lg">
+                        <i class="fas fa-list"></i> My Campaigns
+                    </a>
+                </div>
+            </div>
+
+            <!-- Service Packages -->
+            <div class="row">
+                {% for package in service_packages %}
+                <div class="col-lg-6 col-xl-3 mb-4">
+                    <div class="card h-100 {% if loop.index == 4 %}border-primary{% endif %}">
+                        {% if loop.index == 4 %}
+                        <div class="card-header bg-primary text-white text-center">
+                            <i class="fas fa-crown"></i> PREMIUM
+                        </div>
+                        {% endif %}
+                        
+                        <div class="card-body d-flex flex-column">
+                            <div class="text-center mb-3">
+                                <h3 class="card-title">{{ package.name }}</h3>
+                                <div class="display-6 text-primary fw-bold">${{ "{:,}".format(package.price) }}</div>
+                                <small class="text-muted">{{ package.duration }}</small>
+                            </div>
+                            
+                            <p class="card-text mb-3">{{ package.description }}</p>
+                            
+                            <!-- Features -->
+                            <div class="mb-3">
+                                <h6 class="fw-bold mb-2">✨ Included Features:</h6>
+                                <ul class="list-unstyled">
+                                    {% for feature in package.features %}
+                                    <li class="mb-1">
+                                        <i class="fas fa-check text-success me-2"></i>{{ feature }}
+                                    </li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                            
+                            <!-- Platforms -->
+                            <div class="mb-3">
+                                <h6 class="fw-bold mb-2">📱 Platforms:</h6>
+                                <div class="d-flex flex-wrap">
+                                    {% for platform in package.platforms %}
+                                    <span class="badge bg-secondary me-1 mb-1">{{ platform }}</span>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                            
+                            <!-- Estimated Reach -->
+                            <div class="mb-3">
+                                <h6 class="fw-bold mb-2">📊 Estimated Reach:</h6>
+                                <span class="text-primary fw-bold">{{ package.estimated_reach }} people</span>
+                            </div>
+                            
+                            <!-- Call to Action -->
+                            <div class="mt-auto">
+                                <button class="btn {% if loop.index == 4 %}btn-primary{% else %}btn-outline-primary{% endif %} w-100 mb-2" 
+                                        onclick="selectPackage('{{ package.name }}', {{ package.price }})">
+                                    <i class="fas fa-shopping-cart"></i> Select Package
+                                </button>
+                                <a href="{{ url_for('custom_marketing_quote') }}?package={{ package.name|urlencode }}" 
+                                   class="btn btn-outline-secondary w-100">
+                                    <i class="fas fa-edit"></i> Customize
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+
+            <!-- Additional Services Section -->
+            <div class="row mt-5">
+                <div class="col-md-12">
+                    <h2 class="text-center mb-4">📈 Why Choose Our Marketing Services?</h2>
+                    
+                    <div class="row">
+                        <div class="col-md-4 text-center mb-4">
+                            <div class="card border-0">
+                                <div class="card-body">
+                                    <i class="fas fa-users fa-3x text-primary mb-3"></i>
+                                    <h4>Expert Team</h4>
+                                    <p>Professional marketers with years of experience in digital and traditional advertising.</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-4 text-center mb-4">
+                            <div class="card border-0">
+                                <div class="card-body">
+                                    <i class="fas fa-chart-line fa-3x text-success mb-3"></i>
+                                    <h4>Data-Driven Results</h4>
+                                    <p>Real-time analytics and performance tracking to maximize your return on investment.</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-4 text-center mb-4">
+                            <div class="card border-0">
+                                <div class="card-body">
+                                    <i class="fas fa-tools fa-3x text-warning mb-3"></i>
+                                    <h4>Full Service</h4>
+                                    <p>From strategy to execution, we handle every aspect of your marketing campaign.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Testimonials -->
+            <div class="bg-light p-4 rounded mt-5">
+                <h3 class="text-center mb-4">💬 What Our Clients Say</h3>
+                <div class="row">
+                    <div class="col-md-4">
+                        <blockquote class="blockquote text-center">
+                            <p class="mb-0">"Our leads increased by 300% in just 30 days!"</p>
+                            <footer class="blockquote-footer mt-2">Sarah Johnson, <cite title="Source Title">Home Services</cite></footer>
+                        </blockquote>
+                    </div>
+                    <div class="col-md-4">
+                        <blockquote class="blockquote text-center">
+                            <p class="mb-0">"Professional team, amazing results, highly recommended."</p>
+                            <footer class="blockquote-footer mt-2">Mike Chen, <cite title="Source Title">Construction</cite></footer>
+                        </blockquote>
+                    </div>
+                    <div class="col-md-4">
+                        <blockquote class="blockquote text-center">
+                            <p class="mb-0">"Best marketing investment we've ever made."</p>
+                            <footer class="blockquote-footer mt-2">Lisa Rodriguez, <cite title="Source Title">Landscaping</cite></footer>
+                        </blockquote>
+                    </div>
+                </div>
+            </div>
+
+            <!-- FAQ Section -->
+            <div class="mt-5">
+                <h3 class="text-center mb-4">❓ Frequently Asked Questions</h3>
+                <div class="accordion" id="faqAccordion">
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="faq1">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse1">
+                                How quickly can my campaign start?
+                            </button>
+                        </h2>
+                        <div id="collapse1" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                            <div class="accordion-body">
+                                Most campaigns can start within 3-5 business days after approval and payment. Custom campaigns may take 7-10 days for full planning and setup.
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="faq2">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse2">
+                                What kind of reporting do I receive?
+                            </button>
+                        </h2>
+                        <div id="collapse2" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                            <div class="accordion-body">
+                                You'll receive detailed weekly reports including impressions, clicks, conversions, cost-per-click, and ROI analysis. Real-time dashboard access is also included.
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="faq3">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse3">
+                                Can I make changes during the campaign?
+                            </button>
+                        </h2>
+                        <div id="collapse3" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                            <div class="accordion-body">
+                                Yes! We offer campaign optimization and can make adjustments to targeting, messaging, and budget allocation based on performance data.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Package Selection Modal -->
+<div class="modal fade" id="packageModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Start Your Marketing Campaign</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form action="{{ url_for('new_marketing_campaign') }}" method="POST">
+                    <input type="hidden" id="selectedPackage" name="package_name">
+                    <input type="hidden" id="selectedPrice" name="total_budget">
+                    
+                    <div class="mb-3">
+                        <label for="campaignName" class="form-label">Campaign Name *</label>
+                        <input type="text" class="form-control" id="campaignName" name="campaign_name" required>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="businessName" class="form-label">Business Name *</label>
+                        <input type="text" class="form-control" id="businessName" name="business_name" required>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="primaryGoal" class="form-label">Primary Campaign Goal *</label>
+                        <select class="form-select" id="primaryGoal" name="primary_objective" required>
+                            <option value="">Select Goal...</option>
+                            <option value="brand_awareness">Brand Awareness</option>
+                            <option value="lead_generation">Lead Generation</option>
+                            <option value="sales_conversion">Sales Conversion</option>
+                            <option value="website_traffic">Website Traffic</option>
+                            <option value="customer_retention">Customer Retention</option>
+                        </select>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="targetAudience" class="form-label">Target Audience Description *</label>
+                        <textarea class="form-control" id="targetAudience" name="target_market_segment" rows="3" 
+                                  placeholder="Describe your ideal customers..." required></textarea>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label for="startDate" class="form-label">Start Date *</label>
+                            <input type="date" class="form-control" id="startDate" name="start_date" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="endDate" class="form-label">End Date *</label>
+                            <input type="date" class="form-control" id="endDate" name="end_date" required>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" onclick="submitPackageForm()">
+                    <i class="fas fa-rocket"></i> Launch Campaign
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function selectPackage(packageName, price) {
+    document.getElementById('selectedPackage').value = packageName;
+    document.getElementById('selectedPrice').value = price;
+    
+    // Set default dates (start next Monday, end after package duration)
+    const today = new Date();
+    const nextMonday = new Date(today);
+    nextMonday.setDate(today.getDate() + (7 - today.getDay() + 1) % 7);
+    
+    let endDate = new Date(nextMonday);
+    if (packageName.includes('30 days')) {
+        endDate.setDate(endDate.getDate() + 30);
+    } else if (packageName.includes('60 days')) {
+        endDate.setDate(endDate.getDate() + 60);
+    } else if (packageName.includes('45 days')) {
+        endDate.setDate(endDate.getDate() + 45);
+    } else if (packageName.includes('90 days')) {
+        endDate.setDate(endDate.getDate() + 90);
+    }
+    
+    document.getElementById('startDate').value = nextMonday.toISOString().split('T')[0];
+    document.getElementById('endDate').value = endDate.toISOString().split('T')[0];
+    
+    // Show modal
+    new bootstrap.Modal(document.getElementById('packageModal')).show();
+}
+
+function submitPackageForm() {
+    const form = document.querySelector('#packageModal form');
+    if (form.checkValidity()) {
+        form.submit();
+    } else {
+        form.reportValidity();
+    }
+}
+</script>
+
+<style>
+.display-6 {
+    font-size: 2.5rem;
+}
+
+.card-title {
+    color: #495057;
+    font-weight: 600;
+}
+
+.badge {
+    font-size: 0.7em;
+}
+
+.blockquote {
+    font-style: italic;
+}
+
+.accordion-button:not(.collapsed) {
+    background-color: #e7f3ff;
+    color: #0d47a1;
+}
+</style>
+{% endblock %}

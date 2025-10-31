@@ -1,0 +1,229 @@
+{% extends "base.html" %}
+
+{% block title %}Privacy Policy - LaborLooker{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <h1 class="text-3xl font-bold mb-6">Privacy Policy</h1>
+    
+    <div class="bg-white shadow-lg rounded-lg p-6 mb-8">
+        <div class="prose max-w-none">
+            <p class="text-sm text-gray-600 mb-6"><strong>Last Updated:</strong> {{ moment().format('MMMM DD, YYYY') }}</p>
+            
+            <section class="mb-8">
+                <h2 class="text-2xl font-semibold mb-4">1. Introduction</h2>
+                <p class="mb-4">LaborLooker ("we," "our," or "us") is committed to protecting your privacy. This Privacy Policy explains how we collect, use, and safeguard your personal information when you use our contractor matching and referral platform.</p>
+            </section>
+
+            <section class="mb-8">
+                <h2 class="text-2xl font-semibold mb-4">2. Information We Collect</h2>
+                
+                <h3 class="text-xl font-medium mb-3">Account Information</h3>
+                <ul class="list-disc pl-6 mb-4">
+                    <li>Name, email address, and phone number</li>
+                    <li>Business information for contractors</li>
+                    <li>Billing and payment information</li>
+                    <li>Profile photos and business documentation</li>
+                </ul>
+
+                <h3 class="text-xl font-medium mb-3">Usage Information</h3>
+                <ul class="list-disc pl-6 mb-4">
+                    <li>Platform activity and feature usage</li>
+                    <li>Communication preferences and history</li>
+                    <li>Search queries and contractor interactions</li>
+                    <li>Device information and IP addresses</li>
+                </ul>
+            </section>
+
+            <section class="mb-8">
+                <h2 class="text-2xl font-semibold mb-4">3. How We Use Your Information</h2>
+                <ul class="list-disc pl-6 mb-4">
+                    <li><strong>Service Delivery:</strong> Matching contractors with customers</li>
+                    <li><strong>Communication:</strong> Sending notifications and updates</li>
+                    <li><strong>Payment Processing:</strong> Handling transactions and commissions</li>
+                    <li><strong>Platform Improvement:</strong> Analytics and feature development</li>
+                    <li><strong>Safety and Security:</strong> Fraud prevention and security measures</li>
+                </ul>
+            </section>
+
+            <section class="mb-8">
+                <h2 class="text-2xl font-semibold mb-4">4. Data Protection and PII Masking</h2>
+                <p class="mb-4">We implement comprehensive privacy protection measures:</p>
+                
+                <h3 class="text-xl font-medium mb-3">PII Protection Features</h3>
+                <ul class="list-disc pl-6 mb-4">
+                    <li><strong>Email Masking:</strong> Display only domain (@domain.com)</li>
+                    <li><strong>Phone Number Masking:</strong> Show only last 4 digits (***-1234)</li>
+                    <li><strong>Name Masking:</strong> Display first name + last initial (John S.)</li>
+                    <li><strong>Address Masking:</strong> Show only city and state</li>
+                </ul>
+
+                <h3 class="text-xl font-medium mb-3">Privacy Controls</h3>
+                <ul class="list-disc pl-6 mb-4">
+                    <li>Granular privacy settings for profile visibility</li>
+                    <li>Monthly profile view limits for enhanced protection</li>
+                    <li>Comprehensive audit trail of data access</li>
+                    <li>User-controlled data retention settings</li>
+                </ul>
+                
+                <p class="mb-4">Manage your privacy settings: <a href="{{ url_for('privacy_settings') }}" class="text-blue-600 underline">Privacy Dashboard</a></p>
+            </section>
+
+            <section class="mb-8">
+                <h2 class="text-2xl font-semibold mb-4">5. Your Privacy Rights</h2>
+                
+                <h3 class="text-xl font-medium mb-3">GDPR Rights (EU Residents)</h3>
+                <ul class="list-disc pl-6 mb-4">
+                    <li><strong>Access:</strong> Request copies of your personal data</li>
+                    <li><strong>Rectification:</strong> Correct inaccurate information</li>
+                    <li><strong>Erasure:</strong> Request deletion of your data</li>
+                    <li><strong>Portability:</strong> Receive your data in portable format</li>
+                    <li><strong>Objection:</strong> Object to certain data processing</li>
+                </ul>
+
+                <h3 class="text-xl font-medium mb-3">CCPA Rights (California Residents)</h3>
+                <ul class="list-disc pl-6 mb-4">
+                    <li><strong>Right to Know:</strong> Information about data collection</li>
+                    <li><strong>Right to Delete:</strong> Request deletion of personal information</li>
+                    <li><strong>Right to Opt-Out:</strong> Opt-out of data sales (we don't sell data)</li>
+                    <li><strong>Right to Non-Discrimination:</strong> Equal service regardless of privacy choices</li>
+                </ul>
+                
+                <div class="bg-green-50 border-l-4 border-green-500 p-4 mb-4">
+                    <p class="text-green-800"><strong>Exercise Your Rights:</strong> Visit our <a href="{{ url_for('privacy_settings') }}" class="underline">Privacy Settings</a> or contact <a href="mailto:privacy@laborlooker.com" class="underline">privacy@laborlooker.com</a></p>
+                </div>
+            </section>
+
+            <section class="mb-8">
+                <h2 class="text-2xl font-semibold mb-4">6. Data Security</h2>
+                <p class="mb-4">We protect your information through:</p>
+                <ul class="list-disc pl-6 mb-4">
+                    <li><strong>Encryption:</strong> All data encrypted in transit and at rest</li>
+                    <li><strong>Access Controls:</strong> Role-based access with authentication</li>
+                    <li><strong>Security Headers:</strong> Enhanced Content Security Policy protection</li>
+                    <li><strong>Regular Audits:</strong> Security assessments and compliance reviews</li>
+                    <li><strong>Incident Response:</strong> Established breach notification procedures</li>
+                </ul>
+            </section>
+
+            <section class="mb-8">
+                <h2 class="text-2xl font-semibold mb-4">7. Data Sharing and Third Parties</h2>
+                <p class="mb-4">We may share limited information with:</p>
+                <ul class="list-disc pl-6 mb-4">
+                    <li><strong>Service Providers:</strong> Cloud hosting, payment processing, email services</li>
+                    <li><strong>Business Partners:</strong> Verified contractors and clients for service delivery</li>
+                    <li><strong>Legal Requirements:</strong> When required by law or legal process</li>
+                    <li><strong>Safety and Security:</strong> To prevent fraud and protect users</li>
+                </ul>
+                
+                <p class="mb-4"><strong>We do not sell personal information to third parties.</strong></p>
+            </section>
+
+            <section class="mb-8">
+                <h2 class="text-2xl font-semibold mb-4">8. Data Retention</h2>
+                <div class="overflow-x-auto mb-4">
+                    <table class="min-w-full table-auto border-collapse border border-gray-300">
+                        <thead>
+                            <tr class="bg-gray-100">
+                                <th class="border border-gray-300 px-4 py-2 text-left">Data Type</th>
+                                <th class="border border-gray-300 px-4 py-2 text-left">Retention Period</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="border border-gray-300 px-4 py-2">Account Information</td>
+                                <td class="border border-gray-300 px-4 py-2">3 years after account closure</td>
+                            </tr>
+                            <tr>
+                                <td class="border border-gray-300 px-4 py-2">Contract Documents</td>
+                                <td class="border border-gray-300 px-4 py-2">7 years for legal compliance</td>
+                            </tr>
+                            <tr>
+                                <td class="border border-gray-300 px-4 py-2">Payment Records</td>
+                                <td class="border border-gray-300 px-4 py-2">7 years for tax purposes</td>
+                            </tr>
+                            <tr>
+                                <td class="border border-gray-300 px-4 py-2">Analytics Data</td>
+                                <td class="border border-gray-300 px-4 py-2">2 years (anonymized after 6 months)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section class="mb-8">
+                <h2 class="text-2xl font-semibold mb-4">9. Cookies and Tracking</h2>
+                <p class="mb-4">We use cookies and similar technologies for:</p>
+                <ul class="list-disc pl-6 mb-4">
+                    <li><strong>Essential Functions:</strong> Login sessions and security</li>
+                    <li><strong>Analytics:</strong> Understanding usage patterns (with consent)</li>
+                    <li><strong>Preferences:</strong> Saving user settings and preferences</li>
+                    <li><strong>Security:</strong> Fraud prevention and protection</li>
+                </ul>
+                
+                <p class="mb-4">You can manage cookie preferences through your browser settings.</p>
+            </section>
+
+            <section class="mb-8">
+                <h2 class="text-2xl font-semibold mb-4">10. International Users</h2>
+                <p class="mb-4">Our services are primarily designed for users in the United States. International users should be aware that:</p>
+                <ul class="list-disc pl-6 mb-4">
+                    <li>Data may be transferred to and processed in the United States</li>
+                    <li>Local privacy laws may provide additional protections</li>
+                    <li>We comply with applicable international privacy regulations</li>
+                    <li>Users may have additional rights under local law</li>
+                </ul>
+            </section>
+
+            <section class="mb-8">
+                <h2 class="text-2xl font-semibold mb-4">11. Children's Privacy</h2>
+                <p class="mb-4">Our services are not intended for individuals under 18 years of age. We do not knowingly collect personal information from children. If we become aware of such collection, we will take immediate steps to delete the information.</p>
+            </section>
+
+            <section class="mb-8">
+                <h2 class="text-2xl font-semibold mb-4">12. Privacy Policy Updates</h2>
+                <p class="mb-4">We may update this Privacy Policy to reflect changes in our practices or legal requirements. Material changes will be communicated through:</p>
+                <ul class="list-disc pl-6 mb-4">
+                    <li>Email notification to registered users</li>
+                    <li>In-platform notices and announcements</li>
+                    <li>Updated policy posted with revision date</li>
+                </ul>
+                
+                <p class="mb-4">We provide 30 days' notice for significant changes affecting your rights.</p>
+            </section>
+
+            <section class="mb-8">
+                <h2 class="text-2xl font-semibold mb-4">13. Contact Us</h2>
+                
+                <div class="bg-gray-100 p-4 rounded-lg mb-4">
+                    <h3 class="text-lg font-medium mb-3">Privacy Questions and Requests</h3>
+                    <p class="mb-2"><strong>Email:</strong> <a href="mailto:privacy@laborlooker.com" class="text-blue-600 underline">privacy@laborlooker.com</a></p>
+                    <p class="mb-2"><strong>Phone:</strong> 1-800-PRIVACY (1-800-774-8229)</p>
+                    <p class="mb-2"><strong>Mail:</strong> LaborLooker Privacy Team<br>
+                    123 Privacy Lane<br>
+                    Data City, DC 12345</p>
+                    <p><strong>Response Time:</strong> We respond to privacy requests within 5 business days</p>
+                </div>
+
+                <h3 class="text-xl font-medium mb-3">Data Protection Officer</h3>
+                <p class="mb-4">For EU residents and complex privacy matters:</p>
+                <p class="mb-4"><strong>Email:</strong> <a href="mailto:dpo@laborlooker.com" class="text-blue-600 underline">dpo@laborlooker.com</a></p>
+
+                <h3 class="text-xl font-medium mb-3">Regulatory Complaints</h3>
+                <p class="mb-4">If you're not satisfied with our privacy response, you may file complaints with:</p>
+                <ul class="list-disc pl-6 mb-4">
+                    <li><strong>EU/EEA:</strong> Your local Data Protection Authority</li>
+                    <li><strong>UK:</strong> Information Commissioner's Office (ICO)</li>
+                    <li><strong>California:</strong> California Attorney General's Office</li>
+                    <li><strong>US Federal:</strong> Federal Trade Commission (FTC)</li>
+                </ul>
+            </section>
+
+            <div class="text-center mt-8 pt-6 border-t border-gray-200">
+                <p class="text-sm text-gray-600">For privacy questions, contact us at <a href="mailto:privacy@laborlooker.com" class="text-blue-600 underline">privacy@laborlooker.com</a></p>
+                <p class="text-xs text-gray-500 mt-2">© 2024 LaborLooker. All rights reserved.</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

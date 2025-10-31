@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block title %}Contractor Settings - Marketing Tech Platform{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <div class="flex justify-between items-center mb-8">
+        <h1 class="text-3xl font-bold text-gray-900">Contractor Settings</h1>
+        <a href="{{ url_for('contractor_dashboard') }}" 
+           class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition duration-200">
+            ← Back to Dashboard
+        </a>
+    </div>
+
+    <div class="bg-white rounded-lg shadow-md p-6">
+        <h2 class="text-xl font-semibold mb-4">Coming Soon</h2>
+        <p class="text-gray-600 mb-4">
+            This page is under development. Soon you'll be able to:
+        </p>
+        <ul class="list-disc pl-6 text-gray-600 space-y-2">
+            <li>Update your business information</li>
+            <li>Manage your service categories</li>
+            <li>Set your work hours and availability</li>
+            <li>Upload licenses and certifications</li>
+            <li>Configure notification preferences</li>
+        </ul>
+    </div>
+</div>
+{% endblock %}

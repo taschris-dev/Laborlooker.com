@@ -1,0 +1,73 @@
+# Production requirements for Labor Lookers Platform
+# Optimized for Google Cloud Run B2B/B2C deployment
+
+# Core Flask framework
+Flask==3.0.3
+Flask-SQLAlchemy==3.0.5
+Flask-Login==0.6.3
+Werkzeug==3.0.3
+itsdangerous==2.2.0
+
+# Database
+psycopg2-binary==2.9.7
+
+# Data processing
+pandas==2.0.3
+
+# Image processing
+Pillow==10.0.0
+
+# QR code generation
+qrcode==7.4.2
+
+# Unique ID generation  
+shortuuid==1.0.11
+
+# Environment variables
+python-dotenv==1.0.1
+
+# Payment processing
+paypalrestsdk==1.13.1
+
+# Production WSGI server
+gunicorn==21.2.0
+
+# Google Cloud libraries
+google-cloud-storage==2.10.0
+google-cloud-sql-connector==1.5.0
+google-cloud-logging==3.8.0
+
+# Security & Authentication
+Flask-WTF==1.2.1
+WTForms==3.1.0
+bcrypt==4.1.1
+Flask-Talisman==1.1.0
+
+# Performance & Caching
+Flask-Caching==2.1.0
+Flask-Limiter==3.5.0
+
+# HTTP client
+requests==2.31.0
+
+# Email functionality
+Flask-Mail==0.9.1
+
+# Session management
+Flask-Session==0.5.0
+
+# Form validation
+email-validator==2.1.0
+
+# JSON handling
+orjson==3.9.10
+
+# Date/time handling
+python-dateutil==2.8.2
+
+# Monitoring
+google-cloud-monitoring==2.16.0
+
+# Task queue for background jobs
+celery==5.3.4
+redis==5.0.1

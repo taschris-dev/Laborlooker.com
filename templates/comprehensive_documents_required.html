@@ -1,0 +1,201 @@
+{% extends "base.html" %}
+
+{% block title %}Documents Required - LaborLooker{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-10">
+            <div class="card border-warning">
+                <div class="card-header bg-warning text-dark">
+                    <h4 class="mb-0">
+                        <i class="fas fa-file-contract"></i>
+                        Required Legal Documents
+                    </h4>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-info">
+                        <h5><i class="fas fa-info-circle"></i> Action Requires Signed Documents</h5>
+                        <p class="mb-0">
+                            To proceed with <strong>"{{ action_description }}"</strong>, you must first sign the required legal documents.
+                            These documents protect both you and LaborLooker by establishing clear terms and responsibilities.
+                        </p>
+                    </div>
+
+                    {% if pending_documents %}
+                    <h5 class="mt-4"><i class="fas fa-hourglass-half text-warning"></i> Pending Documents</h5>
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Document Name</th>
+                                    <th>Type</th>
+                                    <th>Status</th>
+                                    <th>Sent Date</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for doc in pending_documents %}
+                                <tr>
+                                    <td>
+                                        <strong>{{ doc.document_name }}</strong>
+                                        <br>
+                                        <small class="text-muted">{{ doc.document_type.replace('_', ' ').title() }}</small>
+                                    </td>
+                                    <td>
+                                        {% if 'agreement' in doc.document_type %}
+                                            <span class="badge bg-primary">Agreement</span>
+                                        {% elif 'waiver' in doc.document_type %}
+                                            <span class="badge bg-warning">Waiver</span>
+                                        {% elif 'consent' in doc.document_type %}
+                                            <span class="badge bg-info">Consent</span>
+                                        {% elif 'contract' in doc.document_type %}
+                                            <span class="badge bg-success">Contract</span>
+                                        {% else %}
+                                            <span class="badge bg-secondary">Document</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if doc.status == 'sent' %}
+                                            <span class="badge bg-warning">
+                                                <i class="fas fa-paper-plane"></i> Sent
+                                            </span>
+                                        {% elif doc.status == 'delivered' %}
+                                            <span class="badge bg-info">
+                                                <i class="fas fa-eye"></i> Delivered
+                                            </span>
+                                        {% elif doc.status == 'signed' %}
+                                            <span class="badge bg-primary">
+                                                <i class="fas fa-signature"></i> Signed
+                                            </span>
+                                        {% elif doc.status == 'completed' %}
+                                            <span class="badge bg-success">
+                                                <i class="fas fa-check-circle"></i> Completed
+                                            </span>
+                                        {% else %}
+                                            <span class="badge bg-secondary">{{ doc.status.title() }}</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if doc.sent_at %}
+                                            {{ doc.sent_at.strftime('%B %d, %Y at %I:%M %p') }}
+                                        {% else %}
+                                            <em>Not sent</em>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if doc.document_url %}
+                                            <a href="{{ doc.document_url }}" target="_blank" class="btn btn-sm btn-primary">
+                                                <i class="fas fa-external-link-alt"></i> Open & Sign
+                                            </a>
+                                        {% else %}
+                                            <button class="btn btn-sm btn-secondary" disabled>
+                                                <i class="fas fa-clock"></i> Processing
+                                            </button>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="alert alert-warning mt-3">
+                        <h6><i class="fas fa-exclamation-triangle"></i> Next Steps:</h6>
+                        <ol class="mb-0">
+                            <li>Check your email for DocuSign documents</li>
+                            <li>Click the links in the emails to open each document</li>
+                            <li>Read each document carefully</li>
+                            <li>Sign all required documents electronically</li>
+                            <li>Return to this page - you'll be automatically redirected when complete</li>
+                        </ol>
+                    </div>
+
+                    {% else %}
+                    <div class="alert alert-success">
+                        <h5><i class="fas fa-check-circle"></i> Documents Processing</h5>
+                        <p class="mb-0">
+                            Your required documents are being prepared and will be sent to your email shortly.
+                            Please check your email and spam folder.
+                        </p>
+                    </div>
+                    {% endif %}
+
+                    <!-- Document Types Explanation -->
+                    <div class="card mt-4">
+                        <div class="card-header">
+                            <h6><i class="fas fa-question-circle"></i> Why These Documents Are Required</h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <h6>Legal Protection</h6>
+                                    <ul class="list-unstyled">
+                                        <li><i class="fas fa-shield-alt text-success"></i> Protects your rights and interests</li>
+                                        <li><i class="fas fa-balance-scale text-primary"></i> Establishes clear legal framework</li>
+                                        <li><i class="fas fa-handshake text-info"></i> Defines mutual responsibilities</li>
+                                    </ul>
+                                </div>
+                                <div class="col-md-6">
+                                    <h6>Platform Security</h6>
+                                    <ul class="list-unstyled">
+                                        <li><i class="fas fa-lock text-warning"></i> Ensures platform compliance</li>
+                                        <li><i class="fas fa-user-shield text-danger"></i> Protects user privacy</li>
+                                        <li><i class="fas fa-gavel text-secondary"></i> Enables dispute resolution</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Auto-refresh for status updates -->
+                    <div class="mt-4 text-center">
+                        <button class="btn btn-outline-primary" onclick="location.reload()">
+                            <i class="fas fa-sync-alt"></i> Refresh Status
+                        </button>
+                        <a href="{{ url_for('dashboard') }}" class="btn btn-outline-secondary">
+                            <i class="fas fa-arrow-left"></i> Return to Dashboard
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Legal Information -->
+            <div class="card mt-3">
+                <div class="card-body">
+                    <h6><i class="fas fa-info-circle"></i> Legal Information</h6>
+                    <p class="small text-muted mb-0">
+                        All documents are legally binding contracts. By signing, you agree to the terms and conditions specified in each document.
+                        These documents are required to ensure compliance with applicable laws and regulations, and to protect all parties involved in transactions on the LaborLooker platform.
+                        If you have questions about any document, please consult with a legal professional before signing.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Auto-refresh page every 30 seconds to check for updates -->
+<script>
+setTimeout(function() {
+    location.reload();
+}, 30000);
+
+// Function to check document status via API
+function checkDocumentStatus() {
+    fetch('/api/check_document_requirements/{{ action }}')
+        .then(response => response.json())
+        .then(data => {
+            if (data.documents_complete) {
+                // Documents are complete, redirect to continue the action
+                window.location.href = '{{ url_for("dashboard") }}';
+            }
+        })
+        .catch(error => console.log('Status check error:', error));
+}
+
+// Check status every 10 seconds
+setInterval(checkDocumentStatus, 10000);
+</script>
+{% endblock %}

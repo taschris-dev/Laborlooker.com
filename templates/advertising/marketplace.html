@@ -1,0 +1,390 @@
+{% extends "base.html" %}
+
+{% block title %}Advertising Marketplace - Labor Lookers{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <!-- Sidebar Filters -->
+        <div class="col-md-3 mb-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5><i class="fas fa-filter"></i> Filter Professionals</h5>
+                </div>
+                <div class="card-body">
+                    <form method="GET" action="{{ url_for('advertising_marketplace') }}">
+                        <!-- Category Filter -->
+                        <div class="mb-3">
+                            <label class="form-label"><strong>Specialization</strong></label>
+                            <div class="list-group">
+                                <a href="{{ url_for('advertising_marketplace', category='all') }}" 
+                                   class="list-group-item list-group-item-action {% if category == 'all' %}active{% endif %}">
+                                    <i class="fas fa-users"></i> All Professionals
+                                    <span class="badge bg-primary rounded-pill float-end">{{ category_counts.all }}</span>
+                                </a>
+                                <a href="{{ url_for('advertising_marketplace', category='physical_media') }}" 
+                                   class="list-group-item list-group-item-action {% if category == 'physical_media' %}active{% endif %}">
+                                    <i class="fas fa-print"></i> Physical Media
+                                    <span class="badge bg-primary rounded-pill float-end">{{ category_counts.physical_media }}</span>
+                                </a>
+                                <a href="{{ url_for('advertising_marketplace', category='web_advertising') }}" 
+                                   class="list-group-item list-group-item-action {% if category == 'web_advertising' %}active{% endif %}">
+                                    <i class="fas fa-globe"></i> Web Advertising
+                                    <span class="badge bg-primary rounded-pill float-end">{{ category_counts.web_advertising }}</span>
+                                </a>
+                                <a href="{{ url_for('advertising_marketplace', category='marketing_management') }}" 
+                                   class="list-group-item list-group-item-action {% if category == 'marketing_management' %}active{% endif %}">
+                                    <i class="fas fa-chart-line"></i> Marketing Management
+                                    <span class="badge bg-primary rounded-pill float-end">{{ category_counts.marketing_management }}</span>
+                                </a>
+                            </div>
+                        </div>
+
+                        <!-- Location Filter -->
+                        <div class="mb-3">
+                            <label class="form-label" for="location">Location</label>
+                            <input type="text" class="form-control" id="location" name="location" 
+                                   value="{{ location }}" placeholder="City or State">
+                        </div>
+
+                        <!-- Budget Range -->
+                        <div class="mb-3">
+                            <label class="form-label">Hourly Rate Range</label>
+                            <div class="row">
+                                <div class="col-6">
+                                    <input type="number" class="form-control" name="budget_min" 
+                                           value="{{ budget_min if budget_min > 0 else '' }}" placeholder="Min $">
+                                </div>
+                                <div class="col-6">
+                                    <input type="number" class="form-control" name="budget_max" 
+                                           value="{{ budget_max if budget_max > 0 else '' }}" placeholder="Max $">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Rating Filter -->
+                        <div class="mb-3">
+                            <label class="form-label" for="rating_min">Minimum Rating</label>
+                            <select class="form-select" id="rating_min" name="rating_min">
+                                <option value="">Any Rating</option>
+                                <option value="4.5" {% if rating_min == 4.5 %}selected{% endif %}>4.5+ Stars</option>
+                                <option value="4.0" {% if rating_min == 4.0 %}selected{% endif %}>4.0+ Stars</option>
+                                <option value="3.5" {% if rating_min == 3.5 %}selected{% endif %}>3.5+ Stars</option>
+                                <option value="3.0" {% if rating_min == 3.0 %}selected{% endif %}>3.0+ Stars</option>
+                            </select>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary w-100">
+                            <i class="fas fa-search"></i> Apply Filters
+                        </button>
+                        <a href="{{ url_for('advertising_marketplace') }}" class="btn btn-outline-secondary w-100 mt-2">
+                            <i class="fas fa-undo"></i> Clear Filters
+                        </a>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="card mt-3">
+                <div class="card-header">
+                    <h6><i class="fas fa-bolt"></i> Quick Actions</h6>
+                </div>
+                <div class="card-body">
+                    <a href="{{ url_for('new_advertising_campaign') }}" class="btn btn-success w-100 mb-2">
+                        <i class="fas fa-plus"></i> Create Campaign
+                    </a>
+                    <a href="{{ url_for('advertising_campaign_dashboard') }}" class="btn btn-outline-primary w-100 mb-2">
+                        <i class="fas fa-list"></i> My Campaigns
+                    </a>
+                    <a href="{{ url_for('register_advertising_professional') }}" class="btn btn-outline-info w-100">
+                        <i class="fas fa-user-plus"></i> Become a Professional
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="col-md-9">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h2><i class="fas fa-store"></i> Advertising Professionals</h2>
+                    <p class="text-muted">
+                        {% if category == 'all' %}
+                            Browse all advertising professionals
+                        {% elif category == 'physical_media' %}
+                            Physical media and print advertising specialists
+                        {% elif category == 'web_advertising' %}
+                            Digital and web advertising experts
+                        {% elif category == 'marketing_management' %}
+                            Marketing strategy and campaign management professionals
+                        {% endif %}
+                        {% if professionals %}({{ professionals|length }} found){% endif %}
+                    </p>
+                </div>
+                
+                <!-- Sort Options -->
+                <div class="dropdown">
+                    <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                        <i class="fas fa-sort"></i> Sort By
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="?rating=desc">Highest Rated</a></li>
+                        <li><a class="dropdown-item" href="?price=asc">Lowest Price</a></li>
+                        <li><a class="dropdown-item" href="?experience=desc">Most Experienced</a></li>
+                        <li><a class="dropdown-item" href="?projects=desc">Most Projects</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Professionals Grid -->
+            {% if professionals %}
+                <div class="row">
+                    {% for professional in professionals %}
+                    <div class="col-lg-6 col-xl-4 mb-4">
+                        <div class="card h-100 professional-card">
+                            <div class="card-header">
+                                <div class="d-flex justify-content-between align-items-start">
+                                    <div>
+                                        <h6 class="mb-1">{{ professional.business_name }}</h6>
+                                        <span class="badge bg-primary">
+                                            {% if professional.specialization == 'physical_media' %}
+                                                <i class="fas fa-print"></i> Physical Media
+                                            {% elif professional.specialization == 'web_advertising' %}
+                                                <i class="fas fa-globe"></i> Web Advertising
+                                            {% else %}
+                                                <i class="fas fa-chart-line"></i> Marketing Management
+                                            {% endif %}
+                                        </span>
+                                    </div>
+                                    <div class="text-end">
+                                        {% if professional.is_verified %}
+                                            <span class="badge bg-success">
+                                                <i class="fas fa-check-circle"></i> Verified
+                                            </span>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="card-body">
+                                <!-- Rating and Stats -->
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <div class="rating">
+                                        {% for i in range(5) %}
+                                            {% if i < professional.average_rating %}
+                                                <i class="fas fa-star text-warning"></i>
+                                            {% else %}
+                                                <i class="far fa-star text-muted"></i>
+                                            {% endif %}
+                                        {% endfor %}
+                                        <small class="text-muted">({{ professional.average_rating }}/5)</small>
+                                    </div>
+                                    <small class="text-muted">{{ professional.completed_projects }} projects</small>
+                                </div>
+
+                                <!-- Description -->
+                                <p class="card-text small">
+                                    {{ professional.business_description[:100] }}{% if professional.business_description|length > 100 %}...{% endif %}
+                                </p>
+
+                                <!-- Key Info -->
+                                <div class="row text-center mb-3">
+                                    <div class="col-4">
+                                        <div class="border-end">
+                                            <div class="fw-bold">${{ professional.base_hourly_rate }}</div>
+                                            <small class="text-muted">per hour</small>
+                                        </div>
+                                    </div>
+                                    <div class="col-4">
+                                        <div class="border-end">
+                                            <div class="fw-bold">{{ professional.experience_years }}+</div>
+                                            <small class="text-muted">years exp</small>
+                                        </div>
+                                    </div>
+                                    <div class="col-4">
+                                        <div class="fw-bold">{{ professional.average_turnaround_days }}</div>
+                                        <small class="text-muted">day delivery</small>
+                                    </div>
+                                </div>
+
+                                <!-- Service Highlights -->
+                                <div class="mb-3">
+                                    {% if professional.specialization == 'physical_media' %}
+                                        {% if professional.physical_media_services %}
+                                            <div class="d-flex flex-wrap gap-1">
+                                                {% if professional.physical_media_services[0].offers_stickers %}
+                                                    <span class="badge bg-light text-dark">Stickers</span>
+                                                {% endif %}
+                                                {% if professional.physical_media_services[0].offers_flyers %}
+                                                    <span class="badge bg-light text-dark">Flyers</span>
+                                                {% endif %}
+                                                {% if professional.physical_media_services[0].offers_banners %}
+                                                    <span class="badge bg-light text-dark">Banners</span>
+                                                {% endif %}
+                                                {% if professional.physical_media_services[0].design_services_included %}
+                                                    <span class="badge bg-info">Design Included</span>
+                                                {% endif %}
+                                            </div>
+                                        {% endif %}
+                                    {% elif professional.specialization == 'web_advertising' %}
+                                        {% if professional.web_advertising_services %}
+                                            <div class="d-flex flex-wrap gap-1">
+                                                {% if professional.web_advertising_services[0].google_ads_certified %}
+                                                    <span class="badge bg-light text-dark">Google Ads</span>
+                                                {% endif %}
+                                                {% if professional.web_advertising_services[0].facebook_ads_certified %}
+                                                    <span class="badge bg-light text-dark">Facebook Ads</span>
+                                                {% endif %}
+                                                {% if professional.web_advertising_services[0].offers_landing_pages %}
+                                                    <span class="badge bg-info">Landing Pages</span>
+                                                {% endif %}
+                                            </div>
+                                        {% endif %}
+                                    {% else %}
+                                        {% if professional.marketing_services %}
+                                            <div class="d-flex flex-wrap gap-1">
+                                                {% if professional.marketing_services[0].specializes_in_strategy %}
+                                                    <span class="badge bg-light text-dark">Strategy</span>
+                                                {% endif %}
+                                                {% if professional.marketing_services[0].specializes_in_branding %}
+                                                    <span class="badge bg-light text-dark">Branding</span>
+                                                {% endif %}
+                                                {% if professional.marketing_services[0].has_data_analytics %}
+                                                    <span class="badge bg-info">Analytics</span>
+                                                {% endif %}
+                                            </div>
+                                        {% endif %}
+                                    {% endif %}
+                                </div>
+
+                                <!-- Availability -->
+                                {% if professional.current_capacity > 0 %}
+                                    <div class="alert alert-success py-2 mb-2">
+                                        <i class="fas fa-check-circle"></i> Available now
+                                    </div>
+                                {% else %}
+                                    <div class="alert alert-warning py-2 mb-2">
+                                        <i class="fas fa-clock"></i> Fully booked
+                                    </div>
+                                {% endif %}
+                            </div>
+                            
+                            <div class="card-footer">
+                                <div class="d-grid gap-2">
+                                    <a href="{{ url_for('advertising_professional_profile', professional_id=professional.id) }}" 
+                                       class="btn btn-outline-primary btn-sm">
+                                        <i class="fas fa-eye"></i> View Profile
+                                    </a>
+                                    {% if professional.current_capacity > 0 %}
+                                        <button class="btn btn-primary btn-sm select-professional" 
+                                                data-professional-id="{{ professional.id }}"
+                                                data-bs-toggle="modal" 
+                                                data-bs-target="#campaignModal">
+                                            <i class="fas fa-plus"></i> Add to Campaign
+                                        </button>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+
+                <!-- Pagination would go here if needed -->
+                
+            {% else %}
+                <!-- No professionals found -->
+                <div class="text-center py-5">
+                    <i class="fas fa-search fa-3x text-muted mb-3"></i>
+                    <h4>No professionals found</h4>
+                    <p class="text-muted">Try adjusting your filters or search criteria.</p>
+                    <a href="{{ url_for('advertising_marketplace') }}" class="btn btn-primary">
+                        <i class="fas fa-undo"></i> Reset Filters
+                    </a>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<!-- Quick Campaign Creation Modal -->
+<div class="modal fade" id="campaignModal" tabindex="-1" aria-labelledby="campaignModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="campaignModalLabel">
+                    <i class="fas fa-plus"></i> Quick Campaign Setup
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p class="text-muted">Ready to start a campaign? You can either:</p>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="card h-100">
+                            <div class="card-body text-center">
+                                <i class="fas fa-rocket fa-2x text-primary mb-3"></i>
+                                <h6>Quick Campaign</h6>
+                                <p class="small">Start with this professional and add more services later</p>
+                                <a href="{{ url_for('new_advertising_campaign') }}" class="btn btn-primary">
+                                    Quick Start
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card h-100">
+                            <div class="card-body text-center">
+                                <i class="fas fa-cogs fa-2x text-success mb-3"></i>
+                                <h6>Full Campaign</h6>
+                                <p class="small">Plan a comprehensive campaign with multiple professionals</p>
+                                <a href="{{ url_for('new_advertising_campaign') }}" class="btn btn-success">
+                                    Full Setup
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.professional-card {
+    transition: transform 0.2s, box-shadow 0.2s;
+    cursor: pointer;
+}
+
+.professional-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+.rating .fas.fa-star,
+.rating .far.fa-star {
+    font-size: 0.9rem;
+}
+
+.badge {
+    font-size: 0.7rem;
+}
+
+.alert {
+    font-size: 0.85rem;
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Handle professional selection
+    document.querySelectorAll('.select-professional').forEach(button => {
+        button.addEventListener('click', function() {
+            const professionalId = this.dataset.professionalId;
+            // Store selected professional ID for campaign creation
+            sessionStorage.setItem('selectedProfessional', professionalId);
+        });
+    });
+});
+</script>
+{% endblock %}

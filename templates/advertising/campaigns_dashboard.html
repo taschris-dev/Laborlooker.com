@@ -1,0 +1,342 @@
+{% extends "base.html" %}
+
+{% block title %}My Advertising Campaigns - Labor Lookers{% endblock %}
+
+{% block content %}
+<div class="container-flu>
+    <div class="row">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h2><i class="fas fa-bullhorn"></i> My Advertising Campaigns</h2>
+                    <p class="text-muted">Manage and track your marketing campaigns</p>
+                </div>
+                <a href="{{ url_for('new_advertising_campaign') }}" class="btn btn-success">
+                    <i class="fas fa-plus"></i> Create New Campaign
+                </a>
+            </div>
+        </div>
+    </div>
+
+    {% if campaigns %}
+        <!-- Campaign Stats -->
+        <div class="row mb-4">
+            <div class="col-md-3">
+                <div class="card bg-primary text-white">
+                    <div class="card-body text-center">
+                        <h3>{{ campaigns|length }}</h3>
+                        <p class="mb-0">Total Campaigns</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card bg-success text-white">
+                    <div class="card-body text-center">
+                        <h3>{{ campaigns|selectattr("status", "equalto", "completed")|list|length }}</h3>
+                        <p class="mb-0">Completed</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card bg-warning text-white">
+                    <div class="card-body text-center">
+                        <h3>{{ campaigns|selectattr("status", "equalto", "in_progress")|list|length }}</h3>
+                        <p class="mb-0">In Progress</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card bg-info text-white">
+                    <div class="card-body text-center">
+                        <h3>${{ "%.2f"|format((campaigns|sum(attribute="total_cost_cents") / 100) if campaigns else 0) }}</h3>
+                        <p class="mb-0">Total Invested</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Campaigns List -->
+        <div class="row">
+            {% for campaign in campaigns %}
+            <div class="col-lg-6 mb-4">
+                <div class="card h-100">
+                    <div class="card-header">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <div>
+                                <h5 class="mb-1">{{ campaign.campaign_name }}</h5>
+                                <small class="text-muted">Created {{ campaign.created_at.strftime('%B %d, %Y') }}</small>
+                            </div>
+                            <div>
+                                {% if campaign.status == 'pending' %}
+                                    <span class="badge bg-warning">Pending</span>
+                                {% elif campaign.status == 'approved' %}
+                                    <span class="badge bg-info">Approved</span>
+                                {% elif campaign.status == 'in_progress' %}
+                                    <span class="badge bg-primary">In Progress</span>
+                                {% elif campaign.status == 'completed' %}
+                                    <span class="badge bg-success">Completed</span>
+                                {% elif campaign.status == 'cancelled' %}
+                                    <span class="badge bg-danger">Cancelled</span>
+                                {% endif %}
+
+                                {% if campaign.is_rush_order %}
+                                    <span class="badge bg-warning ms-1">
+                                        <i class="fas fa-bolt"></i> Rush
+                                    </span>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="card-body">
+                        <!-- Campaign Description -->
+                        {% if campaign.campaign_description %}
+                            <p class="text-muted small mb-3">{{ campaign.campaign_description[:150] }}{% if campaign.campaign_description|length > 150 %}...{% endif %}</p>
+                        {% endif %}
+
+                        <!-- Campaign Details -->
+                        <div class="row mb-3">
+                            <div class="col-6">
+                                <div class="border-end">
+                                    <div class="text-center">
+                                        <h6 class="text-primary">${{ "%.2f"|format(campaign.total_cost_cents / 100) }}</h6>
+                                        <small class="text-muted">Total Cost</small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="text-center">
+                                    <h6 class="text-info">{{ campaign.campaign_duration_days }}</h6>
+                                    <small class="text-muted">Days Duration</small>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Work Orders Summary -->
+                        {% set work_orders = campaign.work_orders %}
+                        {% if work_orders %}
+                            <div class="mb-3">
+                                <h6 class="mb-2">Work Orders ({{ work_orders|length }})</h6>
+                                <div class="progress mb-2" style="height: 6px;">
+                                    {% set completed_orders = work_orders|selectattr("status", "equalto", "completed")|list|length %}
+                                    {% set progress_percentage = (completed_orders / work_orders|length * 100) if work_orders else 0 %}
+                                    <div class="progress-bar" role="progressbar" style="width: {{ progress_percentage }}%"></div>
+                                </div>
+                                <div class="d-flex justify-content-between">
+                                    <small class="text-muted">{{ completed_orders }}/{{ work_orders|length }} completed</small>
+                                    <small class="text-muted">{{ "%.0f"|format(progress_percentage) }}%</small>
+                                </div>
+
+                                <!-- Work Order Status Breakdown -->
+                                <div class="d-flex flex-wrap gap-1 mt-2">
+                                    {% for order in work_orders %}
+                                        {% if order.status == 'sent' %}
+                                            <span class="badge bg-secondary" title="{{ order.work_type }}">Sent</span>
+                                        {% elif order.status == 'accepted' %}
+                                            <span class="badge bg-info" title="{{ order.work_type }}">Accepted</span>
+                                        {% elif order.status == 'in_progress' %}
+                                            <span class="badge bg-primary" title="{{ order.work_type }}">In Progress</span>
+                                        {% elif order.status == 'completed' %}
+                                            <span class="badge bg-success" title="{{ order.work_type }}">Completed</span>
+                                        {% elif order.status == 'declined' %}
+                                            <span class="badge bg-danger" title="{{ order.work_type }}">Declined</span>
+                                        {% endif %}
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        {% endif %}
+
+                        <!-- Timeline -->
+                        {% if campaign.desired_start_date or campaign.deadline %}
+                            <div class="mb-3">
+                                <h6 class="mb-2">Timeline</h6>
+                                <div class="row">
+                                    {% if campaign.desired_start_date %}
+                                        <div class="col-6">
+                                            <small class="text-muted">Start Date:</small><br>
+                                            <small>{{ campaign.desired_start_date.strftime('%m/%d/%Y') }}</small>
+                                        </div>
+                                    {% endif %}
+                                    {% if campaign.deadline %}
+                                        <div class="col-6">
+                                            <small class="text-muted">Deadline:</small><br>
+                                            <small>{{ campaign.deadline.strftime('%m/%d/%Y') }}</small>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        {% endif %}
+
+                        <!-- Payment Status -->
+                        <div class="row">
+                            <div class="col-6">
+                                <small class="text-muted">Payment Status:</small><br>
+                                {% if campaign.payment_status == 'pending' %}
+                                    <span class="badge bg-warning">Pending</span>
+                                {% elif campaign.payment_status == 'paid' %}
+                                    <span class="badge bg-success">Paid</span>
+                                {% elif campaign.payment_status == 'partial' %}
+                                    <span class="badge bg-info">Partial</span>
+                                {% elif campaign.payment_status == 'refunded' %}
+                                    <span class="badge bg-secondary">Refunded</span>
+                                {% endif %}
+                            </div>
+                            <div class="col-6">
+                                <small class="text-muted">Platform Fee:</small><br>
+                                <small>${{ "%.2f"|format(campaign.platform_commission_cents / 100) }}</small>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="card-footer">
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                            <a href="{{ url_for('advertising_campaign_detail', campaign_id=campaign.id) }}" 
+                               class="btn btn-outline-primary btn-sm">
+                                <i class="fas fa-eye"></i> View Details
+                            </a>
+                            {% if campaign.status == 'pending' %}
+                                <button class="btn btn-outline-warning btn-sm">
+                                    <i class="fas fa-edit"></i> Edit
+                                </button>
+                                <button class="btn btn-outline-danger btn-sm" 
+                                        onclick="cancelCampaign({{ campaign.id }})">
+                                    <i class="fas fa-times"></i> Cancel
+                                </button>
+                            {% endif %}
+                            {% if campaign.status in ['completed', 'in_progress'] %}
+                                <button class="btn btn-outline-info btn-sm">
+                                    <i class="fas fa-download"></i> Report
+                                </button>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- Pagination would go here if needed -->
+
+    {% else %}
+        <!-- No campaigns -->
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body text-center py-5">
+                        <i class="fas fa-bullhorn fa-4x text-muted mb-4"></i>
+                        <h4>No campaigns yet</h4>
+                        <p class="text-muted mb-4">Ready to start your first advertising campaign? Our professionals are here to help you reach your marketing goals.</p>
+                        
+                        <div class="row justify-content-center">
+                            <div class="col-md-8">
+                                <div class="row">
+                                    <div class="col-md-4 mb-3">
+                                        <div class="card h-100">
+                                            <div class="card-body text-center">
+                                                <i class="fas fa-print fa-2x text-primary mb-2"></i>
+                                                <h6>Physical Media</h6>
+                                                <p class="small text-muted">Stickers, flyers, banners, and more</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4 mb-3">
+                                        <div class="card h-100">
+                                            <div class="card-body text-center">
+                                                <i class="fas fa-globe fa-2x text-success mb-2"></i>
+                                                <h6>Web Advertising</h6>
+                                                <p class="small text-muted">Google Ads, Facebook, LinkedIn campaigns</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4 mb-3">
+                                        <div class="card h-100">
+                                            <div class="card-body text-center">
+                                                <i class="fas fa-chart-line fa-2x text-info mb-2"></i>
+                                                <h6>Marketing Management</h6>
+                                                <p class="small text-muted">Strategy, branding, and campaign management</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="mt-4">
+                            <a href="{{ url_for('new_advertising_campaign') }}" class="btn btn-success btn-lg me-3">
+                                <i class="fas fa-plus"></i> Create Your First Campaign
+                            </a>
+                            <a href="{{ url_for('advertising_marketplace') }}" class="btn btn-outline-primary btn-lg">
+                                <i class="fas fa-users"></i> Browse Professionals
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+</div>
+
+<style>
+.card {
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+.progress {
+    border-radius: 10px;
+    background-color: #f8f9fa;
+}
+
+.progress-bar {
+    border-radius: 10px;
+}
+
+.badge {
+    font-size: 0.7rem;
+}
+
+.border-end {
+    border-right: 1px solid #dee2e6 !important;
+}
+</style>
+
+<script>
+function cancelCampaign(campaignId) {
+    if (confirm('Are you sure you want to cancel this campaign? This action cannot be undone.')) {
+        // Implementation for campaign cancellation
+        fetch(`/advertising/campaign/${campaignId}/cancel`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                location.reload();
+            } else {
+                alert('Error cancelling campaign: ' + data.error);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Error cancelling campaign');
+        });
+    }
+}
+
+// Auto-refresh status every 30 seconds for active campaigns
+setInterval(function() {
+    const activeCampaigns = document.querySelectorAll('.badge.bg-primary, .badge.bg-info');
+    if (activeCampaigns.length > 0) {
+        // Only refresh if there are active campaigns
+        // This would trigger a background status check
+        console.log('Checking campaign status updates...');
+    }
+}, 30000);
+</script>
+{% endblock %}

@@ -1,0 +1,171 @@
+{% extends 'base.html' %}
+{% block content %}
+<h1 class="text-2xl font-semibold mb-4">Add New Client</h1>
+        <!-- Billing Plan Selection -->
+        <div class="mb-6 p-6 bg-gray-50 rounded-lg">
+            <h3 class="text-lg font-semibold text-gray-900 mb-4">Choose Your Billing Plan</h3>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Commission Only Plan -->
+                <div class="relative">
+                    <input type="radio" id="commission_only" name="billing_plan" value="commission_only" 
+                           class="sr-only peer" required>
+                    <label for="commission_only" 
+                           class="flex flex-col p-6 bg-white border-2 border-gray-200 rounded-lg cursor-pointer hover:bg-gray-50 peer-checked:border-blue-500 peer-checked:bg-blue-50">
+                        <div class="flex items-center justify-between mb-3">
+                            <span class="text-lg font-semibold text-gray-900">Commission Only</span>
+                            <span class="text-2xl font-bold text-blue-600">10%</span>
+                        </div>
+                        <ul class="text-sm text-gray-600 space-y-2">
+                            <li class="flex items-center">
+                                <svg class="w-4 h-4 text-green-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                                </svg>
+                                No monthly subscription fees
+                            </li>
+                            <li class="flex items-center">
+                                <svg class="w-4 h-4 text-green-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                                </svg>
+                                Only pay for successful jobs
+                            </li>
+                            <li class="flex items-center">
+                                <svg class="w-4 h-4 text-green-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                                </svg>
+                                10% commission per completed job
+                            </li>
+                            <li class="flex items-center text-gray-500">
+                                <svg class="w-4 h-4 text-red-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+                                </svg>
+                                No unsuccessful jobs cost
+                            </li>
+                        </ul>
+                        <div class="mt-4 text-center">
+                            <div class="text-lg font-semibold text-gray-900">Best for: New businesses</div>
+                            <div class="text-sm text-gray-500">Lower risk, pay only for results</div>
+                        </div>
+                    </label>
+                </div>
+
+                <!-- Commission + Subscription Plan -->
+                <div class="relative">
+                    <input type="radio" id="commission_subscription" name="billing_plan" value="commission_subscription" 
+                           class="sr-only peer">
+                    <label for="commission_subscription" 
+                           class="flex flex-col p-6 bg-white border-2 border-gray-200 rounded-lg cursor-pointer hover:bg-gray-50 peer-checked:border-green-500 peer-checked:bg-green-50">
+                        <div class="flex items-center justify-between mb-3">
+                            <span class="text-lg font-semibold text-gray-900">Commission + Subscription</span>
+                            <div class="text-right">
+                                <div class="text-2xl font-bold text-green-600">5%</div>
+                                <div class="text-sm text-gray-600">+ $30/mo</div>
+                            </div>
+                        </div>
+                        <ul class="text-sm text-gray-600 space-y-2">
+                            <li class="flex items-center">
+                                <svg class="w-4 h-4 text-green-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                                </svg>
+                                Lower 5% commission rate
+                            </li>
+                            <li class="flex items-center">
+                                <svg class="w-4 h-4 text-green-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                                </svg>
+                                $30 monthly subscription
+                            </li>
+                            <li class="flex items-center">
+                                <svg class="w-4 h-4 text-green-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                                </svg>
+                                Predictable monthly costs
+                            </li>
+                            <li class="flex items-center">
+                                <svg class="w-4 h-4 text-green-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                                </svg>
+                                Savings on high-volume jobs
+                            </li>
+                        </ul>
+                        <div class="mt-4 text-center">
+                            <div class="text-lg font-semibold text-gray-900">Best for: Established businesses</div>
+                            <div class="text-sm text-gray-500">Lower commission, more predictable</div>
+                        </div>
+                    </label>
+                </div>
+            </div>
+            
+            <!-- Plan Comparison -->
+            <div class="mt-6 p-4 bg-blue-50 rounded-lg">
+                <h4 class="font-semibold text-blue-900 mb-2">Quick Comparison:</h4>
+                <div class="text-sm text-blue-800">
+                    <p><strong>Break-even point:</strong> The subscription plan becomes more cost-effective when you complete more than $600 worth of jobs per month.</p>
+                    <p class="mt-1"><strong>Example:</strong> For $1,000 in monthly job value: Commission-only = $100, Subscription plan = $80 ($50 commission + $30 subscription)</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="mb-6">
+<h3 class="font-medium text-blue-800 mb-2">Add Your Local Business Clients</h3>
+<p class="text-blue-700 text-sm">Enter the details of local businesses you want to create marketing campaigns for. Examples: HVAC companies, plumbers, restaurants, dentists, etc.</p>
+</div>
+
+<form method="post" class="bg-white p-6 rounded shadow max-w-2xl space-y-4">
+<div>
+<label class="block text-sm font-medium text-gray-700 mb-1">Business Name *</label>
+<input name="name" required class="w-full border border-gray-300 rounded p-3" 
+       placeholder="e.g., Elite HVAC Services, Tony's Italian Kitchen" />
+</div>
+
+<div>
+<label class="block text-sm font-medium text-gray-700 mb-1">Industry</label>
+<select name="industry" class="w-full border border-gray-300 rounded p-3">
+<option value="">Select Industry</option>
+<option value="HVAC">HVAC</option>
+<option value="Plumbing">Plumbing</option>
+<option value="Restaurant">Restaurant</option>
+<option value="Automotive">Automotive</option>
+<option value="Dental">Dental</option>
+<option value="Medical">Medical</option>
+<option value="Legal">Legal</option>
+<option value="Real Estate">Real Estate</option>
+<option value="Home Services">Home Services</option>
+<option value="Retail">Retail</option>
+<option value="Other">Other</option>
+</select>
+</div>
+
+<div>
+<label class="block text-sm font-medium text-gray-700 mb-1">Website</label>
+<input name="website" type="url" class="w-full border border-gray-300 rounded p-3" 
+       placeholder="https://www.businessname.com" />
+</div>
+
+<div>
+<label class="block text-sm font-medium text-gray-700 mb-1">Notes</label>
+<textarea name="notes" rows="3" class="w-full border border-gray-300 rounded p-3" 
+          placeholder="Additional information about this client, their services, target market, etc."></textarea>
+</div>
+
+<div class="flex gap-3">
+<button type="submit" class="bg-blue-600 text-white px-6 py-3 rounded hover:bg-blue-700">
+    Create Client
+</button>
+<a href="/" class="bg-gray-500 text-white px-6 py-3 rounded hover:bg-gray-600">
+    Cancel
+</a>
+</div>
+</form>
+
+<div class="mt-6 bg-gray-50 border rounded p-4">
+<h3 class="font-medium text-gray-800 mb-2">Next Steps:</h3>
+<ol class="text-sm text-gray-700 space-y-1">
+<li>1. Create your client business profile</li>
+<li>2. Upload their customer contact list (CSV file)</li>
+<li>3. Create marketing campaigns (referral, direct mail, stickers, media)</li>
+<li>4. Track results and ROI</li>
+</ol>
+</div>
+
+{% endblock %}

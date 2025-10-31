@@ -1,0 +1,209 @@
+{% extends "base.html" %}
+
+{% block title %}Two-Factor Authentication{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header bg-warning text-dark">
+                    <h4 class="mb-0">
+                        <i class="fas fa-lock"></i> Two-Factor Authentication Required
+                    </h4>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-info">
+                        <p class="mb-2">
+                            <i class="fas fa-envelope"></i> We've sent a 6-digit verification code to:
+                        </p>
+                        <p class="mb-0"><strong>{{ current_user.email }}</strong></p>
+                    </div>
+
+                    <form method="POST" id="verify2FAForm">
+                        <div class="mb-3">
+                            <label for="verification_code" class="form-label">
+                                <strong>Verification Code</strong> <span class="text-danger">*</span>
+                            </label>
+                            <input type="text" class="form-control form-control-lg text-center" 
+                                   id="verification_code" name="verification_code" 
+                                   placeholder="000000" maxlength="6" 
+                                   pattern="[0-9]{6}" required autocomplete="off"
+                                   style="letter-spacing: 8px; font-size: 24px; font-weight: bold;">
+                            <div class="form-text">Enter the 6-digit code from your email</div>
+                        </div>
+
+                        <div class="d-grid gap-2 mb-3">
+                            <button type="submit" class="btn btn-primary btn-lg" id="verifyBtn">
+                                <i class="fas fa-check"></i> Verify & Continue
+                            </button>
+                        </div>
+                    </form>
+
+                    <hr>
+
+                    <!-- Backup Options -->
+                    <div class="text-center">
+                        <p class="text-muted mb-2">Having trouble?</p>
+                        
+                        <div class="d-grid gap-2 mb-2">
+                            <button type="button" class="btn btn-outline-primary" onclick="resendCode()" id="resendBtn">
+                                <i class="fas fa-redo"></i> Resend Code
+                            </button>
+                        </div>
+
+                        <!-- Backup Code Option -->
+                        <div class="collapse" id="backupCodeSection">
+                            <div class="card card-body">
+                                <h6>Use Backup Code</h6>
+                                <form method="POST" action="{{ url_for('two_factor_verify_backup') }}">
+                                    <div class="mb-2">
+                                        <input type="text" class="form-control" name="backup_code" 
+                                               placeholder="Enter 8-character backup code" 
+                                               pattern="[A-F0-9]{8}" maxlength="8" required>
+                                    </div>
+                                    <button type="submit" class="btn btn-warning btn-sm">
+                                        <i class="fas fa-key"></i> Use Backup Code
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+
+                        <button type="button" class="btn btn-link btn-sm" 
+                                data-bs-toggle="collapse" data-bs-target="#backupCodeSection">
+                            <i class="fas fa-key"></i> Use Backup Code Instead
+                        </button>
+                    </div>
+
+                    <hr>
+
+                    <div class="text-center">
+                        <small class="text-muted">
+                            <i class="fas fa-clock"></i> Code expires in <span id="countdown">10:00</span>
+                        </small>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Help Section -->
+            <div class="card mt-4">
+                <div class="card-body">
+                    <h6><i class="fas fa-question-circle"></i> Need Help?</h6>
+                    <div class="small">
+                        <p class="mb-2">
+                            <strong>Not receiving codes?</strong>
+                            <br>• Check your spam/junk folder
+                            <br>• Ensure {{ current_user.email }} is correct
+                            <br>• Wait a few minutes and try resending
+                        </p>
+                        <p class="mb-0">
+                            <strong>Lost access to email?</strong>
+                            <br>• Use a backup code if you have one
+                            <br>• Contact support: support@laborlooker.com
+                            <br>• Have ID verification ready for account recovery
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Auto-focus and format verification code input
+document.getElementById('verification_code').addEventListener('input', function(e) {
+    // Only allow numbers
+    e.target.value = e.target.value.replace(/\D/g, '');
+    
+    // Auto-submit when 6 digits entered
+    if (e.target.value.length === 6) {
+        document.getElementById('verify2FAForm').submit();
+    }
+});
+
+// Countdown timer
+let timeLeft = 600; // 10 minutes in seconds
+const countdownElement = document.getElementById('countdown');
+
+function updateCountdown() {
+    const minutes = Math.floor(timeLeft / 60);
+    const seconds = timeLeft % 60;
+    countdownElement.textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+    
+    if (timeLeft > 0) {
+        timeLeft--;
+    } else {
+        countdownElement.textContent = 'Expired';
+        countdownElement.classList.add('text-danger');
+        document.getElementById('verifyBtn').disabled = true;
+        
+        // Show resend button
+        const resendBtn = document.getElementById('resendBtn');
+        resendBtn.classList.remove('btn-outline-primary');
+        resendBtn.classList.add('btn-warning');
+        resendBtn.innerHTML = '<i class="fas fa-exclamation-triangle"></i> Code Expired - Resend';
+    }
+}
+
+// Update countdown every second
+setInterval(updateCountdown, 1000);
+
+// Resend code function
+function resendCode() {
+    const resendBtn = document.getElementById('resendBtn');
+    resendBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
+    resendBtn.disabled = true;
+    
+    fetch('/two-factor/resend', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Reset countdown
+            timeLeft = 600;
+            countdownElement.classList.remove('text-danger');
+            document.getElementById('verifyBtn').disabled = false;
+            
+            // Show success message
+            const alertDiv = document.createElement('div');
+            alertDiv.className = 'alert alert-success alert-dismissible fade show';
+            alertDiv.innerHTML = `
+                <i class="fas fa-check"></i> New verification code sent!
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            `;
+            document.querySelector('.card-body').insertBefore(alertDiv, document.querySelector('form'));
+            
+            // Auto-dismiss after 5 seconds
+            setTimeout(() => {
+                alertDiv.remove();
+            }, 5000);
+        } else {
+            alert('Failed to resend code: ' + data.error);
+        }
+        
+        resendBtn.innerHTML = '<i class="fas fa-redo"></i> Resend Code';
+        resendBtn.disabled = false;
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Failed to resend code');
+        resendBtn.innerHTML = '<i class="fas fa-redo"></i> Resend Code';
+        resendBtn.disabled = false;
+    });
+}
+
+// Auto-focus on code input
+document.getElementById('verification_code').focus();
+
+// Form submission handling
+document.getElementById('verify2FAForm').addEventListener('submit', function(e) {
+    const verifyBtn = document.getElementById('verifyBtn');
+    verifyBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Verifying...';
+    verifyBtn.disabled = true;
+});
+</script>
+{% endblock %}

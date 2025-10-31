@@ -1,0 +1,131 @@
+{% extends "base.html" %}
+
+{% block title %}Two-Factor Authentication Setup{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header bg-success text-white">
+                    <h4 class="mb-0">
+                        <i class="fas fa-shield-alt"></i> Two-Factor Authentication Setup
+                    </h4>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-info">
+                        <h5><i class="fas fa-info-circle"></i> Enhance Your Account Security</h5>
+                        <p class="mb-2">Two-factor authentication adds an extra layer of security to your account by requiring a verification code in addition to your password.</p>
+                        <p class="mb-0">We'll send a 6-digit code to your email whenever you sign in from a new device or location.</p>
+                    </div>
+
+                    <form method="POST" id="setup2FAForm">
+                        <div class="mb-3">
+                            <label for="email" class="form-label">
+                                <strong>Primary Email</strong>
+                            </label>
+                            <input type="email" class="form-control" id="email" value="{{ current_user.email }}" readonly>
+                            <div class="form-text">Verification codes will be sent to this email address.</div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="phone_number" class="form-label">
+                                <strong>Phone Number (Optional)</strong>
+                            </label>
+                            <input type="tel" class="form-control" id="phone_number" name="phone_number" 
+                                   placeholder="+1 (555) 123-4567"
+                                   pattern="^[\+]?[\d\s\-\(\)]+$">
+                            <div class="form-text">
+                                Optional: Add phone number for SMS backup (future feature).
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="understand" required>
+                                <label class="form-check-label" for="understand">
+                                    I understand that I will need to check my email for a verification code each time I sign in from a new device. <span class="text-danger">*</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="backup_codes" required>
+                                <label class="form-check-label" for="backup_codes">
+                                    I will securely store the backup codes that will be generated for account recovery. <span class="text-danger">*</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="alert alert-warning">
+                            <h6><i class="fas fa-exclamation-triangle"></i> Important Security Information</h6>
+                            <ul class="mb-0 small">
+                                <li>Keep your email account secure with a strong password</li>
+                                <li>Store backup codes in a safe place (password manager recommended)</li>
+                                <li>Never share verification codes with anyone</li>
+                                <li>Contact support if you lose access to your email</li>
+                            </ul>
+                        </div>
+
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-success btn-lg" id="setupBtn">
+                                <i class="fas fa-shield-alt"></i> Enable Two-Factor Authentication
+                            </button>
+                            <a href="{{ url_for('dashboard') }}" class="btn btn-outline-secondary">
+                                <i class="fas fa-arrow-left"></i> Maybe Later
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Benefits Section -->
+            <div class="card mt-4">
+                <div class="card-body">
+                    <h6><i class="fas fa-star"></i> Benefits of Two-Factor Authentication</h6>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <ul class="small mb-0">
+                                <li><strong>Enhanced Security:</strong> Protect against password theft</li>
+                                <li><strong>Account Safety:</strong> Prevent unauthorized access</li>
+                                <li><strong>Trust Building:</strong> Increases credibility with clients</li>
+                            </ul>
+                        </div>
+                        <div class="col-md-6">
+                            <ul class="small mb-0">
+                                <li><strong>Compliance:</strong> Meet industry security standards</li>
+                                <li><strong>Peace of Mind:</strong> Know your account is secure</li>
+                                <li><strong>Premium Features:</strong> Access to advanced platform features</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.getElementById('setup2FAForm').addEventListener('submit', function(e) {
+    const setupBtn = document.getElementById('setupBtn');
+    setupBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Setting up...';
+    setupBtn.disabled = true;
+});
+
+// Phone number formatting
+document.getElementById('phone_number').addEventListener('input', function(e) {
+    let value = e.target.value.replace(/\D/g, '');
+    if (value.length >= 1) {
+        if (value.length <= 3) {
+            value = `(${value}`;
+        } else if (value.length <= 6) {
+            value = `(${value.slice(0, 3)}) ${value.slice(3)}`;
+        } else {
+            value = `(${value.slice(0, 3)}) ${value.slice(3, 6)}-${value.slice(6, 10)}`;
+        }
+    }
+    e.target.value = value;
+});
+</script>
+{% endblock %}

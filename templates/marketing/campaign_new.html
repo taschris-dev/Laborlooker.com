@@ -1,0 +1,399 @@
+{% extends "base.html" %}
+
+{% block title %}Create Marketing Campaign{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2>🎯 Create New Marketing Campaign</h2>
+                <a href="{{ url_for('marketing_campaigns') }}" class="btn btn-outline-secondary">
+                    <i class="fas fa-arrow-left"></i> Back to Campaigns
+                </a>
+            </div>
+
+            <form method="POST" enctype="multipart/form-data">
+                <div class="row">
+                    <!-- Campaign Basics -->
+                    <div class="col-lg-8">
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">📝 Campaign Information</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="campaign_name" class="form-label">Campaign Name *</label>
+                                            <input type="text" class="form-control" id="campaign_name" name="campaign_name" required>
+                                            <div class="form-text">Choose a memorable name for your campaign</div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="campaign_type" class="form-label">Campaign Type *</label>
+                                            <select class="form-select" id="campaign_type" name="campaign_type" required>
+                                                <option value="">Select Type...</option>
+                                                <option value="multimedia">Multimedia Campaign</option>
+                                                <option value="digital_only">Digital Only</option>
+                                                <option value="traditional_only">Traditional Media Only</option>
+                                                <option value="integrated">Integrated Marketing</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="campaign_description" class="form-label">Campaign Description</label>
+                                    <textarea class="form-control" id="campaign_description" name="campaign_description" rows="3" 
+                                              placeholder="Describe your campaign goals and strategy..."></textarea>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="primary_objective" class="form-label">Primary Objective *</label>
+                                            <select class="form-select" id="primary_objective" name="primary_objective" required>
+                                                <option value="">Select Objective...</option>
+                                                <option value="brand_awareness">Brand Awareness</option>
+                                                <option value="lead_generation">Lead Generation</option>
+                                                <option value="sales_conversion">Sales Conversion</option>
+                                                <option value="website_traffic">Website Traffic</option>
+                                                <option value="customer_retention">Customer Retention</option>
+                                                <option value="market_expansion">Market Expansion</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="marketing_strategy" class="form-label">Marketing Strategy</label>
+                                            <select class="form-select" id="marketing_strategy" name="marketing_strategy">
+                                                <option value="">Select Strategy...</option>
+                                                <option value="awareness">Awareness Building</option>
+                                                <option value="lead_generation">Lead Generation</option>
+                                                <option value="conversion">Conversion Focus</option>
+                                                <option value="retention">Customer Retention</option>
+                                                <option value="upsell">Upselling/Cross-selling</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Budget and Timeline -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">💰 Budget & Timeline</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="mb-3">
+                                            <label for="total_budget" class="form-label">Total Budget *</label>
+                                            <div class="input-group">
+                                                <span class="input-group-text">$</span>
+                                                <input type="number" class="form-control" id="total_budget" name="total_budget" 
+                                                       min="500" step="50" required>
+                                            </div>
+                                            <div class="form-text">
+                                                Includes 15% platform service fee
+                                                <br><small class="text-success">Minimum: $500</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="mb-3">
+                                            <label for="start_date" class="form-label">Start Date *</label>
+                                            <input type="date" class="form-control" id="start_date" name="start_date" required>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="mb-3">
+                                            <label for="end_date" class="form-label">End Date *</label>
+                                            <input type="date" class="form-control" id="end_date" name="end_date" required>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Target Audience -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">🎯 Target Audience</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="mb-3">
+                                    <label for="target_market_segment" class="form-label">Audience Description *</label>
+                                    <textarea class="form-control" id="target_market_segment" name="target_market_segment" 
+                                              rows="3" placeholder="Describe your ideal customers, their demographics, interests, and behaviors..." required></textarea>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label class="form-label">Age Ranges</label>
+                                            <div class="form-check-group">
+                                                <div class="form-check form-check-inline">
+                                                    <input class="form-check-input" type="checkbox" name="age_ranges" value="18-24">
+                                                    <label class="form-check-label">18-24</label>
+                                                </div>
+                                                <div class="form-check form-check-inline">
+                                                    <input class="form-check-input" type="checkbox" name="age_ranges" value="25-34">
+                                                    <label class="form-check-label">25-34</label>
+                                                </div>
+                                                <div class="form-check form-check-inline">
+                                                    <input class="form-check-input" type="checkbox" name="age_ranges" value="35-44">
+                                                    <label class="form-check-label">35-44</label>
+                                                </div>
+                                                <div class="form-check form-check-inline">
+                                                    <input class="form-check-input" type="checkbox" name="age_ranges" value="45-54">
+                                                    <label class="form-check-label">45-54</label>
+                                                </div>
+                                                <div class="form-check form-check-inline">
+                                                    <input class="form-check-input" type="checkbox" name="age_ranges" value="55+">
+                                                    <label class="form-check-label">55+</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label class="form-label">Income Ranges</label>
+                                            <div class="form-check-group">
+                                                <div class="form-check form-check-inline">
+                                                    <input class="form-check-input" type="checkbox" name="income_ranges" value="under_30k">
+                                                    <label class="form-check-label">Under $30K</label>
+                                                </div>
+                                                <div class="form-check form-check-inline">
+                                                    <input class="form-check-input" type="checkbox" name="income_ranges" value="30k_50k">
+                                                    <label class="form-check-label">$30K-$50K</label>
+                                                </div>
+                                                <div class="form-check form-check-inline">
+                                                    <input class="form-check-input" type="checkbox" name="income_ranges" value="50k_75k">
+                                                    <label class="form-check-label">$50K-$75K</label>
+                                                </div>
+                                                <div class="form-check form-check-inline">
+                                                    <input class="form-check-input" type="checkbox" name="income_ranges" value="75k_plus">
+                                                    <label class="form-check-label">$75K+</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="geographic_targeting" class="form-label">Geographic Targeting</label>
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <input type="text" class="form-control" name="states" placeholder="States (e.g., SC, NC, GA)">
+                                        </div>
+                                        <div class="col-md-4">
+                                            <input type="text" class="form-control" name="cities" placeholder="Cities">
+                                        </div>
+                                        <div class="col-md-4">
+                                            <input type="text" class="form-control" name="zip_codes" placeholder="Zip Codes">
+                                        </div>
+                                    </div>
+                                    <div class="form-text">Leave blank to target all locations</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Campaign Features -->
+                    <div class="col-lg-4">
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">⚡ Campaign Features</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="mb-3">
+                                    <label for="personalization_level" class="form-label">Personalization Level</label>
+                                    <select class="form-select" id="personalization_level" name="personalization_level">
+                                        <option value="basic">Basic</option>
+                                        <option value="advanced">Advanced</option>
+                                        <option value="ai_powered">AI-Powered</option>
+                                    </select>
+                                </div>
+
+                                <div class="form-check mb-3">
+                                    <input class="form-check-input" type="checkbox" id="ai_optimization" name="ai_optimization">
+                                    <label class="form-check-label" for="ai_optimization">
+                                        AI Optimization
+                                        <div class="form-text">Automatically optimize campaign performance</div>
+                                    </label>
+                                </div>
+
+                                <div class="form-check mb-3">
+                                    <input class="form-check-input" type="checkbox" id="ab_testing" name="ab_testing">
+                                    <label class="form-check-label" for="ab_testing">
+                                        A/B Testing
+                                        <div class="form-text">Test different variations of your campaign</div>
+                                    </label>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="form-label">Key Performance Indicators</label>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" name="kpis" value="impressions">
+                                        <label class="form-check-label">Impressions</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" name="kpis" value="clicks">
+                                        <label class="form-check-label">Clicks</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" name="kpis" value="conversions">
+                                        <label class="form-check-label">Conversions</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" name="kpis" value="roi">
+                                        <label class="form-check-label">ROI</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" name="kpis" value="brand_awareness">
+                                        <label class="form-check-label">Brand Awareness</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Cost Breakdown -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">💵 Cost Breakdown</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between mb-2">
+                                    <span>Media Budget:</span>
+                                    <span id="media_budget">$0</span>
+                                </div>
+                                <div class="d-flex justify-content-between mb-2">
+                                    <span>Platform Service Fee (15%):</span>
+                                    <span id="service_fee">$0</span>
+                                </div>
+                                <div class="d-flex justify-content-between mb-2">
+                                    <span>Creative Production:</span>
+                                    <span>Included</span>
+                                </div>
+                                <hr>
+                                <div class="d-flex justify-content-between fw-bold">
+                                    <span>Total Campaign Cost:</span>
+                                    <span id="total_cost">$0</span>
+                                </div>
+                                
+                                <div class="mt-3 p-3 bg-light rounded">
+                                    <small class="text-muted">
+                                        <strong>What's Included:</strong>
+                                        <ul class="mb-0 mt-1">
+                                            <li>Campaign strategy & planning</li>
+                                            <li>Creative asset development</li>
+                                            <li>Multi-platform distribution</li>
+                                            <li>Performance monitoring</li>
+                                            <li>Weekly progress reports</li>
+                                            <li>Optimization & adjustments</li>
+                                        </ul>
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Action Buttons -->
+                        <div class="card">
+                            <div class="card-body">
+                                <button type="submit" class="btn btn-primary w-100 mb-2">
+                                    <i class="fas fa-rocket"></i> Create Campaign
+                                </button>
+                                <a href="{{ url_for('custom_marketing_quote') }}" class="btn btn-outline-secondary w-100">
+                                    <i class="fas fa-quote-left"></i> Get Custom Quote
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+// Update cost breakdown when budget changes
+document.getElementById('total_budget').addEventListener('input', function() {
+    const totalBudget = parseFloat(this.value) || 0;
+    const serviceFee = totalBudget * 0.15;
+    const mediaBudget = totalBudget - serviceFee;
+    
+    document.getElementById('media_budget').textContent = '$' + mediaBudget.toLocaleString();
+    document.getElementById('service_fee').textContent = '$' + serviceFee.toLocaleString();
+    document.getElementById('total_cost').textContent = '$' + totalBudget.toLocaleString();
+});
+
+// Set minimum date to today
+document.getElementById('start_date').min = new Date().toISOString().split('T')[0];
+document.getElementById('end_date').min = new Date().toISOString().split('T')[0];
+
+// Update end date when start date changes
+document.getElementById('start_date').addEventListener('change', function() {
+    const startDate = new Date(this.value);
+    const minEndDate = new Date(startDate);
+    minEndDate.setDate(minEndDate.getDate() + 7); // Minimum 7 days campaign
+    
+    document.getElementById('end_date').min = minEndDate.toISOString().split('T')[0];
+    
+    // Auto-set end date to 30 days later if not set
+    if (!document.getElementById('end_date').value) {
+        const suggestedEndDate = new Date(startDate);
+        suggestedEndDate.setDate(suggestedEndDate.getDate() + 30);
+        document.getElementById('end_date').value = suggestedEndDate.toISOString().split('T')[0];
+    }
+});
+
+// Form validation
+document.querySelector('form').addEventListener('submit', function(e) {
+    const totalBudget = parseFloat(document.getElementById('total_budget').value);
+    if (totalBudget < 500) {
+        e.preventDefault();
+        alert('Minimum campaign budget is $500');
+        return;
+    }
+    
+    const startDate = new Date(document.getElementById('start_date').value);
+    const endDate = new Date(document.getElementById('end_date').value);
+    const daysDiff = (endDate - startDate) / (1000 * 60 * 60 * 24);
+    
+    if (daysDiff < 7) {
+        e.preventDefault();
+        alert('Campaign must run for at least 7 days');
+        return;
+    }
+});
+</script>
+
+<style>
+.form-check-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.form-check-inline {
+    margin-right: 0;
+}
+
+.card-header h5 {
+    color: #495057;
+}
+
+.bg-light {
+    background-color: #f8f9fa !important;
+}
+
+#media_budget, #service_fee, #total_cost {
+    font-weight: 600;
+    color: #28a745;
+}
+</style>
+{% endblock %}

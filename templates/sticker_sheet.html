@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% block content %}
+<h1 class="text-2xl font-semibold mb-4">Sticker Sheet – {{ camp.name }}</h1>
+<p class="text-gray-600 mb-4">Print to Avery 5160/8160 (3x10) or similar.</p>
+<div class="grid grid-cols-3 gap-4 print:grid-cols-3">
+{% for l in links %}
+<div class="bg-white p-3 rounded border flex flex-col items-center justify-center">
+<img src="/static/qr/{{ camp.id }}_{{ l.contact_id }}_{{ l.code }}.png" class="w-24 h-24" alt="qr" />
+<div class="text-xs mt-2 break-all">{{ l.url }}</div>
+</div>
+{% endfor %}
+</div>
+<style>
+@media print { nav, .print\:hidden { display: none; } body { background: #fff; } }
+</style>
+{% endblock %}

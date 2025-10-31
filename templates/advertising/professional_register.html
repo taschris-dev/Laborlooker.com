@@ -1,0 +1,445 @@
+{% extends "base.html" %}
+
+{% block title %}Register as Advertising Professional - Labor Lookers{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card">
+                <div class="card-header">
+                    <h3><i class="fas fa-user-plus"></i> Register as Advertising Professional</h3>
+                    <p class="text-muted mb-0">Join our marketplace and start earning from your advertising expertise</p>
+                </div>
+                <div class="card-body">
+                    <form method="POST" action="{{ url_for('register_advertising_professional') }}">
+                        <!-- Business Information -->
+                        <div class="row mb-4">
+                            <div class="col-12">
+                                <h5><i class="fas fa-building"></i> Business Information</h5>
+                                <hr>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label" for="business_name">Business Name *</label>
+                                <input type="text" class="form-control" id="business_name" name="business_name" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label" for="specialization">Specialization *</label>
+                                <select class="form-select" id="specialization" name="specialization" required>
+                                    <option value="">Select your specialization</option>
+                                    <option value="physical_media">Physical Media & Print</option>
+                                    <option value="web_advertising">Web & Digital Advertising</option>
+                                    <option value="marketing_management">Marketing Strategy & Management</option>
+                                </select>
+                            </div>
+                            <div class="col-12 mb-3">
+                                <label class="form-label" for="business_description">Business Description *</label>
+                                <textarea class="form-control" id="business_description" name="business_description" 
+                                          rows="3" required placeholder="Describe your business, services, and what makes you unique..."></textarea>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label" for="experience_years">Years of Experience</label>
+                                <input type="number" class="form-control" id="experience_years" name="experience_years" min="0" value="0">
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label" for="years_in_business">Years in Business</label>
+                                <input type="number" class="form-control" id="years_in_business" name="years_in_business" min="0" value="0">
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label" for="team_size">Team Size</label>
+                                <input type="number" class="form-control" id="team_size" name="team_size" min="1" value="1">
+                            </div>
+                        </div>
+
+                        <!-- Service Area -->
+                        <div class="row mb-4">
+                            <div class="col-12">
+                                <h5><i class="fas fa-map-marker-alt"></i> Service Area</h5>
+                                <hr>
+                            </div>
+                            <div class="col-md-8 mb-3">
+                                <label class="form-label" for="service_area_cities">Cities/Areas Served</label>
+                                <input type="text" class="form-control" id="service_area_cities" name="service_area_cities" 
+                                       placeholder="Enter cities separated by commas (e.g., New York, Brooklyn, Manhattan)">
+                                <small class="text-muted">Leave blank if you serve all areas</small>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label" for="service_area_radius">Service Radius (miles)</label>
+                                <input type="number" class="form-control" id="service_area_radius" name="service_area_radius" 
+                                       value="25" min="1">
+                            </div>
+                            <div class="col-12 mb-3">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="remote_services_available" 
+                                           name="remote_services_available" checked>
+                                    <label class="form-check-label" for="remote_services_available">
+                                        I offer remote services
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Pricing -->
+                        <div class="row mb-4">
+                            <div class="col-12">
+                                <h5><i class="fas fa-dollar-sign"></i> Pricing</h5>
+                                <hr>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label" for="base_hourly_rate">Base Hourly Rate ($)</label>
+                                <input type="number" class="form-control" id="base_hourly_rate" name="base_hourly_rate" 
+                                       min="0" step="1" placeholder="75">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label" for="project_minimum">Project Minimum ($)</label>
+                                <input type="number" class="form-control" id="project_minimum" name="project_minimum" 
+                                       min="0" step="50" placeholder="500">
+                            </div>
+                        </div>
+
+                        <!-- Portfolio -->
+                        <div class="row mb-4">
+                            <div class="col-12">
+                                <h5><i class="fas fa-portfolio"></i> Portfolio & Credentials</h5>
+                                <hr>
+                            </div>
+                            <div class="col-12 mb-3">
+                                <label class="form-label" for="portfolio_url">Portfolio URL</label>
+                                <input type="url" class="form-control" id="portfolio_url" name="portfolio_url" 
+                                       placeholder="https://www.yourportfolio.com">
+                                <small class="text-muted">Link to your website, LinkedIn, or portfolio</small>
+                            </div>
+                        </div>
+
+                        <!-- Specialization-Specific Options -->
+                        <div id="physical_media_options" class="specialization-options" style="display: none;">
+                            <div class="row mb-4">
+                                <div class="col-12">
+                                    <h5><i class="fas fa-print"></i> Physical Media Services</h5>
+                                    <hr>
+                                </div>
+                                <div class="col-md-6">
+                                    <h6>Products Offered</h6>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="offers_stickers" name="offers_stickers">
+                                        <label class="form-check-label" for="offers_stickers">Stickers</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="offers_flyers" name="offers_flyers">
+                                        <label class="form-check-label" for="offers_flyers">Flyers</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="offers_business_cards" name="offers_business_cards">
+                                        <label class="form-check-label" for="offers_business_cards">Business Cards</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="offers_brochures" name="offers_brochures">
+                                        <label class="form-check-label" for="offers_brochures">Brochures</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="offers_banners" name="offers_banners">
+                                        <label class="form-check-label" for="offers_banners">Banners</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="offers_yard_signs" name="offers_yard_signs">
+                                        <label class="form-check-label" for="offers_yard_signs">Yard Signs</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="offers_vehicle_wraps" name="offers_vehicle_wraps">
+                                        <label class="form-check-label" for="offers_vehicle_wraps">Vehicle Wraps</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="offers_promotional_items" name="offers_promotional_items">
+                                        <label class="form-check-label" for="offers_promotional_items">Promotional Items</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="offers_apparel" name="offers_apparel">
+                                        <label class="form-check-label" for="offers_apparel">Apparel</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <h6>Additional Services</h6>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="design_services_included" name="design_services_included" checked>
+                                        <label class="form-check-label" for="design_services_included">Design Services Included</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="local_delivery_available" name="local_delivery_available" checked>
+                                        <label class="form-check-label" for="local_delivery_available">Local Delivery Available</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="shipping_available" name="shipping_available" checked>
+                                        <label class="form-check-label" for="shipping_available">Shipping Available</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="web_advertising_options" class="specialization-options" style="display: none;">
+                            <div class="row mb-4">
+                                <div class="col-12">
+                                    <h5><i class="fas fa-globe"></i> Web Advertising Services</h5>
+                                    <hr>
+                                </div>
+                                <div class="col-md-6">
+                                    <h6>Platform Certifications</h6>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="google_ads_certified" name="google_ads_certified">
+                                        <label class="form-check-label" for="google_ads_certified">Google Ads Certified</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="facebook_ads_certified" name="facebook_ads_certified">
+                                        <label class="form-check-label" for="facebook_ads_certified">Facebook Ads Certified</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="linkedin_ads_certified" name="linkedin_ads_certified">
+                                        <label class="form-check-label" for="linkedin_ads_certified">LinkedIn Ads Certified</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="microsoft_ads_certified" name="microsoft_ads_certified">
+                                        <label class="form-check-label" for="microsoft_ads_certified">Microsoft Ads Certified</label>
+                                    </div>
+
+                                    <h6 class="mt-3">Pricing</h6>
+                                    <div class="mb-2">
+                                        <label class="form-label" for="setup_fee">Setup Fee ($)</label>
+                                        <input type="number" class="form-control" id="setup_fee" name="setup_fee" value="500" min="0">
+                                    </div>
+                                    <div class="mb-2">
+                                        <label class="form-label" for="monthly_management_fee">Monthly Management Fee ($)</label>
+                                        <input type="number" class="form-control" id="monthly_management_fee" name="monthly_management_fee" value="1000" min="0">
+                                    </div>
+                                    <div class="mb-2">
+                                        <label class="form-label" for="minimum_ad_spend">Minimum Ad Spend ($)</label>
+                                        <input type="number" class="form-control" id="minimum_ad_spend" name="minimum_ad_spend" value="1000" min="0">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <h6>Service Offerings</h6>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="offers_search_ads" name="offers_search_ads" checked>
+                                        <label class="form-check-label" for="offers_search_ads">Search Advertising</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="offers_display_ads" name="offers_display_ads" checked>
+                                        <label class="form-check-label" for="offers_display_ads">Display Advertising</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="offers_social_media_ads" name="offers_social_media_ads" checked>
+                                        <label class="form-check-label" for="offers_social_media_ads">Social Media Advertising</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="offers_retargeting" name="offers_retargeting" checked>
+                                        <label class="form-check-label" for="offers_retargeting">Retargeting Campaigns</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="offers_landing_pages" name="offers_landing_pages">
+                                        <label class="form-check-label" for="offers_landing_pages">Landing Page Creation</label>
+                                    </div>
+
+                                    <h6 class="mt-3">Specializations</h6>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="specializes_in_lead_generation" name="specializes_in_lead_generation" checked>
+                                        <label class="form-check-label" for="specializes_in_lead_generation">Lead Generation</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="specializes_in_local_business" name="specializes_in_local_business" checked>
+                                        <label class="form-check-label" for="specializes_in_local_business">Local Business</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="provides_weekly_reports" name="provides_weekly_reports" checked>
+                                        <label class="form-check-label" for="provides_weekly_reports">Weekly Reporting</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="provides_monthly_reports" name="provides_monthly_reports" checked>
+                                        <label class="form-check-label" for="provides_monthly_reports">Monthly Reporting</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="marketing_management_options" class="specialization-options" style="display: none;">
+                            <div class="row mb-4">
+                                <div class="col-12">
+                                    <h5><i class="fas fa-chart-line"></i> Marketing Management Services</h5>
+                                    <hr>
+                                </div>
+                                <div class="col-md-6">
+                                    <h6>Expertise Areas</h6>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="specializes_in_strategy" name="specializes_in_strategy" checked>
+                                        <label class="form-check-label" for="specializes_in_strategy">Marketing Strategy</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="specializes_in_branding" name="specializes_in_branding" checked>
+                                        <label class="form-check-label" for="specializes_in_branding">Brand Development</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="specializes_in_content_marketing" name="specializes_in_content_marketing" checked>
+                                        <label class="form-check-label" for="specializes_in_content_marketing">Content Marketing</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="specializes_in_email_marketing" name="specializes_in_email_marketing" checked>
+                                        <label class="form-check-label" for="specializes_in_email_marketing">Email Marketing</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="specializes_in_social_media" name="specializes_in_social_media" checked>
+                                        <label class="form-check-label" for="specializes_in_social_media">Social Media Marketing</label>
+                                    </div>
+
+                                    <h6 class="mt-3">Service Packages</h6>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="offers_strategy_consultation" name="offers_strategy_consultation" checked>
+                                        <label class="form-check-label" for="offers_strategy_consultation">Strategy Consultation</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="offers_campaign_management" name="offers_campaign_management" checked>
+                                        <label class="form-check-label" for="offers_campaign_management">Campaign Management</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="offers_content_creation" name="offers_content_creation" checked>
+                                        <label class="form-check-label" for="offers_content_creation">Content Creation</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="offers_brand_development" name="offers_brand_development" checked>
+                                        <label class="form-check-label" for="offers_brand_development">Brand Development</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <h6>Pricing</h6>
+                                    <div class="mb-2">
+                                        <label class="form-label" for="campaign_management_fee">Monthly Campaign Management ($)</label>
+                                        <input type="number" class="form-control" id="campaign_management_fee" name="campaign_management_fee" value="2000" min="0">
+                                    </div>
+                                    <div class="mb-2">
+                                        <label class="form-label" for="minimum_campaign_budget">Minimum Campaign Budget ($)</label>
+                                        <input type="number" class="form-control" id="minimum_campaign_budget" name="minimum_campaign_budget" value="5000" min="0">
+                                    </div>
+                                    <div class="form-check mb-3">
+                                        <input class="form-check-input" type="checkbox" id="requires_retainer" name="requires_retainer" checked>
+                                        <label class="form-check-label" for="requires_retainer">Requires Retainer</label>
+                                    </div>
+                                    <div class="mb-2">
+                                        <label class="form-label" for="retainer_amount">Retainer Amount ($)</label>
+                                        <input type="number" class="form-control" id="retainer_amount" name="retainer_amount" value="3000" min="0">
+                                    </div>
+
+                                    <h6 class="mt-3">Team & Resources</h6>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="experience_professional_services" name="experience_professional_services" checked>
+                                        <label class="form-check-label" for="experience_professional_services">Professional Services Experience</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="has_copywriting_team" name="has_copywriting_team" checked>
+                                        <label class="form-check-label" for="has_copywriting_team">Copywriting Team</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="has_data_analytics" name="has_data_analytics" checked>
+                                        <label class="form-check-label" for="has_data_analytics">Data Analytics Capability</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Terms and Submit -->
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="alert alert-info">
+                                    <h6><i class="fas fa-info-circle"></i> Platform Commission</h6>
+                                    <p class="mb-0">Labor Lookers charges a 10% commission on all completed work orders. This commission helps us maintain the platform, provide customer support, and handle payment processing.</p>
+                                </div>
+                                
+                                <div class="form-check mb-3">
+                                    <input class="form-check-input" type="checkbox" id="agree_terms" name="agree_terms" required>
+                                    <label class="form-check-label" for="agree_terms">
+                                        I agree to the <a href="/terms" target="_blank">Terms of Service</a> and <a href="/privacy" target="_blank">Privacy Policy</a> *
+                                    </label>
+                                </div>
+
+                                <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                                    <a href="{{ url_for('advertising_marketplace') }}" class="btn btn-outline-secondary">
+                                        <i class="fas fa-arrow-left"></i> Back to Marketplace
+                                    </a>
+                                    <button type="submit" class="btn btn-success btn-lg">
+                                        <i class="fas fa-check"></i> Register as Professional
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.specialization-options {
+    transition: all 0.3s ease;
+}
+
+.form-check {
+    margin-bottom: 0.5rem;
+}
+
+.card {
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.form-control:focus,
+.form-select:focus {
+    border-color: #0d6efd;
+    box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const specializationSelect = document.getElementById('specialization');
+    const optionsDivs = document.querySelectorAll('.specialization-options');
+
+    specializationSelect.addEventListener('change', function() {
+        // Hide all options
+        optionsDivs.forEach(div => {
+            div.style.display = 'none';
+        });
+
+        // Show relevant options
+        const selectedValue = this.value;
+        if (selectedValue) {
+            const targetDiv = document.getElementById(selectedValue + '_options');
+            if (targetDiv) {
+                targetDiv.style.display = 'block';
+            }
+        }
+    });
+
+    // Form validation
+    const form = document.querySelector('form');
+    form.addEventListener('submit', function(e) {
+        const businessName = document.getElementById('business_name').value.trim();
+        const specialization = document.getElementById('specialization').value;
+        const businessDescription = document.getElementById('business_description').value.trim();
+        const agreeTerms = document.getElementById('agree_terms').checked;
+
+        if (!businessName || !specialization || !businessDescription || !agreeTerms) {
+            e.preventDefault();
+            alert('Please fill in all required fields and agree to the terms.');
+            return false;
+        }
+
+        // Additional validation based on specialization
+        if (specialization === 'physical_media') {
+            const offeredProducts = document.querySelectorAll('#physical_media_options input[type="checkbox"]:checked');
+            if (offeredProducts.length === 0) {
+                e.preventDefault();
+                alert('Please select at least one product you offer for physical media services.');
+                return false;
+            }
+        }
+
+        return true;
+    });
+});
+</script>
+{% endblock %}

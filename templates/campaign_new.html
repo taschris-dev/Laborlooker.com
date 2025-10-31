@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% block content %}
+<h1 class="text-2xl font-semibold mb-4">New Campaign</h1>
+<form method="post" class="bg-white p-4 rounded shadow max-w-xl space-y-3">
+<div>
+<label class="text-sm">Client</label>
+<select name="client_id" class="w-full border rounded p-2" required>
+{% for c in clients %}
+<option value="{{ c.id }}">{{ c.name }}</option>
+{% endfor %}
+</select>
+</div>
+<div>
+<label class="text-sm">Campaign Name</label>
+<input name="name" required class="w-full border rounded p-2" placeholder="HVAC Fall Referral Push" />
+</div>
+<div>
+<label class="text-sm">Campaign Type</label>
+<select name="campaign_type" class="w-full border rounded p-2" required>
+<option value="referral">Referral Campaign</option>
+<option value="direct_mail">Direct Mail Campaign</option>
+<option value="sticker">Sticker Campaign</option>
+<option value="media">Media Campaign</option>
+<option value="digital">Digital Campaign</option>
+</select>
+</div>
+<div>
+<label class="text-sm">Budget ($)</label>
+<input name="budget" type="number" step="0.01" class="w-full border rounded p-2" placeholder="1000.00" />
+</div>
+<div>
+<label class="text-sm">Incentive</label>
+<input name="incentive" class="w-full border rounded p-2" placeholder="$50 gift card for successful referral" />
+</div>
+<div>
+<label class="text-sm">Message Template</label>
+<textarea name="message" class="w-full border rounded p-2" placeholder="Hey {{name}}, refer a friend who needs HVAC service and get $50 when they book."></textarea>
+</div>
+<button class="bg-blue-600 text-white px-4 py-2 rounded">Create Campaign</button>
+</form>
+{% endblock %}

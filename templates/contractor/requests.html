@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block title %}Work Requests - Marketing Tech Platform{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <div class="flex justify-between items-center mb-8">
+        <h1 class="text-3xl font-bold text-gray-900">Work Requests</h1>
+        <a href="{{ url_for('contractor_dashboard') }}" 
+           class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition duration-200">
+            ← Back to Dashboard
+        </a>
+    </div>
+
+    {% if work_requests %}
+        <div class="bg-white rounded-lg shadow-md">
+            <div class="px-6 py-4 border-b border-gray-200">
+                <h2 class="text-xl font-semibold text-gray-900">Your Work Requests</h2>
+            </div>
+            <div class="p-6">
+                {% for request in work_requests %}
+                <div class="border-b border-gray-200 py-4">
+                    <h3 class="font-semibold">Request #{{ request.id }}</h3>
+                    <p class="text-gray-600">Status: {{ request.status }}</p>
+                    <p class="text-gray-600">Service: {{ request.service_category }}</p>
+                    <p class="text-gray-600">Created: {{ request.created_at.strftime('%Y-%m-%d') }}</p>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    {% else %}
+        <div class="bg-white rounded-lg shadow-md p-6 text-center">
+            <h2 class="text-xl font-semibold mb-4">No Work Requests Yet</h2>
+            <p class="text-gray-600 mb-4">
+                You don't have any work requests at the moment. When customers submit requests that match your services, they'll appear here.
+            </p>
+            <a href="{{ url_for('contractor_profile') }}" 
+               class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition duration-200">
+                Complete Your Profile
+            </a>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

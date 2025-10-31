@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="max-w-xl mx-auto bg-white p-6 rounded shadow">
+<h1 class="text-2xl font-semibold mb-2">{{ client.name }} Referral</h1>
+<p class="text-gray-600 mb-4">{{ camp.incentive }}</p>
+<form method="post" action="/lead" class="space-y-3">
+<input type="hidden" name="code" value="{{ link.code }}" />
+<div>
+<label class="text-sm">Name</label>
+<input name="name" class="w-full border rounded p-2" required />
+</div>
+<div>
+<label class="text-sm">Email</label>
+<input name="email" type="email" class="w-full border rounded p-2" />
+</div>
+<div>
+<label class="text-sm">Phone</label>
+<input name="phone" class="w-full border rounded p-2" />
+</div>
+<div>
+<label class="text-sm">Notes</label>
+<textarea name="notes" class="w-full border rounded p-2"></textarea>
+</div>
+<button class="bg-blue-600 text-white px-4 py-2 rounded">Request Callback</button>
+</form>
+</div>
+{% endblock %}

@@ -1,0 +1,166 @@
+{% extends "base.html" %}
+
+{% block title %}Contractor Profile - Marketing Tech Platform{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <div class="flex justify-between items-center mb-8">
+        <h1 class="text-3xl font-bold text-gray-900">Contractor Profile</h1>
+        <a href="{{ url_for('contractor_dashboard') }}" 
+           class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition duration-200">
+            ← Back to Dashboard
+        </a>
+    </div>
+
+    <form method="POST" class="space-y-8">
+        <!-- Business Information -->
+        <div class="bg-white rounded-lg shadow-md p-6">
+            <h2 class="text-xl font-semibold mb-4">📋 Business Information</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Business Name *</label>
+                    <input type="text" name="business_name" 
+                           value="{{ profile.business_name if profile else '' }}"
+                           class="w-full border border-gray-300 rounded-md px-3 py-2" required>
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Contact Name *</label>
+                    <input type="text" name="contact_name" 
+                           value="{{ profile.contact_name if profile else '' }}"
+                           class="w-full border border-gray-300 rounded-md px-3 py-2" required>
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Phone Number</label>
+                    <input type="tel" name="phone" 
+                           value="{{ profile.phone if profile else '' }}"
+                           class="w-full border border-gray-300 rounded-md px-3 py-2">
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Business Location</label>
+                    <input type="text" name="location" 
+                           value="{{ profile.location if profile else '' }}"
+                           placeholder="City, State"
+                           class="w-full border border-gray-300 rounded-md px-3 py-2">
+                </div>
+            </div>
+        </div>
+        
+        <!-- Service Area -->
+        <div class="bg-white rounded-lg shadow-md p-6">
+            <h2 class="text-xl font-semibold mb-4">📍 Service Area</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Geographic Area</label>
+                    <select name="geographic_area" class="w-full border border-gray-300 rounded-md px-3 py-2">
+                        <option value="">Select Area</option>
+                        <option value="low country" {{ "selected" if profile and profile.geographic_area == "low country" }}>Low Country</option>
+                        <option value="midlands" {{ "selected" if profile and profile.geographic_area == "midlands" }}>Midlands</option>
+                        <option value="upstate" {{ "selected" if profile and profile.geographic_area == "upstate" }}>Upstate</option>
+                    </select>
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Service Radius (miles)</label>
+                    <input type="number" name="service_radius" 
+                           value="{{ profile.service_radius if profile else '' }}"
+                           min="1" max="100"
+                           class="w-full border border-gray-300 rounded-md px-3 py-2">
+                </div>
+            </div>
+        </div>
+        
+        <!-- Service Categories -->
+        <div class="bg-white rounded-lg shadow-md p-6">
+            <h2 class="text-xl font-semibold mb-4">🔧 Service Categories</h2>
+            <p class="text-gray-600 mb-4">Select all services you provide:</p>
+            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
+                {% for category in service_categories %}
+                <label class="flex items-center space-x-2">
+                    <input type="checkbox" name="services" value="{{ category }}"
+                           {% if profile and category in (profile.services or "").split(",") %}checked{% endif %}
+                           class="rounded border-gray-300">
+                    <span class="text-sm">{{ category.replace("_", " ").title() }}</span>
+                </label>
+                {% endfor %}
+            </div>
+        </div>
+        
+        <!-- Billing Plan -->
+        <div class="bg-white rounded-lg shadow-md p-6">
+            <h2 class="text-xl font-semibold mb-4">� Billing Plan</h2>
+            <div class="space-y-4">
+                <label class="flex items-center space-x-3 p-4 border rounded-lg cursor-pointer">
+                    <input type="radio" name="billing_plan" value="commission_only"
+                           {% if not profile or profile.billing_plan == "commission_only" %}checked{% endif %}
+                           class="text-blue-600">
+                    <div>
+                        <div class="font-semibold">Commission Only (10%)</div>
+                        <div class="text-sm text-gray-600">Pay 10% commission on completed work</div>
+                    </div>
+                </label>
+                
+                <label class="flex items-center space-x-3 p-4 border rounded-lg cursor-pointer">
+                    <input type="radio" name="billing_plan" value="subscription_plus_commission"
+                           {% if profile and profile.billing_plan == "subscription_plus_commission" %}checked{% endif %}
+                           class="text-blue-600">
+                    <div>
+                        <div class="font-semibold">Subscription + Commission ($30/month + 5%)</div>
+                        <div class="text-sm text-gray-600">Lower commission rate with monthly subscription</div>
+                    </div>
+                </label>
+            </div>
+        </div>
+        
+        <!-- Payment Information -->
+        <div class="bg-white rounded-lg shadow-md p-6">
+            <h2 class="text-xl font-semibold mb-4">🏦 Payment Information</h2>
+            <p class="text-sm text-gray-600 mb-4">This information is used to pay you for completed work.</p>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Bank Name</label>
+                    <input type="text" name="bank_name" 
+                           value="{{ profile.bank_name if profile else '' }}"
+                           class="w-full border border-gray-300 rounded-md px-3 py-2">
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Routing Number</label>
+                    <input type="text" name="routing_number" 
+                           value="{{ profile.routing_number if profile else '' }}"
+                           maxlength="9" pattern="[0-9]{9}"
+                           class="w-full border border-gray-300 rounded-md px-3 py-2">
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Account Number</label>
+                    <input type="text" name="account_number" 
+                           value="{{ profile.account_number if profile else '' }}"
+                           class="w-full border border-gray-300 rounded-md px-3 py-2">
+                </div>
+            </div>
+        </div>
+        
+        <!-- Work Hours -->
+        <div class="bg-white rounded-lg shadow-md p-6">
+            <h2 class="text-xl font-semibold mb-4">🕒 Work Hours</h2>
+            <textarea name="work_hours" rows="4" 
+                      placeholder="Example: Monday-Friday 8AM-5PM, Weekends by appointment"
+                      class="w-full border border-gray-300 rounded-md px-3 py-2">{{ profile.work_hours if profile else '' }}</textarea>
+        </div>
+        
+        <div class="flex space-x-4">
+            <button type="submit" 
+                    class="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-lg transition duration-200">
+                Save Profile
+            </button>
+            <a href="{{ url_for('contractor_dashboard') }}" 
+               class="bg-gray-600 hover:bg-gray-700 text-white px-6 py-2 rounded-lg transition duration-200">
+                Cancel
+            </a>
+        </div>
+    </form>
+</div>
+{% endblock %}
