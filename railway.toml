@@ -26,21 +26,21 @@ services:
     healthcheckPath: /health
     healthcheckTimeout: 300
     domains:
-      - api.laborlookers.com
+      - api.laborlooker.com
 
   web:
     source: apps/web
     variables:
       NODE_ENV: production
       PORT: 3001
-      NEXT_PUBLIC_API_URL: https://api.laborlookers.com
-      NEXT_PUBLIC_WS_URL: wss://ws.laborlookers.com
-      NEXTAUTH_URL: https://app.laborlookers.com
+      NEXT_PUBLIC_API_URL: https://api.laborlooker.com
+      NEXT_PUBLIC_WS_URL: wss://ws.laborlooker.com
+      NEXTAUTH_URL: https://app.laborlooker.com
       NEXTAUTH_SECRET: ${{NEXTAUTH_SECRET}}
     healthcheckPath: /health
     healthcheckTimeout: 300
     domains:
-      - app.laborlookers.com
+      - app.laborlooker.com
 
   ws:
     source: apps/ws
@@ -51,7 +51,7 @@ services:
     healthcheckPath: /health
     healthcheckTimeout: 300
     domains:
-      - ws.laborlookers.com
+      - ws.laborlooker.com
 
   worker:
     source: apps/worker
