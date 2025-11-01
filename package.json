@@ -1,0 +1,32 @@
+{
+  "name": "laborlookers",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "build": "pnpm run --filter=\"*\" build",
+    "dev": "pnpm run --filter=\"*\" dev",
+    "lint": "pnpm run --filter=\"*\" lint",
+    "test": "pnpm run --filter=\"*\" test",
+    "clean": "pnpm run --filter=\"*\" clean",
+    "typecheck": "pnpm run --filter=\"*\" typecheck",
+    "db:migrate": "pnpm run --filter api db:migrate",
+    "db:seed": "pnpm run --filter api db:seed",
+    "db:studio": "pnpm run --filter api db:studio"
+  },
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^6.21.0",
+    "@typescript-eslint/parser": "^6.21.0",
+    "eslint": "^8.56.0",
+    "eslint-config-prettier": "^9.1.0",
+    "prettier": "^3.2.5",
+    "typescript": "^5.3.3"
+  },
+  "engines": {
+    "node": ">=20.0.0",
+    "pnpm": ">=8.0.0"
+  },
+  "packageManager": "pnpm@8.15.1"
+}
