@@ -17,6 +17,9 @@
                     <a href="/job_seeker/profile" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors">
                         <i class="fas fa-user mr-2"></i>Update Profile
                     </a>
+                    <a href="/training/courses" class="bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 transition-colors">
+                        <i class="fas fa-graduation-cap mr-2"></i>Free Training
+                    </a>
                     <a href="/job_seeker/find-work" class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors">
                         <i class="fas fa-search mr-2"></i>Find Work
                     </a>
@@ -78,7 +81,7 @@
                                             </div>
                                         </div>
                                         <div class="ml-4">
-                                            <button onclick="applyToJob({{ job.id }})" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors">
+                                            <button data-job-id="{{ job.id }}" class="apply-job-btn bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors">
                                                 Apply Now
                                             </button>
                                         </div>
@@ -126,10 +129,10 @@
                                         </div>
                                         <div class="ml-4">
                                             {% if match.status == 'matched' %}
-                                                <button onclick="respondToMatch({{ match.id }}, 'interested')" class="bg-green-600 text-white px-3 py-1 rounded text-sm hover:bg-green-700 transition-colors mr-2">
+                                                <button data-match-id="{{ match.id }}" data-response="interested" class="respond-match-btn bg-green-600 text-white px-3 py-1 rounded text-sm hover:bg-green-700 transition-colors mr-2">
                                                     Accept
                                                 </button>
-                                                <button onclick="respondToMatch({{ match.id }}, 'not_interested')" class="bg-gray-300 text-gray-700 px-3 py-1 rounded text-sm hover:bg-gray-400 transition-colors">
+                                                <button data-match-id="{{ match.id }}" data-response="not_interested" class="respond-match-btn bg-gray-300 text-gray-700 px-3 py-1 rounded text-sm hover:bg-gray-400 transition-colors">
                                                     Decline
                                                 </button>
                                             {% elif match.status == 'interview' %}
@@ -176,7 +179,7 @@
                                 <span class="text-sm font-medium text-gray-900">{{ completion }}%</span>
                             </div>
                             <div class="w-full bg-gray-200 rounded-full h-2">
-                                <div class="bg-green-600 h-2 rounded-full" style="width: {{ completion }}%"></div>
+                                <div class="bg-green-600 h-2 rounded-full" style="width:{{ completion }}%"></div>
                             </div>
                         </div>
                         
@@ -232,12 +235,42 @@
                     </div>
                 </div>
 
+                <!-- Free Training Promotion -->
+                <div class="bg-gradient-to-r from-purple-600 to-indigo-600 rounded-lg shadow-sm p-6 text-white">
+                    <h3 class="text-lg font-semibold mb-3">
+                        <i class="fas fa-graduation-cap mr-2"></i>Boost Your Skills!
+                    </h3>
+                    <p class="text-purple-100 mb-4 text-sm">
+                        Get ahead with <strong>FREE</strong> training courses and earn industry-recognized certifications.
+                    </p>
+                    <div class="space-y-2 mb-4 text-sm">
+                        <div class="flex items-center">
+                            <i class="fas fa-check-circle mr-2 text-green-300"></i>
+                            <span>50+ Free Courses</span>
+                        </div>
+                        <div class="flex items-center">
+                            <i class="fas fa-check-circle mr-2 text-green-300"></i>
+                            <span>Industry Certifications</span>
+                        </div>
+                        <div class="flex items-center">
+                            <i class="fas fa-check-circle mr-2 text-green-300"></i>
+                            <span>OSHA, EPA & More</span>
+                        </div>
+                    </div>
+                    <a href="/training/courses" class="block w-full bg-white text-purple-600 text-center font-semibold px-4 py-2 rounded-lg hover:bg-gray-50 transition-colors">
+                        <i class="fas fa-rocket mr-2"></i>Start Training Now
+                    </a>
+                </div>
+
                 <!-- Resources -->
                 <div class="bg-white rounded-lg shadow-sm p-6">
                     <h3 class="text-lg font-semibold text-gray-900 mb-4">
-                        <i class="fas fa-graduation-cap text-purple-600 mr-2"></i>Resources
+                        <i class="fas fa-tools text-gray-600 mr-2"></i>Career Resources
                     </h3>
                     <div class="space-y-3">
+                        <a href="/training/courses" class="block text-purple-600 hover:text-purple-800 transition-colors font-medium">
+                            <i class="fas fa-graduation-cap mr-2"></i>Free Training & Certs
+                        </a>
                         <a href="/resources/resume-builder" class="block text-blue-600 hover:text-blue-800 transition-colors">
                             <i class="fas fa-file-alt mr-2"></i>Resume Builder
                         </a>
@@ -258,6 +291,26 @@
 </div>
 
 <script>
+// Add event listeners when page loads
+document.addEventListener('DOMContentLoaded', function() {
+    // Apply to job buttons
+    document.querySelectorAll('.apply-job-btn').forEach(button => {
+        button.addEventListener('click', function() {
+            const jobId = this.getAttribute('data-job-id');
+            applyToJob(jobId);
+        });
+    });
+    
+    // Respond to match buttons
+    document.querySelectorAll('.respond-match-btn').forEach(button => {
+        button.addEventListener('click', function() {
+            const matchId = this.getAttribute('data-match-id');
+            const response = this.getAttribute('data-response');
+            respondToMatch(matchId, response);
+        });
+    });
+});
+
 function applyToJob(jobId) {
     // AJAX call to apply to job
     fetch('/job_seeker/apply', {

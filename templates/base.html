@@ -4,8 +4,17 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>{% block title %}LaborLooker - Connecting Local Businesses{% endblock %}</title>
+<meta name="description" content="LaborLooker connects skilled workers with local businesses. Find work, hire professionals, and grow your network in the construction and trades industry.">
+<meta name="keywords" content="construction jobs, skilled labor, contractors, local business, job matching, trades, blue collar">
+<link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='images/favicon.ico') }}">
+<link rel="icon" type="image/png" sizes="32x32" href="{{ url_for('static', filename='images/logo-small.png') }}">
+<link rel="apple-touch-icon" href="{{ url_for('static', filename='images/logo-square.png') }}">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <script src="https://cdn.tailwindcss.com"></script>
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+<link href="{{ url_for('static', filename='styles.css') }}" rel="stylesheet">
 <style>
     .hamburger-menu {
         position: fixed;
@@ -38,16 +47,34 @@
     .rating-stars {
         color: #ffc107;
     }
+    .logo-container {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    .logo-image {
+        height: 40px;
+        width: auto;
+    }
+    @media (max-width: 768px) {
+        .logo-image {
+            height: 32px;
+        }
+    }
 </style>
 </head>
-<body class="bg-gray-50 text-gray-900">
+<body class="bg-gray-50 text-gray-900" data-user-type="{{ current_user.account_type if current_user.is_authenticated else 'anonymous' }}">
 
 <!-- Hamburger Menu -->
 <div class="hamburger-overlay" id="hamburgerOverlay" onclick="toggleHamburgerMenu()"></div>
 <div class="hamburger-menu" id="hamburgerMenu">
     <div class="p-4 border-b">
         <div class="flex justify-between items-center">
-            <h3 class="font-bold text-lg">LaborLooker</h3>
+            <div class="logo-container">
+                <img src="{{ url_for('static', filename='images/logo.svg') }}" 
+                     alt="LaborLooker" 
+                     class="logo-image">
+            </div>
             <button onclick="toggleHamburgerMenu()" class="text-gray-500 hover:text-gray-700">
                 <i class="fas fa-times"></i>
             </button>
@@ -63,6 +90,9 @@
     <div class="p-4">
         <h4 class="font-semibold text-gray-700 mb-2">Quick Links</h4>
         <ul class="space-y-2">
+            <li><a href="/training/courses" class="flex items-center text-purple-600 hover:text-purple-800 font-medium">
+                <i class="fas fa-graduation-cap w-5"></i> Free Training & Certs
+            </a></li>
             <li><a href="/about-us" class="flex items-center text-gray-600 hover:text-blue-600">
                 <i class="fas fa-info-circle w-5"></i> About Us
             </a></li>
@@ -118,7 +148,7 @@
     </div>
 </div>
 
-<nav class="bg-white border-b sticky top-0 z-10">
+<nav class="bg-white border-b sticky top-0 z-10 shadow-sm">
 <div class="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
 <div class="flex items-center gap-4">
     <!-- Hamburger Button -->
@@ -126,7 +156,12 @@
         <i class="fas fa-bars text-xl"></i>
     </button>
     
-    <a class="font-semibold text-blue-600" href="/">LaborLooker</a>
+    <!-- Logo -->
+    <a class="logo-container" href="/">
+        <img src="{{ url_for('static', filename='images/logo.svg') }}" 
+             alt="LaborLooker" 
+             class="logo-image">
+    </a>
     {% if current_user.is_authenticated %}
         {% if current_user.account_type == "developer" %}
             <a class="text-sm text-gray-600 hover:text-gray-900" href="{{ url_for('developer_dashboard') }}">🏠 Dashboard</a>
@@ -135,14 +170,14 @@
             <a class="text-sm text-gray-600 hover:text-gray-900" href="{{ url_for('advertising_marketplace') }}">📢 Advertising</a>
         {% elif current_user.account_type == "contractor" %}
             <a class="text-sm text-gray-600 hover:text-gray-900" href="{{ url_for('contractor_dashboard') }}">🏠 Dashboard</a>
+            <a class="text-sm text-gray-600 hover:text-gray-900" href="{{ url_for('swipe_system') }}">� Find Jobs</a>
             <a class="text-sm text-gray-600 hover:text-gray-900" href="{{ url_for('contractor_advertisement_campaigns') }}">📢 Campaigns</a>
             <a class="text-sm text-gray-600 hover:text-gray-900" href="/contractor/invoices">🧾 Invoices</a>
-            <a class="text-sm text-gray-600 hover:text-gray-900" href="{{ url_for('advertising_marketplace') }}">🎯 Find Advertisers</a>
         {% elif current_user.account_type == "customer" %}
             <a class="text-sm text-gray-600 hover:text-gray-900" href="{{ url_for('customer_dashboard') }}">🏠 Dashboard</a>
-            <a class="text-sm text-gray-600 hover:text-gray-900" href="/customer/schedule-work">🔨 Schedule Work</a>
+            <a class="text-sm text-gray-600 hover:text-gray-900" href="{{ url_for('swipe_system') }}">� Find Contractors</a>
+            <a class="text-sm text-gray-600 hover:text-gray-900" href="/customer/schedule-work">� Schedule Work</a>
             <a class="text-sm text-gray-600 hover:text-gray-900" href="/customer/billing">💳 Billing</a>
-            <a class="text-sm text-gray-600 hover:text-gray-900" href="{{ url_for('advertising_marketplace') }}">🎯 Find Advertisers</a>
         {% endif %}
     {% else %}
         <a class="text-sm text-gray-600 hover:text-gray-900" href="/guide">📖 Guide</a>
@@ -270,5 +305,216 @@ document.addEventListener('click', function(e) {
         </div>
     </div>
 </footer>
+
+<script>
+// Logo fallback management
+document.addEventListener('DOMContentLoaded', function() {
+    const logoImages = document.querySelectorAll('.logo-image');
+    
+    logoImages.forEach(function(img) {
+        img.addEventListener('error', function() {
+            console.log('Logo image failed to load, trying fallback...');
+            
+            // Try PNG fallback first
+            if (this.src.includes('.svg')) {
+                this.src = this.src.replace('.svg', '.png');
+                return;
+            }
+            
+            // If still failing, create text fallback
+            if (this.src.includes('.png') && !this.dataset.fallbackAttempted) {
+                this.dataset.fallbackAttempted = 'true';
+                this.style.display = 'none';
+                
+                // Create text logo fallback
+                const textLogo = document.createElement('div');
+                textLogo.className = 'text-logo font-bold text-2xl bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent';
+                textLogo.textContent = 'LaborLooker';
+                textLogo.style.height = '40px';
+                textLogo.style.display = 'flex';
+                textLogo.style.alignItems = 'center';
+                
+                this.parentNode.insertBefore(textLogo, this);
+            }
+        });
+    });
+});
+
+// Hamburger menu functions (existing)
+function toggleHamburgerMenu() {
+    const menu = document.getElementById('hamburgerMenu');
+    menu.classList.toggle('hidden');
+}
+
+// Consent Modal Functions
+function showConsentModal() {
+    document.getElementById('consentModal').classList.remove('hidden');
+}
+
+function hideConsentModal() {
+    document.getElementById('consentModal').classList.add('hidden');
+}
+
+function submitConsent() {
+    const formData = {
+        cookies_essential: document.getElementById('cookies_essential').checked,
+        terms_of_service: document.getElementById('terms_of_service').checked,
+        privacy_policy: document.getElementById('privacy_policy').checked,
+        data_collection: document.getElementById('data_collection').checked,
+        data_resale: document.getElementById('data_resale').checked
+    };
+
+    fetch('/consent/submit', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData)
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Store consent in localStorage to prevent popup from showing again
+            localStorage.setItem('userConsent', JSON.stringify({
+                timestamp: new Date().toISOString(),
+                consents: formData
+            }));
+            
+            hideConsentModal();
+            if (data.redirect_url && data.redirect_url !== window.location.href) {
+                window.location.href = data.redirect_url;
+            }
+        } else {
+            alert('Error: ' + data.error);
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Error submitting consent');
+    });
+}
+
+// Check if consent is needed on page load
+document.addEventListener('DOMContentLoaded', function() {
+    // Check if user has given consent recently (within 30 days)
+    const consentData = localStorage.getItem('userConsent');
+    let shouldShowModal = true;
+    
+    if (consentData) {
+        try {
+            const consent = JSON.parse(consentData);
+            const consentDate = new Date(consent.timestamp);
+            const thirtyDaysAgo = new Date();
+            thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+            
+            // Don't show if consent was given within 30 days
+            if (consentDate > thirtyDaysAgo) {
+                shouldShowModal = false;
+            }
+        } catch (e) {
+            // Invalid consent data, show modal
+            localStorage.removeItem('userConsent');
+        }
+    }
+    
+    // Skip consent modal for auth pages
+    const currentPath = window.location.pathname;
+    const authPaths = ['/login', '/register', '/terms-of-service', '/privacy-policy'];
+    if (authPaths.includes(currentPath)) {
+        shouldShowModal = false;
+    }
+    
+    if (shouldShowModal) {
+        setTimeout(showConsentModal, 1500); // Show after 1.5 seconds
+    }
+});
+</script>
+
+<!-- Consent Modal -->
+<div id="consentModal" class="hidden fixed inset-0 bg-black bg-opacity-75 z-50 flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-screen overflow-y-auto">
+        
+        <!-- Header -->
+        <div class="bg-gradient-to-r from-blue-600 to-purple-600 text-white p-6 rounded-t-2xl">
+            <div class="flex items-center justify-center mb-4">
+                <h1 class="text-2xl font-bold">Welcome to LaborLooker</h1>
+            </div>
+            <p class="text-blue-100 text-center">
+                We need your consent for our terms and data usage policies.
+            </p>
+        </div>
+
+        <!-- Content -->
+        <div class="p-6 space-y-6">
+            
+            <!-- Essential Consents -->
+            <div class="space-y-4">
+                <h3 class="text-lg font-semibold text-gray-900">Required Agreements</h3>
+                
+                <div class="flex items-start space-x-3">
+                    <input type="checkbox" id="cookies_essential" required
+                           class="mt-1 h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500">
+                    <label for="cookies_essential" class="text-sm text-gray-700">
+                        <strong>Essential Cookies & Functionality</strong><br>
+                        Required for the platform to function properly, including user authentication and security.
+                    </label>
+                </div>
+
+                <div class="flex items-start space-x-3">
+                    <input type="checkbox" id="terms_of_service" required
+                           class="mt-1 h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500">
+                    <label for="terms_of_service" class="text-sm text-gray-700">
+                        <strong>Terms of Service</strong><br>
+                        I agree to the <a href="/terms-of-service" target="_blank" class="text-blue-600 underline">Terms of Service</a> governing platform usage.
+                    </label>
+                </div>
+
+                <div class="flex items-start space-x-3">
+                    <input type="checkbox" id="privacy_policy" required
+                           class="mt-1 h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500">
+                    <label for="privacy_policy" class="text-sm text-gray-700">
+                        <strong>Privacy Policy</strong><br>
+                        I acknowledge the <a href="/privacy-policy" target="_blank" class="text-blue-600 underline">Privacy Policy</a> and data handling practices.
+                    </label>
+                </div>
+
+                <div class="flex items-start space-x-3">
+                    <input type="checkbox" id="data_collection" required
+                           class="mt-1 h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500">
+                    <label for="data_collection" class="text-sm text-gray-700">
+                        <strong>Data Collection & Processing</strong><br>
+                        Consent to collect and process personal data for platform services and communication.
+                    </label>
+                </div>
+
+                <div class="flex items-start space-x-3">
+                    <input type="checkbox" id="data_resale" required
+                           class="mt-1 h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500">
+                    <label for="data_resale" class="text-sm text-gray-700">
+                        <strong>Data Sharing Agreement</strong><br>
+                        Understanding that anonymized data may be shared with partners for service improvement.
+                    </label>
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="flex space-x-4 pt-4 border-t">
+                <button onclick="submitConsent()" 
+                        class="flex-1 bg-blue-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-blue-700 transition duration-200">
+                    Accept & Continue
+                </button>
+                <a href="https://www.google.com" 
+                   class="flex-1 bg-gray-200 text-gray-800 px-6 py-3 rounded-lg font-medium hover:bg-gray-300 transition duration-200 text-center">
+                    Decline & Leave
+                </a>
+            </div>
+
+            <p class="text-xs text-gray-500 text-center">
+                By clicking "Accept & Continue", you agree to all terms above. This popup will only appear once.
+            </p>
+        </div>
+    </div>
+</div>
+
 </body>
 </html>

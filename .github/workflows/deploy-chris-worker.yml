@@ -1,0 +1,41 @@
+# GitHub Actions Workflow for Chris Worker Deployment
+name: Deploy Chris Worker to Cloudflare
+
+on:
+  push:
+    branches: [ main, master ]
+    paths: [ 'modern-deployment/cloudflare-workers/**' ]
+  pull_request:
+    branches: [ main, master ]
+    paths: [ 'modern-deployment/cloudflare-workers/**' ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    name: Deploy Chris to Cloudflare Workers
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install Wrangler CLI
+        run: npm install -g wrangler
+
+      - name: Deploy Chris Worker
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          workingDirectory: 'modern-deployment/cloudflare-workers'
+          command: deploy
+          
+      - name: Deployment Success
+        run: |
+          echo "🎉 Chris Worker deployed successfully!"
+          echo "Check your Cloudflare Dashboard for the worker URL"
+          echo "Typically: https://chris.your-subdomain.workers.dev"

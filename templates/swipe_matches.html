@@ -1,0 +1,450 @@
+{% extends "base.html" %}
+
+{% block title %}Your Matches - LaborLooker{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
+    <!-- Header -->
+    <div class="bg-white shadow-sm border-b">
+        <div class="container mx-auto px-4 py-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center">
+                    <a href="{{ url_for('swipe_system') }}" class="text-gray-600 hover:text-gray-800 mr-4">
+                        <i class="fas fa-arrow-left text-xl"></i>
+                    </a>
+                    <h1 class="text-2xl font-bold text-gray-800">Your Matches</h1>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <span class="text-sm text-gray-600">{{ matches|length }} matches</span>
+                    <button onclick="filterMatches()" class="text-gray-600 hover:text-gray-800">
+                        <i class="fas fa-filter"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Filter Bar -->
+    <div id="filterBar" class="hidden bg-white border-b shadow-sm">
+        <div class="container mx-auto px-4 py-3">
+            <div class="flex flex-wrap gap-4 items-center">
+                <div class="flex space-x-2">
+                    <button onclick="setMatchFilter('all')" class="match-filter-btn active" data-filter="all">
+                        All Matches
+                    </button>
+                    <button onclick="setMatchFilter('new')" class="match-filter-btn" data-filter="new">
+                        New Matches
+                    </button>
+                    <button onclick="setMatchFilter('active')" class="match-filter-btn" data-filter="active">
+                        Active Chats
+                    </button>
+                    <button onclick="setMatchFilter('expired')" class="match-filter-btn" data-filter="expired">
+                        Expired
+                    </button>
+                </div>
+                <div class="ml-auto">
+                    <select id="sortBy" onchange="sortMatches()" class="border border-gray-300 rounded px-3 py-1 text-sm">
+                        <option value="newest">Newest First</option>
+                        <option value="oldest">Oldest First</option>
+                        <option value="activity">Most Active</option>
+                        <option value="rating">Highest Rated</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Matches Grid -->
+    <div class="container mx-auto px-4 py-8">
+        {% if matches %}
+            <div id="matchesGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {% for match in matches %}
+                <div class="match-card bg-white rounded-lg shadow-md hover:shadow-lg transition-all duration-300" 
+                     data-match-id="{{ match.id }}" 
+                     data-filter-status="{{ match.status }}"
+                     data-created="{{ match.matched_at.isoformat() }}">
+                    
+                    <!-- Match Header -->
+                    <div class="p-4 border-b border-gray-100">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center">
+                                <div class="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-500 rounded-full flex items-center justify-center mr-3">
+                                    {% if current_user.account_type == 'customer' %}
+                                        <i class="fas fa-hard-hat text-white"></i>
+                                    {% else %}
+                                        <i class="fas fa-briefcase text-white"></i>
+                                    {% endif %}
+                                </div>
+                                <div>
+                                    <h3 class="font-semibold text-gray-800">
+                                        {% if current_user.account_type == 'customer' %}
+                                            {{ match.contractor.professional_profile.business_name if match.contractor.professional_profile else match.contractor.email }}
+                                        {% else %}
+                                            {{ match.job_posting.title if match.job_posting else 'Job Opportunity' }}
+                                        {% endif %}
+                                    </h3>
+                                    <p class="text-sm text-gray-500">
+                                        Matched {{ match.matched_at.strftime('%b %d') }}
+                                    </p>
+                                </div>
+                            </div>
+                            
+                            <!-- Match Status Badge -->
+                            <div class="flex items-center">
+                                {% if match.status == 'active' %}
+                                    {% if match.messages_count > 0 %}
+                                        <span class="bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full">
+                                            {{ match.messages_count }} messages
+                                        </span>
+                                    {% else %}
+                                        <span class="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full">
+                                            New Match
+                                        </span>
+                                    {% endif %}
+                                {% elif match.status == 'expired' %}
+                                    <span class="bg-gray-100 text-gray-800 text-xs px-2 py-1 rounded-full">
+                                        Expired
+                                    </span>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Match Content -->
+                    <div class="p-4">
+                        {% if current_user.account_type == 'customer' %}
+                            <!-- Contractor Match View -->
+                            {% set contractor = match.contractor %}
+                            {% set profile = contractor.professional_profile %}
+                            
+                            <div class="mb-3">
+                                <div class="flex items-center mb-2">
+                                    <div class="rating-stars text-yellow-400 mr-2">
+                                        {% set rating = contractor.average_rating or 0 %}
+                                        {% for i in range(5) %}
+                                            {% if i < rating %}
+                                                <i class="fas fa-star"></i>
+                                            {% elif i < rating + 0.5 %}
+                                                <i class="fas fa-star-half-alt"></i>
+                                            {% else %}
+                                                <i class="far fa-star"></i>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </div>
+                                    <span class="text-sm text-gray-600">
+                                        {{ "%.1f"|format(rating) }} ({{ contractor.total_ratings or 0 }} reviews)
+                                    </span>
+                                </div>
+                                
+                                {% if profile %}
+                                    <p class="text-sm text-gray-600 mb-2">
+                                        <i class="fas fa-map-marker-alt mr-1"></i>
+                                        {{ profile.location }} • {{ profile.geographic_area }}
+                                    </p>
+                                    
+                                    {% if profile.services %}
+                                        <div class="flex flex-wrap gap-1 mb-3">
+                                            {% for service in profile.services.split(',')[:3] %}
+                                                <span class="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded">
+                                                    {{ service.strip() }}
+                                                </span>
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                {% endif %}
+                            </div>
+                            
+                        {% else %}
+                            <!-- Job Match View -->
+                            {% set job = match.job_posting %}
+                            
+                            <div class="mb-3">
+                                <p class="text-gray-600 mb-2">{{ job.labor_category }}</p>
+                                <p class="text-sm text-gray-500 mb-2">
+                                    <i class="fas fa-map-marker-alt mr-1"></i>
+                                    {{ job.location }}
+                                </p>
+                                
+                                <div class="flex items-center justify-between mb-3">
+                                    {% if job.pay_type == 'hourly' %}
+                                        <span class="font-semibold text-green-600">${{ job.pay_amount }}/hr</span>
+                                    {% elif job.pay_range_min %}
+                                        <span class="font-semibold text-green-600">${{ job.pay_range_min }} - ${{ job.pay_range_max }}</span>
+                                    {% else %}
+                                        <span class="font-semibold text-green-600">${{ job.pay_amount }}</span>
+                                    {% endif %}
+                                    
+                                    <span class="bg-gray-100 text-gray-800 text-xs px-2 py-1 rounded">
+                                        {{ job.job_type or 'Contract' }}
+                                    </span>
+                                </div>
+                                
+                                <p class="text-sm text-gray-600 line-clamp-2">{{ job.description }}</p>
+                            </div>
+                        {% endif %}
+
+                        <!-- Last Message Preview -->
+                        {% if match.last_message_at %}
+                            <div class="bg-gray-50 rounded p-3 mb-3">
+                                <p class="text-xs text-gray-500 mb-1">Last message {{ match.last_message_at.strftime('%b %d, %I:%M %p') }}</p>
+                                <p class="text-sm text-gray-700 line-clamp-2">Recent conversation activity...</p>
+                            </div>
+                        {% endif %}
+
+                        <!-- Actions -->
+                        <div class="flex gap-2 mt-4">
+                            {% if match.status == 'active' %}
+                                <button data-match-id="{{ match.id }}" data-action="chat"
+                                        class="match-action-btn flex-1 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition duration-200">
+                                    <i class="fas fa-comment mr-2"></i>
+                                    {% if match.messages_count > 0 %}Continue Chat{% else %}Start Chat{% endif %}
+                                </button>
+                                
+                                <button data-match-id="{{ match.id }}" data-action="details"
+                                        class="match-action-btn bg-gray-600 text-white px-4 py-2 rounded-lg hover:bg-gray-700 transition duration-200">
+                                    <i class="fas fa-info-circle"></i>
+                                </button>
+                                
+                                <button data-match-id="{{ match.id }}" data-action="unmatch"
+                                        class="match-action-btn bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition duration-200">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            {% else %}
+                                <button data-match-id="{{ match.id }}" data-action="reactivate"
+                                        class="match-action-btn flex-1 bg-yellow-600 text-white px-4 py-2 rounded-lg hover:bg-yellow-700 transition duration-200">
+                                    <i class="fas fa-refresh mr-2"></i>
+                                    Reactivate
+                                </button>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <!-- Match Expiry Warning -->
+                    {% if match.expires_at and match.status == 'active' %}
+                        {% set days_left = (match.expires_at - now()).days %}
+                        {% if days_left <= 7 %}
+                            <div class="bg-yellow-50 border-t border-yellow-200 p-3">
+                                <p class="text-xs text-yellow-800 flex items-center">
+                                    <i class="fas fa-clock mr-1"></i>
+                                    {% if days_left <= 0 %}
+                                        Match expires today
+                                    {% elif days_left == 1 %}
+                                        Expires in 1 day
+                                    {% else %}
+                                        Expires in {{ days_left }} days
+                                    {% endif %}
+                                </p>
+                            </div>
+                        {% endif %}
+                    {% endif %}
+                </div>
+                {% endfor %}
+            </div>
+
+        {% else %}
+            <!-- No Matches State -->
+            <div class="text-center py-20">
+                <div class="bg-white rounded-lg shadow-lg p-12 max-w-md mx-auto">
+                    <i class="fas fa-heart-broken text-6xl text-gray-300 mb-6"></i>
+                    <h3 class="text-2xl font-bold text-gray-800 mb-4">No Matches Yet</h3>
+                    <p class="text-gray-600 mb-8">
+                        {% if current_user.account_type == 'customer' %}
+                            Start swiping to find contractors who are interested in your projects!
+                        {% else %}
+                            Start swiping to find jobs that match your skills and interests!
+                        {% endif %}
+                    </p>
+                    <a href="{{ url_for('swipe_system') }}" 
+                       class="bg-blue-600 text-white px-8 py-3 rounded-lg hover:bg-blue-700 transition duration-200 inline-flex items-center">
+                        <i class="fas fa-search mr-2"></i>
+                        Start Swiping
+                    </a>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+</div>
+
+<style>
+.match-filter-btn {
+    padding: 1rem 1rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #6B7280;
+    background-color: #F3F4F6;
+    border-radius: 0.5rem;
+    transition: all 0.2s ease;
+}
+
+.match-filter-btn:hover {
+    background-color: #E5E7EB;
+}
+
+.match-filter-btn.active {
+    background-color: #2563EB;
+    color: white;
+}
+
+.match-filter-btn.active:hover {
+    background-color: #1D4ED8;
+}
+
+.match-card {
+    transition: all 0.3s ease;
+}
+
+.match-card:hover {
+    transform: translateY(-2px);
+}
+
+.line-clamp-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.rating-stars {
+    font-size: 0.875rem;
+}
+</style>
+
+<script>
+// Add event listeners when page loads
+document.addEventListener('DOMContentLoaded', function() {
+    // Match action button handlers
+    document.querySelectorAll('.match-action-btn').forEach(button => {
+        button.addEventListener('click', function() {
+            const matchId = this.getAttribute('data-match-id');
+            const action = this.getAttribute('data-action');
+            
+            switch(action) {
+                case 'chat':
+                    openChat(matchId);
+                    break;
+                case 'details':
+                    viewDetails(matchId);
+                    break;
+                case 'unmatch':
+                    unmatchUser(matchId);
+                    break;
+                case 'reactivate':
+                    reactivateMatch(matchId);
+                    break;
+            }
+        });
+    });
+});
+
+function filterMatches() {
+    const filterBar = document.getElementById('filterBar');
+    filterBar.classList.toggle('hidden');
+}
+
+function setMatchFilter(filter) {
+    // Update active button
+    document.querySelectorAll('.match-filter-btn').forEach(btn => {
+        btn.classList.remove('active');
+    });
+    document.querySelector(`[data-filter="${filter}"]`).classList.add('active');
+    
+    // Filter matches
+    const matchCards = document.querySelectorAll('.match-card');
+    matchCards.forEach(card => {
+        if (filter === 'all') {
+            card.style.display = 'block';
+        } else if (filter === 'new') {
+            const hasMessages = card.querySelector('.bg-green-100');
+            card.style.display = hasMessages ? 'none' : 'block';
+        } else if (filter === 'active') {
+            const hasMessages = card.querySelector('.bg-green-100');
+            card.style.display = hasMessages ? 'block' : 'none';
+        } else {
+            const status = card.dataset.filterStatus;
+            card.style.display = status === filter ? 'block' : 'none';
+        }
+    });
+}
+
+function sortMatches() {
+    const sortBy = document.getElementById('sortBy').value;
+    const grid = document.getElementById('matchesGrid');
+    const cards = Array.from(grid.children);
+    
+    cards.sort((a, b) => {
+        switch(sortBy) {
+            case 'newest':
+                return new Date(b.dataset.created) - new Date(a.dataset.created);
+            case 'oldest':
+                return new Date(a.dataset.created) - new Date(b.dataset.created);
+            case 'activity':
+                const aMessages = parseInt(a.querySelector('.bg-green-100')?.textContent.match(/\d+/)?.[0] || '0');
+                const bMessages = parseInt(b.querySelector('.bg-green-100')?.textContent.match(/\d+/)?.[0] || '0');
+                return bMessages - aMessages;
+            case 'rating':
+                const aStars = a.querySelectorAll('.fas.fa-star').length;
+                const bStars = b.querySelectorAll('.fas.fa-star').length;
+                return bStars - aStars;
+            default:
+                return 0;
+        }
+    });
+    
+    cards.forEach(card => grid.appendChild(card));
+}
+
+function openChat(matchId) {
+    window.location.href = `/messages/match/${matchId}`;
+}
+
+function viewDetails(matchId) {
+    window.location.href = `/matches/${matchId}/details`;
+}
+
+function unmatchUser(matchId) {
+    if (confirm('Are you sure you want to unmatch? This action cannot be undone.')) {
+        fetch(`/api/matches/${matchId}/unmatch`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                location.reload();
+            } else {
+                alert('Error unmatching. Please try again.');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Error unmatching. Please try again.');
+        });
+    }
+}
+
+function reactivateMatch(matchId) {
+    fetch(`/api/matches/${matchId}/reactivate`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            location.reload();
+        } else {
+            alert('Error reactivating match. Please try again.');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Error reactivating match. Please try again.');
+    });
+}
+</script>
+
+{% endblock %}

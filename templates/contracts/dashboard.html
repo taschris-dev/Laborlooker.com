@@ -49,12 +49,12 @@
                                                     Completed: {{ contractor_agreement.completed_at.strftime('%B %d, %Y') }}
                                                 </p>
                                             {% elif contractor_agreement.status == 'sent' %}
-                                                <a href="#" class="btn btn-warning" onclick="openDocuSignEnvelope('{{ contractor_agreement.envelope_id }}')">
+                                                <a href="#" class="btn btn-warning docusign-envelope" data-envelope-id="{{ contractor_agreement.envelope_id }}">
                                                     <i class="fas fa-pen"></i> Complete Signing
                                                 </a>
                                                 <p class="small text-muted mt-2">Sent: {{ contractor_agreement.sent_at.strftime('%B %d, %Y') }}</p>
                                             {% elif contractor_agreement.status == 'delivered' %}
-                                                <a href="#" class="btn btn-info" onclick="openDocuSignEnvelope('{{ contractor_agreement.envelope_id }}')">
+                                                <a href="#" class="btn btn-info docusign-envelope" data-envelope-id="{{ contractor_agreement.envelope_id }}">
                                                     <i class="fas fa-pen"></i> Sign Now
                                                 </a>
                                                 <p class="small text-muted mt-2">Delivered: {{ contractor_agreement.delivered_at.strftime('%B %d, %Y') }}</p>
@@ -88,12 +88,12 @@
                                                     Completed: {{ client_terms.completed_at.strftime('%B %d, %Y') }}
                                                 </p>
                                             {% elif client_terms.status == 'sent' %}
-                                                <a href="#" class="btn btn-warning" onclick="openDocuSignEnvelope('{{ client_terms.envelope_id }}')">
+                                                <a href="#" class="btn btn-warning docusign-envelope" data-envelope-id="{{ client_terms.envelope_id }}">
                                                     <i class="fas fa-pen"></i> Complete Signing
                                                 </a>
                                                 <p class="small text-muted mt-2">Sent: {{ client_terms.sent_at.strftime('%B %d, %Y') }}</p>
                                             {% elif client_terms.status == 'delivered' %}
-                                                <a href="#" class="btn btn-info" onclick="openDocuSignEnvelope('{{ client_terms.envelope_id }}')">
+                                                <a href="#" class="btn btn-info docusign-envelope" data-envelope-id="{{ client_terms.envelope_id }}">
                                                     <i class="fas fa-pen"></i> Sign Now
                                                 </a>
                                                 <p class="small text-muted mt-2">Delivered: {{ client_terms.delivered_at.strftime('%B %d, %Y') }}</p>
@@ -177,8 +177,8 @@
                                         <td>
                                             <div class="btn-group btn-group-sm" role="group">
                                                 {% if contract.status in ['sent', 'delivered'] %}
-                                                    <button class="btn btn-primary btn-sm" 
-                                                            onclick="openDocuSignEnvelope('{{ contract.envelope_id }}')">
+                                                    <button class="btn btn-primary btn-sm docusign-envelope" 
+                                                            data-envelope-id="{{ contract.envelope_id }}">
                                                         <i class="fas fa-pen"></i> Sign
                                                     </button>
                                                 {% endif %}
@@ -190,8 +190,8 @@
                                                     </a>
                                                 {% endif %}
                                                 
-                                                <button class="btn btn-info btn-sm" 
-                                                        onclick="checkContractStatus({{ contract.id }})">
+                                                <button class="btn btn-info btn-sm check-contract-status" 
+                                                        data-contract-id="{{ contract.id }}">
                                                     <i class="fas fa-sync"></i> Refresh
                                                 </button>
                                             </div>
@@ -258,6 +258,26 @@
 </div>
 
 <script>
+// Add event listeners when page loads
+document.addEventListener('DOMContentLoaded', function() {
+    // DocuSign envelope handlers
+    document.querySelectorAll('.docusign-envelope').forEach(button => {
+        button.addEventListener('click', function(e) {
+            e.preventDefault();
+            const envelopeId = this.getAttribute('data-envelope-id');
+            openDocuSignEnvelope(envelopeId);
+        });
+    });
+    
+    // Contract status check handlers
+    document.querySelectorAll('.check-contract-status').forEach(button => {
+        button.addEventListener('click', function() {
+            const contractId = this.getAttribute('data-contract-id');
+            checkContractStatus(contractId);
+        });
+    });
+});
+
 function openDocuSignEnvelope(envelopeId) {
     // This would open DocuSign signing interface
     const docusignUrl = `https://demo.docusign.net/signing/${envelopeId}`;

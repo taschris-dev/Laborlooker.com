@@ -43,8 +43,8 @@
                                         <input type="text" class="form-control backup-code" 
                                                value="{{ code }}" readonly 
                                                style="font-family: monospace; font-weight: bold;">
-                                        <button class="btn btn-outline-secondary" type="button" 
-                                                onclick="copyCode('{{ code }}')" 
+                                        <button class="btn btn-outline-secondary copy-code-btn" type="button" 
+                                                data-code="{{ code }}" 
                                                 title="Copy code">
                                             <i class="fas fa-copy"></i>
                                         </button>
@@ -160,23 +160,34 @@ document.getElementById('confirmSaved').addEventListener('change', function() {
     document.getElementById('continueBtn').disabled = !this.checked;
 });
 
-function copyCode(code) {
+// Add event listeners for copy buttons
+document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('.copy-code-btn').forEach(button => {
+        button.addEventListener('click', function() {
+            const code = this.getAttribute('data-code');
+            copyCode(code, this);
+        });
+    });
+});
+
+function copyCode(code, buttonElement) {
     const textarea = document.getElementById('copyHelper');
     textarea.value = code;
     textarea.select();
     document.execCommand('copy');
     
     // Show feedback
-    const button = event.target.closest('button');
-    const originalHtml = button.innerHTML;
-    button.innerHTML = '<i class="fas fa-check text-success"></i>';
+    const originalHtml = buttonElement.innerHTML;
+    buttonElement.innerHTML = '<i class="fas fa-check text-success"></i>';
     setTimeout(() => {
-        button.innerHTML = originalHtml;
+        buttonElement.innerHTML = originalHtml;
     }, 2000);
 }
 
 function copyAllCodes() {
-    const codes = [{% for code in backup_codes %}'{{ code }}'{% if not loop.last %}, {% endif %}{% endfor %}];
+    // Get all backup codes from data attributes
+    const codeElements = document.querySelectorAll('.backup-code');
+    const codes = Array.from(codeElements).map(el => el.value);
     const allCodes = codes.map((code, index) => `${index + 1}. ${code}`).join('\n');
     
     const textarea = document.getElementById('copyHelper');
@@ -194,7 +205,9 @@ function copyAllCodes() {
 }
 
 function printCodes() {
-    const codes = [{% for code in backup_codes %}'{{ code }}'{% if not loop.last %}, {% endif %}{% endfor %}];
+    // Get all backup codes from data attributes
+    const codeElements = document.querySelectorAll('.backup-code');
+    const codes = Array.from(codeElements).map(el => el.value);
     const printContent = `
         <html>
         <head>
@@ -236,10 +249,14 @@ function printCodes() {
 }
 
 function downloadCodes() {
-    const codes = [{% for code in backup_codes %}'{{ code }}'{% if not loop.last %}, {% endif %}{% endfor %}];
+    // Get all backup codes from data attributes
+    const codeElements = document.querySelectorAll('.backup-code');
+    const codes = Array.from(codeElements).map(el => el.value);
+    const userEmail = '{{ current_user.email }}';
+    
     const content = [
         'LaborLooker Backup Codes',
-        `Account: {{ current_user.email }}`,
+        `Account: ${userEmail}`,
         `Generated: ${new Date().toISOString()}`,
         '',
         'Backup Codes:',

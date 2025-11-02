@@ -1,0 +1,492 @@
+{% extends "base.html" %}
+
+{% block title %}Free Training & Certifications - LaborLooker{% endblock %}
+
+{% block content %}
+<div class="container-fluid bg-light min-vh-100">
+    <div class="container py-4">
+        
+        <!-- Header Section -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="bg-white rounded-lg shadow-sm p-4">
+                    <div class="d-flex align-items-center justify-content-between">
+                        <div>
+                            <h1 class="display-6 fw-bold text-primary mb-2">
+                                <i class="fas fa-graduation-cap me-3"></i>Free Training & Certifications
+                            </h1>
+                            <p class="lead text-muted mb-0">
+                                Advance your career with free training courses and professional certifications
+                            </p>
+                        </div>
+                        <div class="d-none d-lg-block">
+                            <div class="bg-primary text-white p-3 rounded-circle text-center">
+                                <i class="fas fa-certificate fa-2x"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Stats -->
+        <div class="row mb-4">
+            <div class="col-md-3 col-sm-6 mb-3">
+                <div class="card bg-success text-white h-100">
+                    <div class="card-body text-center">
+                        <i class="fas fa-book-open fa-2x mb-2"></i>
+                        <h4 class="fw-bold">50+</h4>
+                        <p class="mb-0">Free Courses</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-6 mb-3">
+                <div class="card bg-info text-white h-100">
+                    <div class="card-body text-center">
+                        <i class="fas fa-certificate fa-2x mb-2"></i>
+                        <h4 class="fw-bold">25+</h4>
+                        <p class="mb-0">Certifications</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-6 mb-3">
+                <div class="card bg-warning text-white h-100">
+                    <div class="card-body text-center">
+                        <i class="fas fa-clock fa-2x mb-2"></i>
+                        <h4 class="fw-bold">Self-Paced</h4>
+                        <p class="mb-0">Learning</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-6 mb-3">
+                <div class="card bg-primary text-white h-100">
+                    <div class="card-body text-center">
+                        <i class="fas fa-dollar-sign fa-2x mb-2"></i>
+                        <h4 class="fw-bold">100%</h4>
+                        <p class="mb-0">Free</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Filter Tabs -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body">
+                        <ul class="nav nav-pills nav-fill" id="trainingTabs" role="tablist">
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link active" id="all-tab" data-bs-toggle="pill" data-bs-target="#all" 
+                                        type="button" role="tab" aria-controls="all" aria-selected="true">
+                                    <i class="fas fa-th-large me-2"></i>All Courses
+                                </button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="construction-tab" data-bs-toggle="pill" data-bs-target="#construction" 
+                                        type="button" role="tab" aria-controls="construction" aria-selected="false">
+                                    <i class="fas fa-hard-hat me-2"></i>Construction
+                                </button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="electrical-tab" data-bs-toggle="pill" data-bs-target="#electrical" 
+                                        type="button" role="tab" aria-controls="electrical" aria-selected="false">
+                                    <i class="fas fa-bolt me-2"></i>Electrical
+                                </button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="plumbing-tab" data-bs-toggle="pill" data-bs-target="#plumbing" 
+                                        type="button" role="tab" aria-controls="plumbing" aria-selected="false">
+                                    <i class="fas fa-wrench me-2"></i>Plumbing
+                                </button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="automotive-tab" data-bs-toggle="pill" data-bs-target="#automotive" 
+                                        type="button" role="tab" aria-controls="automotive" aria-selected="false">
+                                    <i class="fas fa-car me-2"></i>Automotive
+                                </button>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Training Content -->
+        <div class="tab-content" id="trainingTabsContent">
+            
+            <!-- All Courses Tab -->
+            <div class="tab-pane fade show active" id="all" role="tabpanel" aria-labelledby="all-tab">
+                <div class="row">
+                    
+                    <!-- Construction Section -->
+                    <div class="col-12 mb-4">
+                        <h3 class="text-warning mb-3">
+                            <i class="fas fa-hard-hat me-2"></i>Construction & Building
+                        </h3>
+                        <div class="row">
+                            <div class="col-lg-4 col-md-6 mb-3">
+                                <div class="card h-100 border-warning">
+                                    <div class="card-header bg-warning text-dark">
+                                        <h6 class="mb-0"><i class="fas fa-shield-alt me-2"></i>OSHA 10-Hour Construction Safety</h6>
+                                    </div>
+                                    <div class="card-body">
+                                        <p class="text-muted small mb-2">OSHA Training Institute</p>
+                                        <p class="card-text">Essential safety training for construction workers</p>
+                                        <div class="mb-2">
+                                            <span class="badge bg-success me-1">Free</span>
+                                            <span class="badge bg-info me-1">10 hours</span>
+                                            <span class="badge bg-secondary">OSHA Card</span>
+                                        </div>
+                                        <div class="mb-3">
+                                            <small class="text-muted">Skills: Construction Safety, OSHA Compliance, Hazard Recognition</small>
+                                        </div>
+                                    </div>
+                                    <div class="card-footer">
+                                        <a href="https://www.osha.gov/training/outreach/construction" target="_blank" 
+                                           class="btn btn-warning btn-sm">
+                                            <i class="fas fa-external-link-alt me-1"></i>Start Course
+                                        </a>
+                                        <button class="btn btn-outline-primary btn-sm ms-2" onclick="addToProfile('osha-10')">
+                                            <i class="fas fa-plus me-1"></i>Add to Profile
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="col-lg-4 col-md-6 mb-3">
+                                <div class="card h-100 border-warning">
+                                    <div class="card-header bg-warning text-dark">
+                                        <h6 class="mb-0"><i class="fas fa-tools me-2"></i>Basic Construction Skills</h6>
+                                    </div>
+                                    <div class="card-body">
+                                        <p class="text-muted small mb-2">Khan Academy</p>
+                                        <p class="card-text">Fundamentals of construction work and safety</p>
+                                        <div class="mb-2">
+                                            <span class="badge bg-success me-1">Free</span>
+                                            <span class="badge bg-info me-1">Self-paced</span>
+                                            <span class="badge bg-secondary">Certificate</span>
+                                        </div>
+                                        <div class="mb-3">
+                                            <small class="text-muted">Skills: Blueprint Reading, Tool Usage, Safety Protocols</small>
+                                        </div>
+                                    </div>
+                                    <div class="card-footer">
+                                        <a href="https://www.khanacademy.org/college-careers-more/career-content/construction-trade" target="_blank" 
+                                           class="btn btn-warning btn-sm">
+                                            <i class="fas fa-external-link-alt me-1"></i>Start Course
+                                        </a>
+                                        <button class="btn btn-outline-primary btn-sm ms-2" onclick="addToProfile('basic-construction')">
+                                            <i class="fas fa-plus me-1"></i>Add to Profile
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-4 col-md-6 mb-3">
+                                <div class="card h-100 border-warning">
+                                    <div class="card-header bg-warning text-dark">
+                                        <h6 class="mb-0"><i class="fas fa-project-diagram me-2"></i>Construction Project Management</h6>
+                                    </div>
+                                    <div class="card-body">
+                                        <p class="text-muted small mb-2">Coursera (Financial Aid Available)</p>
+                                        <p class="card-text">Learn to manage construction projects effectively</p>
+                                        <div class="mb-2">
+                                            <span class="badge bg-success me-1">Free with Aid</span>
+                                            <span class="badge bg-info me-1">4 weeks</span>
+                                            <span class="badge bg-secondary">Pro Certificate</span>
+                                        </div>
+                                        <div class="mb-3">
+                                            <small class="text-muted">Skills: Project Management, Scheduling, Cost Control</small>
+                                        </div>
+                                    </div>
+                                    <div class="card-footer">
+                                        <a href="https://www.coursera.org/learn/construction-project-management" target="_blank" 
+                                           class="btn btn-warning btn-sm">
+                                            <i class="fas fa-external-link-alt me-1"></i>Start Course
+                                        </a>
+                                        <button class="btn btn-outline-primary btn-sm ms-2" onclick="addToProfile('construction-pm')">
+                                            <i class="fas fa-plus me-1"></i>Add to Profile
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Electrical Section -->
+                    <div class="col-12 mb-4">
+                        <h3 class="text-primary mb-3">
+                            <i class="fas fa-bolt me-2"></i>Electrical Work
+                        </h3>
+                        <div class="row">
+                            <div class="col-lg-4 col-md-6 mb-3">
+                                <div class="card h-100 border-primary">
+                                    <div class="card-header bg-primary text-white">
+                                        <h6 class="mb-0"><i class="fas fa-shield-alt me-2"></i>Electrical Safety Training</h6>
+                                    </div>
+                                    <div class="card-body">
+                                        <p class="text-muted small mb-2">OSHA</p>
+                                        <p class="card-text">Essential electrical safety for all trades</p>
+                                        <div class="mb-2">
+                                            <span class="badge bg-success me-1">Free</span>
+                                            <span class="badge bg-info me-1">4 hours</span>
+                                            <span class="badge bg-secondary">OSHA Certificate</span>
+                                        </div>
+                                        <div class="mb-3">
+                                            <small class="text-muted">Skills: Electrical Safety, Arc Flash Protection, Lockout/Tagout</small>
+                                        </div>
+                                    </div>
+                                    <div class="card-footer">
+                                        <a href="https://www.osha.gov/training/library/materials/electrical-safety" target="_blank" 
+                                           class="btn btn-primary btn-sm">
+                                            <i class="fas fa-external-link-alt me-1"></i>Start Course
+                                        </a>
+                                        <button class="btn btn-outline-primary btn-sm ms-2" onclick="addToProfile('electrical-safety')">
+                                            <i class="fas fa-plus me-1"></i>Add to Profile
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-4 col-md-6 mb-3">
+                                <div class="card h-100 border-primary">
+                                    <div class="card-header bg-primary text-white">
+                                        <h6 class="mb-0"><i class="fas fa-lightbulb me-2"></i>Basic Electrical Theory</h6>
+                                    </div>
+                                    <div class="card-body">
+                                        <p class="text-muted small mb-2">MIT OpenCourseWare</p>
+                                        <p class="card-text">Fundamental electrical concepts and theory</p>
+                                        <div class="mb-2">
+                                            <span class="badge bg-success me-1">Free</span>
+                                            <span class="badge bg-info me-1">Self-paced</span>
+                                            <span class="badge bg-secondary">Certificate</span>
+                                        </div>
+                                        <div class="mb-3">
+                                            <small class="text-muted">Skills: Circuit Analysis, Ohm's Law, Basic Wiring</small>
+                                        </div>
+                                    </div>
+                                    <div class="card-footer">
+                                        <a href="https://ocw.mit.edu/courses/electrical-engineering-and-computer-science/" target="_blank" 
+                                           class="btn btn-primary btn-sm">
+                                            <i class="fas fa-external-link-alt me-1"></i>Start Course
+                                        </a>
+                                        <button class="btn btn-outline-primary btn-sm ms-2" onclick="addToProfile('electrical-theory')">
+                                            <i class="fas fa-plus me-1"></i>Add to Profile
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-4 col-md-6 mb-3">
+                                <div class="card h-100 border-primary">
+                                    <div class="card-header bg-primary text-white">
+                                        <h6 class="mb-0"><i class="fas fa-book me-2"></i>National Electrical Code (NEC) Basics</h6>
+                                    </div>
+                                    <div class="card-body">
+                                        <p class="text-muted small mb-2">Mike Holt Enterprises</p>
+                                        <p class="card-text">Introduction to electrical code requirements</p>
+                                        <div class="mb-2">
+                                            <span class="badge bg-success me-1">Free</span>
+                                            <span class="badge bg-info me-1">6 hours</span>
+                                            <span class="badge bg-secondary">NEC Certificate</span>
+                                        </div>
+                                        <div class="mb-3">
+                                            <small class="text-muted">Skills: Code Compliance, Electrical Standards, Safety Requirements</small>
+                                        </div>
+                                    </div>
+                                    <div class="card-footer">
+                                        <a href="https://www.mikeholt.com/free-electrical-training" target="_blank" 
+                                           class="btn btn-primary btn-sm">
+                                            <i class="fas fa-external-link-alt me-1"></i>Start Course
+                                        </a>
+                                        <button class="btn btn-outline-primary btn-sm ms-2" onclick="addToProfile('nec-basics')">
+                                            <i class="fas fa-plus me-1"></i>Add to Profile
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Quick Action Panel -->
+                    <div class="col-12 mb-4">
+                        <div class="card bg-light">
+                            <div class="card-body text-center">
+                                <h5 class="card-title">
+                                    <i class="fas fa-rocket me-2"></i>Boost Your Career Today!
+                                </h5>
+                                <p class="card-text">
+                                    Complete free training courses to add valuable certifications to your LaborLooker profile and stand out to employers.
+                                </p>
+                                <div class="d-flex justify-content-center gap-3 flex-wrap">
+                                    <a href="/job_seeker_dashboard" class="btn btn-success">
+                                        <i class="fas fa-user me-2"></i>Update My Profile
+                                    </a>
+                                    <a href="/find-work" class="btn btn-primary">
+                                        <i class="fas fa-search me-2"></i>Find Work Now
+                                    </a>
+                                    <button class="btn btn-info" onclick="downloadCertificateGuide()">
+                                        <i class="fas fa-download me-2"></i>Download Guide
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- Individual category tabs would be populated dynamically -->
+            <div class="tab-pane fade" id="construction" role="tabpanel" aria-labelledby="construction-tab">
+                <div class="alert alert-info">
+                    <i class="fas fa-info-circle me-2"></i>
+                    Use the JavaScript function to load construction-specific courses here.
+                </div>
+            </div>
+
+            <!-- More tabs... -->
+
+        </div>
+
+        <!-- Popular Certifications Section -->
+        <div class="row mt-5">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header bg-dark text-white">
+                        <h4 class="mb-0">
+                            <i class="fas fa-star me-2"></i>Most Popular Certifications
+                        </h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-4 mb-3">
+                                <div class="d-flex align-items-center">
+                                    <div class="bg-warning rounded-circle p-3 me-3">
+                                        <i class="fas fa-hard-hat text-white"></i>
+                                    </div>
+                                    <div>
+                                        <h6 class="mb-1">OSHA 10-Hour</h6>
+                                        <small class="text-muted">Construction Safety</small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <div class="d-flex align-items-center">
+                                    <div class="bg-primary rounded-circle p-3 me-3">
+                                        <i class="fas fa-bolt text-white"></i>
+                                    </div>
+                                    <div>
+                                        <h6 class="mb-1">EPA Section 608</h6>
+                                        <small class="text-muted">Refrigerant Handling</small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <div class="d-flex align-items-center">
+                                    <div class="bg-success rounded-circle p-3 me-3">
+                                        <i class="fas fa-leaf text-white"></i>
+                                    </div>
+                                    <div>
+                                        <h6 class="mb-1">Green Building</h6>
+                                        <small class="text-muted">Sustainable Construction</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<!-- JavaScript for Enhanced Functionality -->
+<script>
+function addToProfile(courseId) {
+    // Show confirmation
+    const toast = document.createElement('div');
+    toast.className = 'toast-container position-fixed top-0 end-0 p-3';
+    toast.innerHTML = `
+        <div class="toast show" role="alert">
+            <div class="toast-header">
+                <i class="fas fa-check-circle text-success me-2"></i>
+                <strong class="me-auto">Added to Profile</strong>
+                <button type="button" class="btn-close" data-bs-dismiss="toast"></button>
+            </div>
+            <div class="toast-body">
+                Training course added to your job seeker profile!
+            </div>
+        </div>
+    `;
+    document.body.appendChild(toast);
+    
+    // Auto-remove after 3 seconds
+    setTimeout(() => {
+        document.body.removeChild(toast);
+    }, 3000);
+    
+    // Here you would make an AJAX call to add the course to the user's profile
+    fetch('/api/add-training-course', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            courseId: courseId,
+            action: 'add_to_profile'
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            console.log('Course added to profile successfully');
+        }
+    })
+    .catch(error => {
+        console.error('Error adding course to profile:', error);
+    });
+}
+
+function downloadCertificateGuide() {
+    // Redirect to download route
+    window.location.href = '/downloads/certification-guide';
+}
+
+// Auto-refresh course completion status
+setInterval(function() {
+    // Check for course completion updates
+    fetch('/api/check-course-completion')
+        .then(response => response.json())
+        .then(data => {
+            if (data.newCompletions && data.newCompletions.length > 0) {
+                // Show notifications for newly completed courses
+                data.newCompletions.forEach(course => {
+                    showCompletionNotification(course);
+                });
+            }
+        })
+        .catch(error => console.log('Course completion check failed:', error));
+}, 60000); // Check every minute
+
+function showCompletionNotification(course) {
+    const notification = document.createElement('div');
+    notification.className = 'alert alert-success alert-dismissible fade show position-fixed';
+    notification.style.top = '20px';
+    notification.style.right = '20px';
+    notification.style.zIndex = '9999';
+    notification.innerHTML = `
+        <strong>Congratulations!</strong> You've completed ${course.name}!
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    `;
+    document.body.appendChild(notification);
+    
+    setTimeout(() => {
+        if (notification.parentNode) {
+            notification.parentNode.removeChild(notification);
+        }
+    }, 5000);
+}
+</script>
+
+{% endblock %}

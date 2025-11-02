@@ -198,8 +198,8 @@
                                 <button class="btn btn-outline-warning btn-sm">
                                     <i class="fas fa-edit"></i> Edit
                                 </button>
-                                <button class="btn btn-outline-danger btn-sm" 
-                                        onclick="cancelCampaign({{ campaign.id }})">
+                                <button class="btn btn-outline-danger btn-sm cancel-campaign-btn" 
+                                        data-campaign-id="{{ campaign.id }}">
                                     <i class="fas fa-times"></i> Cancel
                                 </button>
                             {% endif %}
@@ -305,6 +305,16 @@
 </style>
 
 <script>
+// Add event listeners when page loads
+document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('.cancel-campaign-btn').forEach(button => {
+        button.addEventListener('click', function() {
+            const campaignId = this.getAttribute('data-campaign-id');
+            cancelCampaign(campaignId);
+        });
+    });
+});
+
 function cancelCampaign(campaignId) {
     if (confirm('Are you sure you want to cancel this campaign? This action cannot be undone.')) {
         // Implementation for campaign cancellation

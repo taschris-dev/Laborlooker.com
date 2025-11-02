@@ -1,147 +1,309 @@
 {% extends "base.html" %}
 
-{% block title %}Marketing Technology Platform - Welcome{% endblock %}
+{% block title %}LaborLooker - Connecting Skilled Workers with Local Businesses{% endblock %}
 
 {% block content %}
-<div class="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
+<div class="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
     <!-- Hero Section -->
-    <div class="container mx-auto px-4 py-16">
-        <div class="text-center max-w-4xl mx-auto">
-            <h1 class="text-5xl font-bold text-gray-900 mb-6">
-                Marketing Technology Platform
+    <div class="container mx-auto px-4 py-20">
+        <div class="text-center max-w-5xl mx-auto">
+            <!-- Logo Section -->
+            <div class="mb-8">
+                <img src="{{ url_for('static', filename='images/logo.svg') }}" 
+                     alt="LaborLooker" 
+                     class="mx-auto h-20 mb-6">
+            </div>
+            
+            <h1 class="text-6xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-6">
+                Find Work. Hire Talent. Grow Together.
             </h1>
-            <p class="text-xl text-gray-600 mb-8">
-                Connecting businesses through trackable campaigns, comprehensive CRM, and a powerful marketplace ecosystem
+            <p class="text-2xl text-gray-600 mb-8 leading-relaxed">
+                The premier platform connecting skilled workers with local businesses across the construction and trades industry
             </p>
+            
+            <!-- Value Proposition -->
+            <div class="flex flex-wrap justify-center gap-6 mb-12">
+                <div class="flex items-center bg-white rounded-full px-6 py-3 shadow-md">
+                    <i class="fas fa-certificate text-purple-600 mr-2"></i>
+                    <span class="font-medium">Free Training & Certifications</span>
+                </div>
+                <div class="flex items-center bg-white rounded-full px-6 py-3 shadow-md">
+                    <i class="fas fa-shield-check text-blue-600 mr-2"></i>
+                    <span class="font-medium">Verified Professionals</span>
+                </div>
+                <div class="flex items-center bg-white rounded-full px-6 py-3 shadow-md">
+                    <i class="fas fa-handshake text-green-600 mr-2"></i>
+                    <span class="font-medium">Secure Payments</span>
+                </div>
+            </div>
             
             <!-- Call to Action -->
             <div class="flex flex-col sm:flex-row gap-4 justify-center mb-16">
                 <a href="{{ url_for('register') }}" 
-                   class="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-8 py-3 rounded-lg transition duration-200 text-lg">
-                    Get Started Free
+                   class="btn btn-primary gradient-primary text-white font-semibold px-10 py-4 rounded-xl transition duration-200 text-lg shadow-lg">
+                    <i class="fas fa-rocket mr-2"></i>Get Started Free
                 </a>
                 <a href="{{ url_for('login') }}" 
-                   class="bg-white hover:bg-gray-50 text-blue-600 font-semibold px-8 py-3 rounded-lg border-2 border-blue-600 transition duration-200 text-lg">
-                    Sign In
+                   class="bg-white hover:bg-gray-50 text-blue-600 font-semibold px-10 py-4 rounded-xl border-2 border-blue-600 transition duration-200 text-lg shadow-lg">
+                    <i class="fas fa-sign-in-alt mr-2"></i>Sign In
                 </a>
             </div>
         </div>
 
         <!-- Features Grid -->
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
-            <!-- Developer Features -->
-            <div class="bg-white rounded-xl shadow-lg p-8 text-center">
-                <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <span class="text-2xl">👨‍💻</span>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 max-w-7xl mx-auto">
+            <!-- Job Seekers -->
+            <div class="card bg-white rounded-xl shadow-lg p-8 text-center hover:shadow-xl transition-all duration-300">
+                <div class="w-20 h-20 gradient-primary rounded-full flex items-center justify-center mx-auto mb-6">
+                    <i class="fas fa-user-hard-hat text-3xl text-white"></i>
                 </div>
-                <h3 class="text-xl font-bold text-gray-900 mb-3">For Developers</h3>
-                <p class="text-gray-600 mb-4">
-                    Manage the entire platform, create campaigns, analyze performance, and oversee all business operations.
+                <h3 class="text-xl font-bold text-gray-900 mb-4">Job Seekers</h3>
+                <p class="text-gray-600 mb-6">
+                    Find quality work opportunities, enhance your skills with free training, and build your career.
                 </p>
-                <ul class="text-sm text-gray-500 space-y-1">
-                    <li>✓ Campaign Management</li>
-                    <li>✓ Analytics Dashboard</li>
-                    <li>✓ User Administration</li>
-                    <li>✓ Revenue Tracking</li>
+                <ul class="text-sm text-gray-500 space-y-2 mb-6">
+                    <li class="flex items-center"><i class="fas fa-check text-green-500 mr-2"></i>Free Skills Training</li>
+                    <li class="flex items-center"><i class="fas fa-check text-green-500 mr-2"></i>Job Matching</li>
+                    <li class="flex items-center"><i class="fas fa-check text-green-500 mr-2"></i>Professional Profile</li>
+                    <li class="flex items-center"><i class="fas fa-check text-green-500 mr-2"></i>Secure Payment</li>
                 </ul>
+                <a href="{{ url_for('register') }}?type=job_seeker" class="btn btn-primary w-full">Join as Job Seeker</a>
             </div>
 
-            <!-- Contractor Features -->
-            <div class="bg-white rounded-xl shadow-lg p-8 text-center">
-                <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <span class="text-2xl">🔨</span>
+            <!-- Contractors -->
+            <div class="card bg-white rounded-xl shadow-lg p-8 text-center hover:shadow-xl transition-all duration-300">
+                <div class="w-20 h-20 gradient-success rounded-full flex items-center justify-center mx-auto mb-6">
+                    <i class="fas fa-tools text-3xl text-white"></i>
                 </div>
-                <h3 class="text-xl font-bold text-gray-900 mb-3">For Contractors</h3>
-                <p class="text-gray-600 mb-4">
-                    Build your profile, connect with customers, manage work requests, and grow your business.
+                <h3 class="text-xl font-bold text-gray-900 mb-4">Contractors</h3>
+                <p class="text-gray-600 mb-6">
+                    Build your business, manage projects, connect with customers, and grow your professional network.
                 </p>
-                <ul class="text-sm text-gray-500 space-y-1">
-                    <li>✓ Profile Management</li>
-                    <li>✓ Work Requests</li>
-                    <li>✓ Invoicing System</li>
-                    <li>✓ Customer Reviews</li>
+                <ul class="text-sm text-gray-500 space-y-2 mb-6">
+                    <li class="flex items-center"><i class="fas fa-check text-green-500 mr-2"></i>Project Management</li>
+                    <li class="flex items-center"><i class="fas fa-check text-green-500 mr-2"></i>Customer Leads</li>
+                    <li class="flex items-center"><i class="fas fa-check text-green-500 mr-2"></i>Invoicing System</li>
+                    <li class="flex items-center"><i class="fas fa-check text-green-500 mr-2"></i>Professional Reviews</li>
                 </ul>
+                <a href="{{ url_for('register') }}?type=contractor" class="btn gradient-success text-white w-full">Join as Contractor</a>
             </div>
 
-            <!-- Customer Features -->
-            <div class="bg-white rounded-xl shadow-lg p-8 text-center">
-                <div class="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <span class="text-2xl">🏢</span>
+            <!-- Customers -->
+            <div class="card bg-white rounded-xl shadow-lg p-8 text-center hover:shadow-xl transition-all duration-300">
+                <div class="w-20 h-20 gradient-warning rounded-full flex items-center justify-center mx-auto mb-6">
+                    <i class="fas fa-building text-3xl text-white"></i>
                 </div>
-                <h3 class="text-xl font-bold text-gray-900 mb-3">For Customers</h3>
-                <p class="text-gray-600 mb-4">
-                    Find qualified contractors, schedule work, track progress, and manage billing - all in one place.
+                <h3 class="text-xl font-bold text-gray-900 mb-4">Businesses</h3>
+                <p class="text-gray-600 mb-6">
+                    Find qualified contractors, manage projects, track progress, and handle payments seamlessly.
                 </p>
-                <ul class="text-sm text-gray-500 space-y-1">
-                    <li>✓ Contractor Matching</li>
-                    <li>✓ Work Scheduling</li>
-                    <li>✓ Progress Tracking</li>
-                    <li>✓ Secure Payments</li>
+                <ul class="text-sm text-gray-500 space-y-2 mb-6">
+                    <li class="flex items-center"><i class="fas fa-check text-green-500 mr-2"></i>Contractor Matching</li>
+                    <li class="flex items-center"><i class="fas fa-check text-green-500 mr-2"></i>Project Tracking</li>
+                    <li class="flex items-center"><i class="fas fa-check text-green-500 mr-2"></i>Secure Payments</li>
+                    <li class="flex items-center"><i class="fas fa-check text-green-500 mr-2"></i>Quality Assurance</li>
                 </ul>
+                <a href="{{ url_for('register') }}?type=customer" class="btn gradient-warning text-white w-full">Join as Business</a>
+            </div>
+
+            <!-- Networking -->
+            <div class="card bg-white rounded-xl shadow-lg p-8 text-center hover:shadow-xl transition-all duration-300">
+                <div class="w-20 h-20 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center mx-auto mb-6">
+                    <i class="fas fa-network-wired text-3xl text-white"></i>
+                </div>
+                <h3 class="text-xl font-bold text-gray-900 mb-4">Networking</h3>
+                <p class="text-gray-600 mb-6">
+                    Build professional networks, earn referral income, and connect businesses with opportunities.
+                </p>
+                <ul class="text-sm text-gray-500 space-y-2 mb-6">
+                    <li class="flex items-center"><i class="fas fa-check text-green-500 mr-2"></i>Referral Network</li>
+                    <li class="flex items-center"><i class="fas fa-check text-green-500 mr-2"></i>Passive Income</li>
+                    <li class="flex items-center"><i class="fas fa-check text-green-500 mr-2"></i>Business Growth</li>
+                    <li class="flex items-center"><i class="fas fa-check text-green-500 mr-2"></i>Professional Connections</li>
+                </ul>
+                <a href="{{ url_for('register') }}?type=networking" class="btn bg-gradient-to-r from-purple-500 to-pink-500 text-white w-full">Start Networking</a>
             </div>
         </div>
 
-        <!-- Business Model -->
-        <div class="mt-16 max-w-4xl mx-auto">
-            <div class="bg-white rounded-xl shadow-lg p-8">
-                <h2 class="text-2xl font-bold text-center text-gray-900 mb-6">
-                    Transparent Business Model
+        </div>
+
+        <!-- Training & Value Section -->
+        <div class="mt-20 max-w-6xl mx-auto">
+            <div class="card bg-gradient-to-r from-purple-600 to-indigo-600 rounded-2xl shadow-2xl p-12 text-white text-center">
+                <h2 class="text-4xl font-bold mb-6">
+                    Boost Your Career with Free Training
                 </h2>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                    <div class="text-center">
-                        <div class="w-16 h-16 bg-yellow-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                            <span class="text-2xl">💰</span>
+                <p class="text-xl mb-8 opacity-90">
+                    Access 50+ free training courses and earn industry-recognized certifications to advance your career
+                </p>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                    <div class="flex flex-col items-center">
+                        <div class="w-16 h-16 bg-white bg-opacity-20 rounded-full flex items-center justify-center mb-4">
+                            <i class="fas fa-graduation-cap text-2xl"></i>
                         </div>
-                        <h3 class="text-lg font-semibold mb-2">Commission Only</h3>
-                        <p class="text-3xl font-bold text-green-600 mb-2">10%</p>
-                        <p class="text-gray-600">Pay only when you earn. Perfect for getting started.</p>
+                        <h4 class="font-semibold mb-2">OSHA Certifications</h4>
+                        <p class="text-sm opacity-80">Safety training required by employers</p>
                     </div>
-                    <div class="text-center">
-                        <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                            <span class="text-2xl">📊</span>
+                    <div class="flex flex-col items-center">
+                        <div class="w-16 h-16 bg-white bg-opacity-20 rounded-full flex items-center justify-center mb-4">
+                            <i class="fas fa-tools text-2xl"></i>
                         </div>
-                        <h3 class="text-lg font-semibold mb-2">Subscription + Commission</h3>
-                        <p class="text-lg text-gray-900 mb-2">
-                            <span class="font-bold">$30/month</span> + <span class="font-bold text-green-600">5%</span>
-                        </p>
-                        <p class="text-gray-600">Lower commission rate for active subscribers.</p>
+                        <h4 class="font-semibold mb-2">Trade Skills</h4>
+                        <p class="text-sm opacity-80">Electrical, plumbing, HVAC, and more</p>
+                    </div>
+                    <div class="flex flex-col items-center">
+                        <div class="w-16 h-16 bg-white bg-opacity-20 rounded-full flex items-center justify-center mb-4">
+                            <i class="fas fa-certificate text-2xl"></i>
+                        </div>
+                        <h4 class="font-semibold mb-2">Professional Certs</h4>
+                        <p class="text-sm opacity-80">EPA, NEC, and industry standards</p>
+                    </div>
+                </div>
+                <a href="/training/courses" class="btn bg-white text-purple-600 font-semibold px-8 py-4 rounded-xl hover:bg-gray-100 transition duration-200 text-lg">
+                    <i class="fas fa-rocket mr-2"></i>Start Learning Now
+                </a>
+            </div>
+        </div>
+
+        <!-- Success Stories -->
+        <div class="mt-20 max-w-6xl mx-auto">
+            <h2 class="text-4xl font-bold text-center text-gray-900 mb-12">
+                Success Stories
+            </h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="card bg-white rounded-xl p-8 shadow-lg">
+                    <div class="flex items-center mb-4">
+                        <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mr-4">
+                            <i class="fas fa-user-hard-hat text-blue-600"></i>
+                        </div>
+                        <div>
+                            <h4 class="font-semibold">Mike Rodriguez</h4>
+                            <p class="text-sm text-gray-500">Electrician</p>
+                        </div>
+                    </div>
+                    <p class="text-gray-600 mb-4">
+                        "LaborLooker helped me find consistent work and complete my OSHA certification. My income increased 40% in just 6 months!"
+                    </p>
+                    <div class="rating-stars">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                    </div>
+                </div>
+                
+                <div class="card bg-white rounded-xl p-8 shadow-lg">
+                    <div class="flex items-center mb-4">
+                        <div class="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mr-4">
+                            <i class="fas fa-building text-green-600"></i>
+                        </div>
+                        <div>
+                            <h4 class="font-semibold">Sarah Johnson</h4>
+                            <p class="text-sm text-gray-500">Business Owner</p>
+                        </div>
+                    </div>
+                    <p class="text-gray-600 mb-4">
+                        "Finding reliable contractors was always a challenge. LaborLooker connects me with verified professionals who deliver quality work."
+                    </p>
+                    <div class="rating-stars">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                    </div>
+                </div>
+                
+                <div class="card bg-white rounded-xl p-8 shadow-lg">
+                    <div class="flex items-center mb-4">
+                        <div class="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center mr-4">
+                            <i class="fas fa-network-wired text-purple-600"></i>
+                        </div>
+                        <div>
+                            <h4 class="font-semibold">David Kim</h4>
+                            <p class="text-sm text-gray-500">Network Professional</p>
+                        </div>
+                    </div>
+                    <p class="text-gray-600 mb-4">
+                        "The referral system generated $2,000 in passive income last month. It's incredible how the network grows organically."
+                    </p>
+                    <div class="rating-stars">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Stats Section -->
-        <div class="mt-16 text-center">
-            <h2 class="text-2xl font-bold text-gray-900 mb-8">Platform Statistics</h2>
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-2xl mx-auto">
-                <div>
-                    <div class="text-3xl font-bold text-blue-600">24/7</div>
-                    <div class="text-gray-600">Platform Uptime</div>
-                </div>
-                <div>
-                    <div class="text-3xl font-bold text-green-600">100%</div>
-                    <div class="text-gray-600">Secure Payments</div>
-                </div>
-                <div>
-                    <div class="text-3xl font-bold text-purple-600">Real-time</div>
-                    <div class="text-gray-600">Analytics</div>
-                </div>
-                <div>
-                    <div class="text-3xl font-bold text-orange-600">Multi-user</div>
-                    <div class="text-gray-600">Marketplace</div>
-                </div>
-            </div>
+        <!-- Final CTA -->
+        <div class="mt-20 text-center">
+            <h2 class="text-4xl font-bold text-gray-900 mb-6">
+                Ready to Transform Your Career?
+            </h2>
+            <p class="text-xl text-gray-600 mb-8">
+                Join thousands of professionals who are already growing their careers with LaborLooker
+            </p>
+            <a href="{{ url_for('register') }}" 
+               class="btn btn-primary gradient-primary text-white font-semibold px-12 py-5 rounded-xl transition duration-200 text-xl shadow-2xl">
+                <i class="fas fa-rocket mr-3"></i>Start Your Journey Today
+            </a>
         </div>
     </div>
 </div>
 
 <!-- Footer -->
-<footer class="bg-gray-900 text-white py-8">
-    <div class="container mx-auto px-4 text-center">
-        <p class="mb-4">© 2024 Marketing Technology Platform. Built for connecting businesses.</p>
-        <div class="flex justify-center space-x-6">
-            <a href="{{ url_for('register') }}" class="text-blue-400 hover:text-blue-300">Get Started</a>
-            <a href="{{ url_for('login') }}" class="text-blue-400 hover:text-blue-300">Sign In</a>
+<footer class="bg-gray-900 text-white py-12">
+    <div class="container mx-auto px-4">
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+            <div>
+                <img src="{{ url_for('static', filename='images/logo.svg') }}" alt="LaborLooker" class="h-12 mb-4 filter brightness-0 invert">
+                <p class="text-gray-400 text-sm mb-4">Connecting skilled workers with local businesses across the construction and trades industry.</p>
+                <div class="flex space-x-4">
+                    <a href="#" class="text-gray-400 hover:text-white">
+                        <i class="fab fa-facebook"></i>
+                    </a>
+                    <a href="#" class="text-gray-400 hover:text-white">
+                        <i class="fab fa-twitter"></i>
+                    </a>
+                    <a href="#" class="text-gray-400 hover:text-white">
+                        <i class="fab fa-linkedin"></i>
+                    </a>
+                </div>
+            </div>
+            <div>
+                <h4 class="font-semibold mb-4">For Workers</h4>
+                <ul class="space-y-2 text-sm text-gray-400">
+                    <li><a href="/training/courses" class="hover:text-white">Free Training</a></li>
+                    <li><a href="{{ url_for('register') }}?type=job_seeker" class="hover:text-white">Find Work</a></li>
+                    <li><a href="#" class="hover:text-white">Build Profile</a></li>
+                    <li><a href="#" class="hover:text-white">Career Resources</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="font-semibold mb-4">For Businesses</h4>
+                <ul class="space-y-2 text-sm text-gray-400">
+                    <li><a href="{{ url_for('register') }}?type=customer" class="hover:text-white">Hire Workers</a></li>
+                    <li><a href="{{ url_for('register') }}?type=contractor" class="hover:text-white">Contractor Tools</a></li>
+                    <li><a href="#" class="hover:text-white">Project Management</a></li>
+                    <li><a href="#" class="hover:text-white">Business Growth</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="font-semibold mb-4">Support</h4>
+                <ul class="space-y-2 text-sm text-gray-400">
+                    <li><a href="/help" class="hover:text-white">Help Center</a></li>
+                    <li><a href="/contact-us" class="hover:text-white">Contact Us</a></li>
+                    <li><a href="{{ url_for('privacy_policy') }}" class="hover:text-white">Privacy Policy</a></li>
+                    <li><a href="{{ url_for('terms_of_service') }}" class="hover:text-white">Terms of Service</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="border-t border-gray-700 mt-8 pt-8 text-center text-sm text-gray-400">
+            <p>&copy; 2024 LaborLooker. All rights reserved. Built for connecting skilled workers with opportunities.</p>
         </div>
     </div>
 </footer>

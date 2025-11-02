@@ -1,0 +1,704 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome to LaborLooker</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            overflow-x: hidden; 
+        }
+        .consent-container {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        .consent-card {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.2);
+            max-width: 800px;
+            margin: 0 auto;
+            animation: slideUp 0.5s ease-out;
+        }
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .checkbox-custom {
+            width: 20px;
+            height: 20px;
+            border: 2px solid #d1d5db;
+            border-radius: 4px;
+            background: white;
+            cursor: pointer;
+            position: relative;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+        .checkbox-custom.checked {
+            background: #3b82f6;
+            border-color: #3b82f6;
+        }
+        .checkbox-custom.checked::after {
+            content: '✓';
+            color: white;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 14px;
+            font-weight: bold;
+        }
+        .section-card {
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 24px;
+            transition: all 0.3s ease;
+        }
+        .section-card.required {
+            border-color: #dc2626;
+            background: #fef2f2;
+        }
+        .section-card.optional {
+            border-color: #3b82f6;
+            background: #eff6ff;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+            color: white;
+            padding: 16px 32px;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 18px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+        }
+        .btn-primary:hover:not(:disabled) {
+            background: linear-gradient(135deg, #1d4ed8, #1e40af);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(59, 130, 246, 0.4);
+        }
+        .btn-primary:disabled {
+            background: #9ca3af;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="consent-container p-4 md:p-8">
+        <div class="consent-card p-6 md:p-8">
+            
+            <!-- Header -->
+            <div class="text-center mb-8">
+                <div class="mb-6">
+                    <i class="fas fa-hard-hat text-6xl text-blue-600 mb-4"></i>
+                    <h1 class="text-3xl md:text-4xl font-bold text-gray-800 mb-2">Welcome to LaborLooker</h1>
+                    <p class="text-gray-600 text-lg">Canada's premier skilled trades marketplace</p>
+                </div>
+                
+                <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                    <p class="text-blue-800 font-medium">
+                        <i class="fas fa-info-circle mr-2"></i>
+                        We respect your privacy. Please review and accept our terms to continue.
+                    </p>
+                </div>
+            </div>
+
+            <form id="consentForm">
+                
+                <!-- Required Section -->
+                <div class="section-card required">
+                    <h3 class="text-xl font-bold text-red-700 mb-4 flex items-center">
+                        <i class="fas fa-exclamation-circle mr-2"></i>
+                        Required Agreements
+                    </h3>
+                    <p class="text-gray-700 mb-6">These agreements are essential to use our platform:</p>
+                    
+                    <div class="space-y-4">
+                        <label class="flex items-start cursor-pointer">
+                            <div class="checkbox-custom" data-name="terms_of_service"></div>
+                            <div>
+                                <span class="font-semibold text-gray-900">Terms of Service</span>
+                                <p class="text-sm text-gray-600 mt-1">I accept the platform rules and usage guidelines</p>
+                            </div>
+                        </label>
+                        
+                        <label class="flex items-start cursor-pointer">
+                            <div class="checkbox-custom" data-name="privacy_policy"></div>
+                            <div>
+                                <span class="font-semibold text-gray-900">Privacy Policy</span>
+                                <p class="text-sm text-gray-600 mt-1">I understand how my data is collected and used</p>
+                            </div>
+                        </label>
+                        
+                        <label class="flex items-start cursor-pointer">
+                            <div class="checkbox-custom" data-name="data_collection"></div>
+                            <div>
+                                <span class="font-semibold text-gray-900">Essential Data Collection</span>
+                                <p class="text-sm text-gray-600 mt-1">Collection of account data necessary for platform operation</p>
+                            </div>
+                        </label>
+                        
+                        <label class="flex items-start cursor-pointer">
+                            <div class="checkbox-custom" data-name="cookies_essential"></div>
+                            <div>
+                                <span class="font-semibold text-gray-900">Essential Cookies</span>
+                                <p class="text-sm text-gray-600 mt-1">Technical cookies required for login and security</p>
+                            </div>
+                        </label>
+                        
+                        <label class="flex items-start cursor-pointer">
+                            <div class="checkbox-custom" data-name="safety_verification"></div>
+                            <div>
+                                <span class="font-semibold text-gray-900">Safety & Verification</span>
+                                <p class="text-sm text-gray-600 mt-1">Identity verification and safety checks for secure platform use</p>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Optional Section -->
+                <div class="section-card optional">
+                    <h3 class="text-xl font-bold text-blue-700 mb-4 flex items-center">
+                        <i class="fas fa-star mr-2"></i>
+                        Optional Enhancements
+                    </h3>
+                    <p class="text-gray-700 mb-6">These are optional and improve your experience:</p>
+                    
+                    <div class="space-y-4">
+                        <label class="flex items-start cursor-pointer">
+                            <div class="checkbox-custom" data-name="marketing_communications"></div>
+                            <div>
+                                <span class="font-semibold text-gray-900">Marketing Updates</span>
+                                <p class="text-sm text-gray-600 mt-1">
+                                    Job alerts, platform updates, and industry news
+                                    <span class="text-blue-600 font-medium block">✓ Job matching notifications</span>
+                                </p>
+                            </div>
+                        </label>
+                        
+                        <label class="flex items-start cursor-pointer">
+                            <div class="checkbox-custom" data-name="personalization"></div>
+                            <div>
+                                <span class="font-semibold text-gray-900">Personalization</span>
+                                <p class="text-sm text-gray-600 mt-1">
+                                    Customized recommendations and smart matching
+                                    <span class="text-blue-600 font-medium block">✓ Better job suggestions</span>
+                                </p>
+                            </div>
+                        </label>
+                        
+                        <label class="flex items-start cursor-pointer">
+                            <div class="checkbox-custom" data-name="cookies_analytics"></div>
+                            <div>
+                                <span class="font-semibold text-gray-900">Analytics Cookies</span>
+                                <p class="text-sm text-gray-600 mt-1">
+                                    Help us improve platform performance
+                                    <span class="text-blue-600 font-medium block">✓ Faster, better experience</span>
+                                </p>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="text-center mt-8">
+                    <button type="submit" id="acceptBtn" class="btn-primary w-full md:w-auto" disabled>
+                        <i class="fas fa-check mr-2"></i>
+                        Accept & Continue to LaborLooker
+                    </button>
+                    
+                    <p class="text-sm text-gray-500 mt-4">
+                        <i class="fas fa-shield-alt mr-1"></i>
+                        Your privacy is protected. You can change these preferences anytime in your account settings.
+                    </p>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Custom checkbox handling
+        document.addEventListener('DOMContentLoaded', function() {
+            const checkboxes = document.querySelectorAll('.checkbox-custom');
+            const acceptBtn = document.getElementById('acceptBtn');
+            const form = document.getElementById('consentForm');
+            
+            // Required checkboxes
+            const requiredBoxes = ['terms_of_service', 'privacy_policy', 'data_collection', 'cookies_essential', 'safety_verification'];
+            
+            // Initialize checkbox click handlers
+            checkboxes.forEach(checkbox => {
+                checkbox.addEventListener('click', function() {
+                    this.classList.toggle('checked');
+                    updateAcceptButton();
+                });
+            });
+            
+            function updateAcceptButton() {
+                const allRequiredChecked = requiredBoxes.every(name => {
+                    const checkbox = document.querySelector(`[data-name="${name}"]`);
+                    return checkbox && checkbox.classList.contains('checked');
+                });
+                
+                acceptBtn.disabled = !allRequiredChecked;
+            }
+            
+            function getConsentData() {
+                const data = {};
+                checkboxes.forEach(checkbox => {
+                    const name = checkbox.dataset.name;
+                    data[name] = checkbox.classList.contains('checked');
+                });
+                return data;
+            }
+            
+            // Form submission
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const consentData = getConsentData();
+                
+                // Validate required consents
+                const missingRequired = requiredBoxes.filter(name => !consentData[name]);
+                if (missingRequired.length > 0) {
+                    alert('Please accept all required agreements to continue.');
+                    return;
+                }
+                
+                // Update button state
+                acceptBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Processing...';
+                acceptBtn.disabled = true;
+                
+                // Submit consent
+                fetch('/consent/submit', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(consentData)
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        acceptBtn.innerHTML = '<i class="fas fa-check mr-2"></i>Success! Redirecting...';
+                        acceptBtn.style.background = 'linear-gradient(135deg, #10b981, #059669)';
+                        
+                        // Redirect
+                        setTimeout(() => {
+                            window.location.href = data.redirect_url || '/';
+                        }, 1000);
+                    } else {
+                        acceptBtn.innerHTML = '<i class="fas fa-check mr-2"></i>Accept & Continue to LaborLooker';
+                        acceptBtn.disabled = false;
+                        updateAcceptButton();
+                        alert('Error: ' + (data.error || 'Failed to process consent. Please try again.'));
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    acceptBtn.innerHTML = '<i class="fas fa-check mr-2"></i>Accept & Continue to LaborLooker';
+                    acceptBtn.disabled = false;
+                    updateAcceptButton();
+                    alert('Connection error. Please try again.');
+                });
+            });
+            
+            // Initialize button state
+            updateAcceptButton();
+        });
+    </script>
+</body>
+</html>
+            
+            <!-- Header -->
+            <div class="bg-gradient-to-r from-blue-600 to-purple-600 text-white p-6 rounded-t-2xl">
+                <div class="flex items-center justify-center mb-4">
+                    <img src="{{ url_for('static', filename='images/logo-white.png') }}" 
+                         alt="LaborLooker" 
+                         class="h-12 mr-3">
+                    <h1 class="text-3xl font-bold">Welcome to LaborLooker</h1>
+                </div>
+                <p class="text-blue-100 text-center text-lg">
+                    Before you can access our platform, we need your consent for our terms and data usage policies.
+                </p>
+            </div>
+
+            <!-- Content -->
+            <div class="p-8">
+                <div class="mb-8 text-center">
+                    <div class="bg-red-50 border border-red-200 rounded-lg p-4 mb-6">
+                        <div class="flex items-center justify-center mb-2">
+                            <i class="fas fa-exclamation-triangle text-red-600 text-2xl mr-2"></i>
+                            <h2 class="text-xl font-bold text-red-800">Consent Required</h2>
+                        </div>
+                        <p class="text-red-700">
+                            <strong>You must accept our terms and data policies to use LaborLooker.</strong><br>
+                            Declining will prevent access to the platform entirely.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Terms and Consent Form -->
+                <form id="consentForm" class="space-y-8">
+                    
+                    <!-- Essential Agreements (Required) -->
+                    <div class="bg-red-50 border-2 border-red-200 rounded-lg p-6">
+                        <h3 class="text-xl font-bold text-red-800 mb-4 flex items-center">
+                            <i class="fas fa-exclamation-circle mr-2"></i>
+                            Required Agreements
+                        </h3>
+                        <p class="text-red-700 mb-4">These agreements are mandatory for platform access:</p>
+                        
+                        <div class="space-y-4">
+                            <label class="flex items-start cursor-pointer">
+                                <input type="checkbox" name="terms_of_service" required 
+                                       class="mt-1 mr-3 h-5 w-5 text-red-600 rounded border-red-300 focus:ring-red-500">
+                                <div class="flex-1">
+                                    <span class="font-semibold text-gray-900">Terms of Service Agreement</span>
+                                    <p class="text-sm text-gray-600 mt-1">
+                                        I agree to LaborLooker's Terms of Service, including dispute resolution, limitation of liability, and user conduct policies.
+                                        <a href="{{ url_for('terms_of_service') }}" target="_blank" class="text-blue-600 hover:underline">Read Full Terms</a>
+                                    </p>
+                                </div>
+                            </label>
+
+                            <label class="flex items-start cursor-pointer">
+                                <input type="checkbox" name="privacy_policy" required 
+                                       class="mt-1 mr-3 h-5 w-5 text-red-600 rounded border-red-300 focus:ring-red-500">
+                                <div class="flex-1">
+                                    <span class="font-semibold text-gray-900">Privacy Policy Agreement</span>
+                                    <p class="text-sm text-gray-600 mt-1">
+                                        I understand how LaborLooker collects, uses, and protects my personal information.
+                                        <a href="{{ url_for('privacy_policy') }}" target="_blank" class="text-blue-600 hover:underline">Read Privacy Policy</a>
+                                    </p>
+                                </div>
+                            </label>
+
+                            <label class="flex items-start cursor-pointer">
+                                <input type="checkbox" name="cookies_essential" required 
+                                       class="mt-1 mr-3 h-5 w-5 text-red-600 rounded border-red-300 focus:ring-red-500">
+                                <div class="flex-1">
+                                    <span class="font-semibold text-gray-900">Essential Cookies</span>
+                                    <p class="text-sm text-gray-600 mt-1">
+                                        Required for login, security, and basic site functionality. These cannot be disabled.
+                                    </p>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Data Usage Agreements (Required) -->
+                    <div class="bg-yellow-50 border-2 border-yellow-200 rounded-lg p-6">
+                        <h3 class="text-xl font-bold text-yellow-800 mb-4 flex items-center">
+                            <i class="fas fa-database mr-2"></i>
+                            Platform Data Processing (Required)
+                        </h3>
+                        <p class="text-yellow-700 mb-4">These are required for core marketplace functionality:</p>
+                        
+                        <div class="space-y-4">
+                            <label class="flex items-start cursor-pointer">
+                                <input type="checkbox" name="data_collection" required 
+                                       class="mt-1 mr-3 h-5 w-5 text-yellow-600 rounded border-yellow-300 focus:ring-yellow-500">
+                                <div class="flex-1">
+                                    <span class="font-semibold text-gray-900">Essential Platform Data Processing</span>
+                                    <p class="text-sm text-gray-600 mt-1">
+                                        I consent to collection and processing of profile data, work history, ratings, and platform usage for contractor-customer matching, safety verification, payment processing, and core platform functionality.
+                                    </p>
+                                </div>
+                            </label>
+
+                            <label class="flex items-start cursor-pointer">
+                                <input type="checkbox" name="safety_verification" required 
+                                       class="mt-1 mr-3 h-5 w-5 text-yellow-600 rounded border-yellow-300 focus:ring-yellow-500">
+                                <div class="flex-1">
+                                    <span class="font-semibold text-gray-900">Safety and Security Processing</span>
+                                    <p class="text-sm text-gray-600 mt-1">
+                                        I consent to processing of my information for fraud prevention, identity verification, background checks, and platform security measures to protect all users.
+                                    </p>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Marketing and Enhancement Features (Optional) -->
+                    <div class="bg-green-50 border border-green-200 rounded-lg p-6">
+                        <h3 class="text-xl font-bold text-green-800 mb-4 flex items-center">
+                            <i class="fas fa-bullhorn mr-2"></i>
+                            Marketing & Personalization (Optional)
+                        </h3>
+                        <p class="text-green-700 mb-4">Enable these for enhanced experience and personalized content:</p>
+                        
+                        <div class="space-y-4">
+                            <label class="flex items-start cursor-pointer">
+                                <input type="checkbox" name="marketing_communications" 
+                                       class="mt-1 mr-3 h-5 w-5 text-green-600 rounded border-green-300 focus:ring-green-500">
+                                <div class="flex-1">
+                                    <span class="font-semibold text-gray-900">Marketing Communications</span>
+                                    <p class="text-sm text-gray-600 mt-1">
+                                        Receive personalized job alerts, contractor recommendations, platform updates, and promotional offers via email and notifications.
+                                        <span class="text-green-600 font-medium">Enhances: Job matching, opportunities discovery</span>
+                                    </p>
+                                </div>
+                            </label>
+
+                            <label class="flex items-start cursor-pointer">
+                                <input type="checkbox" name="personalization" 
+                                       class="mt-1 mr-3 h-5 w-5 text-green-600 rounded border-green-300 focus:ring-green-500">
+                                <div class="flex-1">
+                                    <span class="font-semibold text-gray-900">Advanced Personalization</span>
+                                    <p class="text-sm text-gray-600 mt-1">
+                                        Use my activity, preferences, and behavior patterns to provide personalized recommendations, smart matching, and customized platform experience.
+                                        <span class="text-green-600 font-medium">Enhances: Match quality, platform efficiency</span>
+                                    </p>
+                                </div>
+                            </label>
+
+                            <label class="flex items-start cursor-pointer">
+                                <input type="checkbox" name="market_research" 
+                                       class="mt-1 mr-3 h-5 w-5 text-green-600 rounded border-green-300 focus:ring-green-500">
+                                <div class="flex-1">
+                                    <span class="font-semibold text-gray-900">Market Research & Insights</span>
+                                    <p class="text-sm text-gray-600 mt-1">
+                                        Use my anonymized activity data for market research, platform improvements, and industry insights. Personal identifying information will never be shared.
+                                        <span class="text-green-600 font-medium">Enhances: Platform development, industry tools</span>
+                                    </p>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Optional Analytics -->
+                    <div class="bg-blue-50 border border-blue-200 rounded-lg p-6">
+                        <h3 class="text-xl font-bold text-blue-800 mb-4 flex items-center">
+                            <i class="fas fa-chart-line mr-2"></i>
+                            Analytics & Performance (Optional)
+                        </h3>
+                        <p class="text-blue-700 mb-4">Help us optimize your experience and platform performance:</p>
+                        
+                        <div class="space-y-4">
+                            <label class="flex items-start cursor-pointer">
+                                <input type="checkbox" name="cookies_analytics" 
+                                       class="mt-1 mr-3 h-5 w-5 text-blue-600 rounded border-blue-300 focus:ring-blue-500">
+                                <div class="flex-1">
+                                    <span class="font-semibold text-gray-900">Performance Analytics</span>
+                                    <p class="text-sm text-gray-600 mt-1">
+                                        Help us understand platform usage patterns to improve performance, fix issues, and optimize user experience.
+                                        <span class="text-blue-600 font-medium">Enhances: Site speed, bug fixes, feature improvements</span>
+                                    </p>
+                                </div>
+                            </label>
+
+                            <label class="flex items-start cursor-pointer">
+                                <input type="checkbox" name="cookies_marketing" 
+                                       class="mt-1 mr-3 h-5 w-5 text-blue-600 rounded border-blue-300 focus:ring-blue-500">
+                                <div class="flex-1">
+                                    <span class="font-semibold text-gray-900">Marketing Analytics</span>
+                                    <p class="text-sm text-gray-600 mt-1">
+                                        Track campaign effectiveness and user engagement to show you more relevant content and improve our marketing efforts.
+                                        <span class="text-blue-600 font-medium">Enhances: Content relevance, marketing efficiency</span>
+                                    </p>
+                                </div>
+                            </label>
+                        </div>
+                        
+                        <div class="bg-blue-100 border border-blue-300 rounded-lg p-3 mt-4">
+                            <p class="text-sm text-blue-800">
+                                <i class="fas fa-info-circle mr-2"></i>
+                                <strong>Note:</strong> Declining analytics may result in slower issue resolution and less personalized content, but won't affect core platform functionality.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="flex flex-col sm:flex-row gap-4 pt-6">
+                        <button type="button" id="declineBtn" 
+                                class="flex-1 bg-red-600 hover:bg-red-700 text-white font-bold py-4 px-8 rounded-lg transition duration-200 text-lg">
+                            <i class="fas fa-times mr-2"></i>
+                            Decline - Exit Site
+                        </button>
+                        
+                        <button type="submit" id="acceptBtn" disabled
+                                class="flex-1 bg-gray-400 text-white font-bold py-4 px-8 rounded-lg transition duration-200 text-lg cursor-not-allowed">
+                            <i class="fas fa-check mr-2"></i>
+                            Accept & Continue
+                        </button>
+                    </div>
+
+                    <div class="text-center text-sm text-gray-500 mt-4">
+                        <p>By accepting, you acknowledge that you have read and understood all agreements.</p>
+                        <p class="mt-2">Your consent preferences will be stored and can be updated anytime in your account settings.</p>
+                        
+                        <div class="bg-gray-50 border border-gray-200 rounded-lg p-4 mt-4 text-left">
+                            <h4 class="font-semibold text-gray-800 mb-2">
+                                <i class="fas fa-cog mr-2"></i>
+                                Feature Impact of Consent Choices:
+                            </h4>
+                            <ul class="text-xs text-gray-600 space-y-1">
+                                <li><strong>Essential Processing:</strong> Required - Core matching, payments, safety features</li>
+                                <li><strong>Marketing Communications:</strong> Optional - Job alerts, recommendations, updates</li>
+                                <li><strong>Personalization:</strong> Optional - Smart matching, customized dashboard, AI recommendations</li>
+                                <li><strong>Market Research:</strong> Optional - Platform improvements, industry insights</li>
+                                <li><strong>Analytics:</strong> Optional - Performance optimization, issue resolution speed</li>
+                            </ul>
+                            <p class="text-xs text-gray-500 mt-2 italic">
+                                You can change these preferences anytime in Account Settings → Privacy Controls
+                            </p>
+                        </div>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const form = document.getElementById('consentForm');
+        const acceptBtn = document.getElementById('acceptBtn');
+        const declineBtn = document.getElementById('declineBtn');
+        const requiredCheckboxes = form.querySelectorAll('input[required]');
+
+        // Check if all required consents are given
+        function updateAcceptButton() {
+            const allRequiredChecked = Array.from(requiredCheckboxes).every(checkbox => checkbox.checked);
+            
+            if (allRequiredChecked) {
+                acceptBtn.disabled = false;
+                acceptBtn.className = 'flex-1 bg-green-600 hover:bg-green-700 text-white font-bold py-4 px-8 rounded-lg transition duration-200 text-lg';
+            } else {
+                acceptBtn.disabled = true;
+                acceptBtn.className = 'flex-1 bg-gray-400 text-white font-bold py-4 px-8 rounded-lg transition duration-200 text-lg cursor-not-allowed';
+            }
+        }
+
+        // Add event listeners to required checkboxes
+        requiredCheckboxes.forEach(checkbox => {
+            checkbox.addEventListener('change', updateAcceptButton);
+        });
+
+        // Handle decline
+        declineBtn.addEventListener('click', function() {
+            if (confirm('Are you sure you want to decline? You will not be able to access LaborLooker.')) {
+                // Redirect to a "access denied" page or external site
+                window.location.href = 'https://www.google.com';
+            }
+        });
+
+        // Handle accept
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(form);
+            const consentData = {};
+            
+            // Collect all consent data
+            for (let [key, value] of formData.entries()) {
+                consentData[key] = true;
+            }
+            
+            // Set unchecked optional items to false explicitly
+            const allConsentFields = [
+                'terms_of_service', 'privacy_policy', 'cookies_essential', 
+                'data_collection', 'safety_verification',
+                'marketing_communications', 'personalization', 'market_research',
+                'cookies_analytics', 'cookies_marketing'
+            ];
+            
+            allConsentFields.forEach(field => {
+                if (!consentData[field]) {
+                    consentData[field] = false;
+                }
+            });
+
+            // Show loading state
+            acceptBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Processing...';
+            acceptBtn.disabled = true;
+
+            // Submit consent
+            fetch('/consent/submit', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(consentData)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Show success message
+                    acceptBtn.innerHTML = '<i class="fas fa-check mr-2"></i>Success! Redirecting...';
+                    acceptBtn.className = 'flex-1 bg-green-600 text-white font-bold py-4 px-8 rounded-lg text-lg';
+                    
+                    // Show features summary
+                    if (data.features_enabled) {
+                        const enabledFeatures = Object.entries(data.features_enabled)
+                            .filter(([key, enabled]) => enabled && key !== 'core_platform')
+                            .map(([key]) => key.replace(/_/g, ' '))
+                            .join(', ');
+                        
+                        if (enabledFeatures) {
+                            console.log('Enhanced features enabled:', enabledFeatures);
+                        }
+                    }
+                    
+                    // Remove beforeunload listener
+                    window.removeEventListener('beforeunload', function() {});
+                    
+                    // Redirect after short delay
+                    setTimeout(() => {
+                        window.location.href = data.redirect_url || '/';
+                    }, 1500);
+                } else {
+                    // Reset button
+                    acceptBtn.innerHTML = '<i class="fas fa-check mr-2"></i>Accept & Continue';
+                    acceptBtn.disabled = false;
+                    updateAcceptButton();
+                    
+                    alert('Error: ' + (data.error || 'Failed to process consent. Please try again.'));
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                
+                // Reset button
+                acceptBtn.innerHTML = '<i class="fas fa-check mr-2"></i>Accept & Continue';
+                acceptBtn.disabled = false;
+                updateAcceptButton();
+                
+                alert('Network error. Please check your connection and try again.');
+            });
+        });
+
+        // Prevent page navigation/closing
+        window.addEventListener('beforeunload', function(e) {
+            const message = 'You must accept our terms to use LaborLooker. Are you sure you want to leave?';
+            e.returnValue = message;
+            return message;
+        });
+
+        // Disable right-click context menu
+        document.addEventListener('contextmenu', function(e) {
+            e.preventDefault();
+        });
+
+        // Disable common keyboard shortcuts
+        document.addEventListener('keydown', function(e) {
+            // Disable F12, Ctrl+Shift+I, Ctrl+U, etc.
+            if (e.key === 'F12' || 
+                (e.ctrlKey && e.shiftKey && e.key === 'I') ||
+                (e.ctrlKey && e.key === 'u')) {
+                e.preventDefault();
+            }
+        });
+    </script>
+
+</body>
+</html>

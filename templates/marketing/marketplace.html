@@ -70,8 +70,8 @@
                             
                             <!-- Call to Action -->
                             <div class="mt-auto">
-                                <button class="btn {% if loop.index == 4 %}btn-primary{% else %}btn-outline-primary{% endif %} w-100 mb-2" 
-                                        onclick="selectPackage('{{ package.name }}', {{ package.price }})">
+                                <button class="btn {% if loop.index == 4 %}btn-primary{% else %}btn-outline-primary{% endif %} w-100 mb-2 select-package-btn" 
+                                        data-package-name="{{ package.name }}" data-package-price="{{ package.price }}">
                                     <i class="fas fa-shopping-cart"></i> Select Package
                                 </button>
                                 <a href="{{ url_for('custom_marketing_quote') }}?package={{ package.name|urlencode }}" 
@@ -261,6 +261,17 @@
 </div>
 
 <script>
+// Add event listeners when page loads
+document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('.select-package-btn').forEach(button => {
+        button.addEventListener('click', function() {
+            const packageName = this.getAttribute('data-package-name');
+            const packagePrice = parseFloat(this.getAttribute('data-package-price'));
+            selectPackage(packageName, packagePrice);
+        });
+    });
+});
+
 function selectPackage(packageName, price) {
     document.getElementById('selectedPackage').value = packageName;
     document.getElementById('selectedPrice').value = price;

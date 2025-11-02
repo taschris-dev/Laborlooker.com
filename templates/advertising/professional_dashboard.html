@@ -187,19 +187,16 @@
                                         {% if order.deadline %}
                                             <div class="mb-3">
                                                 <strong>Deadline:</strong> {{ order.deadline.strftime('%B %d, %Y') }}
-                                                {% if order.deadline < moment().datetime %}
-                                                    <span class="badge bg-danger ms-1">Overdue</span>
-                                                {% endif %}
                                             </div>
                                         {% endif %}
 
                                         <div class="d-grid gap-2 d-md-flex">
-                                            <button class="btn btn-success btn-sm" 
-                                                    onclick="updateOrderStatus({{ order.id }}, 'accepted')">
+                                            <button class="btn btn-success btn-sm update-order-status-btn" 
+                                                    data-order-id="{{ order.id }}" data-status="accepted">
                                                 <i class="fas fa-check"></i> Accept
                                             </button>
-                                            <button class="btn btn-danger btn-sm" 
-                                                    onclick="declineOrder({{ order.id }})">
+                                            <button class="btn btn-danger btn-sm decline-order-btn" 
+                                                    data-order-id="{{ order.id }}">
                                                 <i class="fas fa-times"></i> Decline
                                             </button>
                                             <button class="btn btn-outline-primary btn-sm" 
@@ -256,13 +253,15 @@
                                             <strong>Value:</strong> ${{ "%.2f"|format(order.quoted_price_cents / 100) }}<br>
                                             {% if order.deadline %}
                                                 <strong>Deadline:</strong> {{ order.deadline.strftime('%B %d, %Y') }}
-                                                {% set days_left = (order.deadline - moment().datetime).days %}
+                                                {% set current_date = moment.utcnow() if moment else None %}
+                                                {% set days_left = (order.deadline.date() - current_date.date()).days if current_date else 0 %}
                                                 {% if days_left < 0 %}
                                                     <span class="badge bg-danger ms-1">{{ -days_left }} days overdue</span>
                                                 {% elif days_left < 3 %}
                                                     <span class="badge bg-warning ms-1">{{ days_left }} days left</span>
                                                 {% else %}
                                                     <span class="badge bg-success ms-1">{{ days_left }} days left</span>
+                                                {% endif %}
                                                 {% endif %}
                                             {% endif %}
                                         </div>
@@ -273,8 +272,8 @@
                                                     data-bs-target="#progressModal{{ order.id }}">
                                                 <i class="fas fa-edit"></i> Update Progress
                                             </button>
-                                            <button class="btn btn-success btn-sm" 
-                                                    onclick="updateOrderStatus({{ order.id }}, 'completed')">
+                                            <button class="btn btn-success btn-sm update-order-status-btn" 
+                                                    data-order-id="{{ order.id }}" data-status="completed">
                                                 <i class="fas fa-check"></i> Mark Complete
                                             </button>
                                         </div>
@@ -385,6 +384,26 @@
 </style>
 
 <script>
+// Add event listeners when page loads
+document.addEventListener('DOMContentLoaded', function() {
+    // Update order status button handlers
+    document.querySelectorAll('.update-order-status-btn').forEach(button => {
+        button.addEventListener('click', function() {
+            const orderId = this.getAttribute('data-order-id');
+            const status = this.getAttribute('data-status');
+            updateOrderStatus(orderId, status);
+        });
+    });
+    
+    // Decline order button handlers
+    document.querySelectorAll('.decline-order-btn').forEach(button => {
+        button.addEventListener('click', function() {
+            const orderId = this.getAttribute('data-order-id');
+            declineOrder(orderId);
+        });
+    });
+});
+
 function updateOrderStatus(orderId, status) {
     const data = { status: status };
     

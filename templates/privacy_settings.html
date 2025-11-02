@@ -1,0 +1,338 @@
+{% extends "base.html" %}
+
+{% block title %}Privacy Settings - LaborLooker{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <div class="max-w-4xl mx-auto">
+        
+        <!-- Header -->
+        <div class="bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-t-lg p-6">
+            <h1 class="text-3xl font-bold flex items-center">
+                <i class="fas fa-shield-alt mr-3"></i>
+                Privacy & Consent Settings
+            </h1>
+            <p class="text-blue-100 mt-2">
+                Manage your data preferences and control how LaborLooker uses your information
+            </p>
+        </div>
+
+        <!-- Current Status -->
+        <div class="bg-white shadow-lg p-6 border-l-4 border-blue-500">
+            <div class="flex items-center justify-between mb-4">
+                <h2 class="text-xl font-semibold text-gray-800">Current Privacy Status</h2>
+                <span class="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm font-medium">
+                    <i class="fas fa-check-circle mr-1"></i>
+                    Active Consent
+                </span>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                <div class="bg-gray-50 p-4 rounded-lg">
+                    <h3 class="font-medium text-gray-800 mb-2">Consent Granted</h3>
+                    <p class="text-sm text-gray-600">{{ consent_summary.granted_at.strftime('%B %d, %Y at %I:%M %p') if consent_summary else 'Not recorded' }}</p>
+                </div>
+                <div class="bg-gray-50 p-4 rounded-lg">
+                    <h3 class="font-medium text-gray-800 mb-2">Policy Version</h3>
+                    <p class="text-sm text-gray-600">{{ consent_summary.version if consent_summary else 'Unknown' }}</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Consent Management Form -->
+        <form id="privacySettingsForm" class="bg-white shadow-lg">
+            
+            <!-- Essential Data Processing (Cannot be changed) -->
+            <div class="p-6 border-b border-gray-200">
+                <h3 class="text-lg font-semibold text-gray-800 mb-4 flex items-center">
+                    <i class="fas fa-lock mr-2 text-yellow-600"></i>
+                    Essential Platform Functions
+                </h3>
+                <p class="text-sm text-gray-600 mb-4">
+                    These are required for LaborLooker to function and cannot be disabled:
+                </p>
+                
+                <div class="space-y-3">
+                    <div class="flex items-center justify-between p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
+                        <div class="flex-1">
+                            <h4 class="font-medium text-gray-800">Core Platform Data Processing</h4>
+                            <p class="text-sm text-gray-600">Profile data, matching, payments, safety verification</p>
+                        </div>
+                        <div class="flex items-center">
+                            <span class="bg-yellow-100 text-yellow-800 px-3 py-1 rounded-full text-sm font-medium">
+                                Required
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Marketing Communications -->
+            <div class="p-6 border-b border-gray-200">
+                <h3 class="text-lg font-semibold text-gray-800 mb-4 flex items-center">
+                    <i class="fas fa-bullhorn mr-2 text-green-600"></i>
+                    Marketing & Communications
+                </h3>
+                
+                <div class="space-y-4">
+                    <div class="flex items-start justify-between p-4 border border-gray-200 rounded-lg">
+                        <div class="flex-1 mr-4">
+                            <h4 class="font-medium text-gray-800">Personalized Job Alerts</h4>
+                            <p class="text-sm text-gray-600 mt-1">
+                                Receive email notifications about relevant job opportunities and contractor matches
+                            </p>
+                            <div class="mt-2">
+                                <span class="text-xs text-green-600 bg-green-50 px-2 py-1 rounded">
+                                    Enhances: Job discovery, opportunity matching
+                                </span>
+                            </div>
+                        </div>
+                        <label class="relative inline-flex items-center cursor-pointer">
+                            <input type="checkbox" name="marketing_communications" 
+                                   class="sr-only peer" 
+                                   {{ 'checked' if consent_summary and consent_summary.preferences.marketing_communications.granted else '' }}>
+                            <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Personalization -->
+            <div class="p-6 border-b border-gray-200">
+                <h3 class="text-lg font-semibold text-gray-800 mb-4 flex items-center">
+                    <i class="fas fa-robot mr-2 text-purple-600"></i>
+                    AI-Powered Personalization
+                </h3>
+                
+                <div class="space-y-4">
+                    <div class="flex items-start justify-between p-4 border border-gray-200 rounded-lg">
+                        <div class="flex-1 mr-4">
+                            <h4 class="font-medium text-gray-800">Smart Recommendations</h4>
+                            <p class="text-sm text-gray-600 mt-1">
+                                Use AI to provide personalized contractor matches, job recommendations, and platform experience
+                            </p>
+                            <div class="mt-2">
+                                <span class="text-xs text-purple-600 bg-purple-50 px-2 py-1 rounded">
+                                    Enhances: Match quality, platform efficiency, user experience
+                                </span>
+                            </div>
+                        </div>
+                        <label class="relative inline-flex items-center cursor-pointer">
+                            <input type="checkbox" name="personalization" 
+                                   class="sr-only peer" 
+                                   {{ 'checked' if consent_summary and consent_summary.preferences.personalization.granted else '' }}>
+                            <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-purple-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-purple-600"></div>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Analytics -->
+            <div class="p-6 border-b border-gray-200">
+                <h3 class="text-lg font-semibold text-gray-800 mb-4 flex items-center">
+                    <i class="fas fa-chart-line mr-2 text-blue-600"></i>
+                    Analytics & Performance
+                </h3>
+                
+                <div class="space-y-4">
+                    <div class="flex items-start justify-between p-4 border border-gray-200 rounded-lg">
+                        <div class="flex-1 mr-4">
+                            <h4 class="font-medium text-gray-800">Performance Analytics</h4>
+                            <p class="text-sm text-gray-600 mt-1">
+                                Help us optimize platform performance, fix issues faster, and improve user experience
+                            </p>
+                            <div class="mt-2">
+                                <span class="text-xs text-blue-600 bg-blue-50 px-2 py-1 rounded">
+                                    Enhances: Site speed, bug resolution, feature improvements
+                                </span>
+                            </div>
+                        </div>
+                        <label class="relative inline-flex items-center cursor-pointer">
+                            <input type="checkbox" name="cookies_analytics" 
+                                   class="sr-only peer" 
+                                   {{ 'checked' if consent_summary and consent_summary.preferences.performance_analytics.granted else '' }}>
+                            <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                        </label>
+                    </div>
+
+                    <div class="flex items-start justify-between p-4 border border-gray-200 rounded-lg">
+                        <div class="flex-1 mr-4">
+                            <h4 class="font-medium text-gray-800">Marketing Analytics</h4>
+                            <p class="text-sm text-gray-600 mt-1">
+                                Track campaign effectiveness to show you more relevant content and improve our marketing
+                            </p>
+                            <div class="mt-2">
+                                <span class="text-xs text-blue-600 bg-blue-50 px-2 py-1 rounded">
+                                    Enhances: Content relevance, marketing efficiency
+                                </span>
+                            </div>
+                        </div>
+                        <label class="relative inline-flex items-center cursor-pointer">
+                            <input type="checkbox" name="cookies_marketing" 
+                                   class="sr-only peer" 
+                                   {{ 'checked' if consent_summary and consent_summary.preferences.marketing_analytics.granted else '' }}>
+                            <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Market Research -->
+            <div class="p-6 border-b border-gray-200">
+                <h3 class="text-lg font-semibold text-gray-800 mb-4 flex items-center">
+                    <i class="fas fa-chart-bar mr-2 text-indigo-600"></i>
+                    Market Research & Development
+                </h3>
+                
+                <div class="space-y-4">
+                    <div class="flex items-start justify-between p-4 border border-gray-200 rounded-lg">
+                        <div class="flex-1 mr-4">
+                            <h4 class="font-medium text-gray-800">Anonymized Market Insights</h4>
+                            <p class="text-sm text-gray-600 mt-1">
+                                Help develop industry insights and platform improvements using anonymized usage data
+                            </p>
+                            <div class="mt-2">
+                                <span class="text-xs text-indigo-600 bg-indigo-50 px-2 py-1 rounded">
+                                    Enhances: Platform development, industry tools
+                                </span>
+                            </div>
+                        </div>
+                        <label class="relative inline-flex items-center cursor-pointer">
+                            <input type="checkbox" name="market_research" 
+                                   class="sr-only peer" 
+                                   {{ 'checked' if consent_summary and consent_summary.preferences.market_research.granted else '' }}>
+                            <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-indigo-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-indigo-600"></div>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="p-6 bg-gray-50 rounded-b-lg">
+                <div class="flex flex-col sm:flex-row gap-4">
+                    <button type="submit" id="saveBtn" 
+                            class="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg transition duration-200">
+                        <i class="fas fa-save mr-2"></i>
+                        Save Preferences
+                    </button>
+                    
+                    <button type="button" id="exportBtn" 
+                            class="flex-1 bg-gray-600 hover:bg-gray-700 text-white font-bold py-3 px-6 rounded-lg transition duration-200">
+                        <i class="fas fa-download mr-2"></i>
+                        Export My Data
+                    </button>
+                </div>
+                
+                <div class="mt-4 text-center">
+                    <p class="text-sm text-gray-600">
+                        Changes will take effect immediately. You can update these preferences anytime.
+                    </p>
+                </div>
+            </div>
+        </form>
+
+        <!-- Data Management -->
+        <div class="bg-white shadow-lg rounded-lg mt-6 p-6">
+            <h3 class="text-lg font-semibold text-gray-800 mb-4">Data Management</h3>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <a href="{{ url_for('privacy_export_data') }}" 
+                   class="bg-blue-50 hover:bg-blue-100 border border-blue-200 rounded-lg p-4 text-center transition duration-200">
+                    <i class="fas fa-file-export text-2xl text-blue-600 mb-2"></i>
+                    <h4 class="font-medium text-gray-800">Export Data</h4>
+                    <p class="text-sm text-gray-600">Download all your data</p>
+                </a>
+                
+                <a href="{{ url_for('privacy_delete_account') }}" 
+                   class="bg-red-50 hover:bg-red-100 border border-red-200 rounded-lg p-4 text-center transition duration-200">
+                    <i class="fas fa-user-times text-2xl text-red-600 mb-2"></i>
+                    <h4 class="font-medium text-gray-800">Delete Account</h4>
+                    <p class="text-sm text-gray-600">Permanently remove data</p>
+                </a>
+                
+                <a href="mailto:privacy@laborlooker.com" 
+                   class="bg-gray-50 hover:bg-gray-100 border border-gray-200 rounded-lg p-4 text-center transition duration-200">
+                    <i class="fas fa-envelope text-2xl text-gray-600 mb-2"></i>
+                    <h4 class="font-medium text-gray-800">Contact Support</h4>
+                    <p class="text-sm text-gray-600">Privacy questions</p>
+                </a>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script>
+document.getElementById('privacySettingsForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    const saveBtn = document.getElementById('saveBtn');
+    const formData = new FormData(this);
+    const preferences = {};
+    
+    // Collect all preferences
+    for (let [key, value] of formData.entries()) {
+        preferences[key] = true;
+    }
+    
+    // Set unchecked items to false
+    ['marketing_communications', 'personalization', 'market_research', 'cookies_analytics', 'cookies_marketing'].forEach(field => {
+        if (!preferences[field]) {
+            preferences[field] = false;
+        }
+    });
+    
+    // Show loading state
+    saveBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Saving...';
+    saveBtn.disabled = true;
+    
+    // Submit preferences
+    fetch('/privacy/update-consent', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(preferences)
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            saveBtn.innerHTML = '<i class="fas fa-check mr-2"></i>Saved!';
+            saveBtn.className = 'flex-1 bg-green-600 text-white font-bold py-3 px-6 rounded-lg';
+            
+            // Reset after delay
+            setTimeout(() => {
+                saveBtn.innerHTML = '<i class="fas fa-save mr-2"></i>Save Preferences';
+                saveBtn.className = 'flex-1 bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg transition duration-200';
+                saveBtn.disabled = false;
+            }, 2000);
+        } else {
+            saveBtn.innerHTML = '<i class="fas fa-exclamation-triangle mr-2"></i>Error';
+            saveBtn.className = 'flex-1 bg-red-600 text-white font-bold py-3 px-6 rounded-lg';
+            alert('Error: ' + (data.error || 'Failed to save preferences'));
+            
+            // Reset after delay
+            setTimeout(() => {
+                saveBtn.innerHTML = '<i class="fas fa-save mr-2"></i>Save Preferences';
+                saveBtn.className = 'flex-1 bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg transition duration-200';
+                saveBtn.disabled = false;
+            }, 2000);
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        saveBtn.innerHTML = '<i class="fas fa-exclamation-triangle mr-2"></i>Error';
+        saveBtn.className = 'flex-1 bg-red-600 text-white font-bold py-3 px-6 rounded-lg';
+        alert('Network error. Please try again.');
+        
+        // Reset after delay
+        setTimeout(() => {
+            saveBtn.innerHTML = '<i class="fas fa-save mr-2"></i>Save Preferences';
+            saveBtn.className = 'flex-1 bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg transition duration-200';
+            saveBtn.disabled = false;
+        }, 2000);
+    });
+});
+</script>
+
+{% endblock %}

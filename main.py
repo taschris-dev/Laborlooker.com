@@ -1283,29 +1283,41 @@ class SwipeMatch(db.Model):
 
 # Cookie and Terms Agreement Models
 class UserConsent(db.Model):
-    """Track user consent for cookies, terms, data collection"""
+    """Track user consent for cookies, terms, data collection with granular controls"""
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey("user.id"))  # Null for anonymous users
     session_id = db.Column(db.String(255))  # For tracking before registration
     ip_address = db.Column(db.String(45))  # IPv6 compatible
     user_agent = db.Column(db.Text)
     
-    # Consent types
+    # Essential consent (required)
     cookies_essential = db.Column(db.Boolean, default=False)
-    cookies_analytics = db.Column(db.Boolean, default=False)
-    cookies_marketing = db.Column(db.Boolean, default=False)
     terms_of_service = db.Column(db.Boolean, default=False)
     privacy_policy = db.Column(db.Boolean, default=False)
     data_collection = db.Column(db.Boolean, default=False)
-    data_resale = db.Column(db.Boolean, default=False)
+    safety_verification = db.Column(db.Boolean, default=False)
+    
+    # Optional marketing and personalization consent
+    marketing_communications = db.Column(db.Boolean, default=False)
+    personalization = db.Column(db.Boolean, default=False)
+    market_research = db.Column(db.Boolean, default=False)
+    
+    # Optional analytics consent
+    cookies_analytics = db.Column(db.Boolean, default=False)
+    cookies_marketing = db.Column(db.Boolean, default=False)
+    
+    # Legacy fields (deprecated but kept for migration)
+    data_resale = db.Column(db.Boolean, default=False)  # No longer used
     
     # Consent metadata
     consent_method = db.Column(db.String(50))  # 'popup', 'registration', 'settings'
-    consent_version = db.Column(db.String(20), default="1.0")  # Track policy versions
+    consent_version = db.Column(db.String(20), default="2.0")  # Track policy versions
+    consent_data = db.Column(db.JSON)  # Store detailed consent preferences
     
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
     expires_at = db.Column(db.DateTime)  # Cookie consent expiration
+    granted_at = db.Column(db.DateTime, default=datetime.utcnow)  # When consent was granted
     
     # Relationship
     user = db.relationship("User", backref="consent_records")
@@ -4540,6 +4552,89 @@ def data_consent():
     
     current_consent = session.get('data_consent', {})
     return render_template("privacy/consent.html", consent=current_consent)
+
+# --- Enhanced Consent Management (Legal Compliant) ---
+@app.route("/privacy/consent-settings", methods=["GET"])
+@login_required
+def consent_settings():
+    """Enhanced privacy settings with granular consent management"""
+    # Get user's current consent preferences
+    consent_summary = None
+    try:
+        consent_record = UserConsent.query.filter_by(user_id=current_user.id).first()
+        if consent_record:
+            consent_summary = {
+                'granted_at': consent_record.granted_at,
+                'version': consent_record.consent_version,
+                'preferences': {
+                    'marketing_communications': {'granted': consent_record.marketing_communications},
+                    'personalization': {'granted': consent_record.personalization},
+                    'market_research': {'granted': consent_record.market_research},
+                    'performance_analytics': {'granted': consent_record.cookies_analytics},
+                    'marketing_analytics': {'granted': consent_record.cookies_marketing}
+                }
+            }
+    except Exception as e:
+        app.logger.error(f"Error retrieving consent summary: {str(e)}")
+    
+    return render_template("privacy_settings.html", consent_summary=consent_summary)
+
+@app.route("/privacy/update-consent", methods=["POST"])
+@login_required
+def update_consent():
+    """API endpoint to update user consent preferences"""
+    try:
+        consent_data = request.get_json()
+        
+        # Get user's current consent record
+        consent_record = UserConsent.query.filter_by(user_id=current_user.id).first()
+        
+        if not consent_record:
+            return jsonify({
+                'success': False,
+                'error': 'No consent record found. Please contact support.'
+            }), 404
+        
+        # Update optional consent preferences
+        consent_record.marketing_communications = consent_data.get('marketing_communications', False)
+        consent_record.personalization = consent_data.get('personalization', False)
+        consent_record.market_research = consent_data.get('market_research', False)
+        consent_record.cookies_analytics = consent_data.get('cookies_analytics', False)
+        consent_record.cookies_marketing = consent_data.get('cookies_marketing', False)
+        consent_record.updated_at = datetime.utcnow()
+        
+        # Update detailed consent data
+        if consent_record.consent_data:
+            preferences = consent_record.consent_data.get('preferences', {})
+            for key, value in consent_data.items():
+                if key in ['marketing_communications', 'personalization', 'market_research', 'cookies_analytics', 'cookies_marketing']:
+                    preferences[key] = {
+                        'granted': value,
+                        'timestamp': datetime.utcnow().isoformat()
+                    }
+            consent_record.consent_data['preferences'] = preferences
+        
+        db.session.commit()
+        
+        # Update session preferences for immediate effect
+        session['consent_preferences'] = {
+            'marketing': consent_data.get('marketing_communications', False),
+            'personalization': consent_data.get('personalization', False),
+            'analytics': consent_data.get('cookies_analytics', False)
+        }
+        
+        return jsonify({
+            'success': True,
+            'message': 'Privacy preferences updated successfully',
+            'updated_preferences': consent_data
+        })
+        
+    except Exception as e:
+        app.logger.error(f"Error updating consent: {str(e)}")
+        return jsonify({
+            'success': False,
+            'error': 'Failed to update preferences. Please try again.'
+        }), 500
 
 @app.route("/verify_email/<token>")
 def verify_email(token):
@@ -8938,34 +9033,103 @@ def consent_gateway():
 
 @app.route('/consent/submit', methods=['POST'])
 def submit_consent():
-    """Process user consent submission"""
-    # NOTE: Commented out for testing - consent_middleware module not found
-    # from consent_middleware import record_consent
-    
+    """Process user consent submission with granular controls"""
     try:
         consent_data = request.get_json()
         
-        # Validate required consents
-        required_consents = ['cookies_essential', 'terms_of_service', 'privacy_policy', 'data_collection', 'data_resale']
+        # Validate required consents (essential only)
+        required_consents = ['cookies_essential', 'terms_of_service', 'privacy_policy', 'data_collection', 'safety_verification']
         for consent_type in required_consents:
             if not consent_data.get(consent_type, False):
                 return jsonify({
                     'success': False,
-                    'error': f'Required consent missing: {consent_type}'
+                    'error': f'Required consent missing: {consent_type}',
+                    'required': True
                 }), 400
         
-        # Record consent
+        # Get user ID
         user_id = current_user.id if current_user.is_authenticated else None
-        # NOTE: Commented out for testing - record_consent function not available
-        # record_consent(
-        #     user_id=user_id,
-        #     consent_data=consent_data,
-        #     ip_address=request.remote_addr,
-        #     user_agent=request.headers.get('User-Agent', '')
-        # )
         
-        # Get intended URL for redirect
-        intended_url = session.pop('intended_url', url_for('dashboard'))
+        # Create consent record with all preferences
+        consent_record = UserConsent(
+            user_id=user_id,
+            session_id=session.get('session_id', request.cookies.get('session')),
+            ip_address=request.environ.get('HTTP_X_FORWARDED_FOR', request.remote_addr),
+            user_agent=request.headers.get('User-Agent'),
+            
+            # Required consents
+            cookies_essential=True,  # Always required
+            terms_of_service=True,  # Always required
+            privacy_policy=True,  # Always required
+            data_collection=True,  # Always required
+            safety_verification=True,  # Always required
+            
+            # Optional consents
+            marketing_communications=consent_data.get('marketing_communications', False),
+            personalization=consent_data.get('personalization', False),
+            market_research=consent_data.get('market_research', False),
+            cookies_analytics=consent_data.get('cookies_analytics', False),
+            cookies_marketing=consent_data.get('cookies_marketing', False),
+            
+            # Metadata
+            consent_method='gateway',
+            consent_version='2.0',
+            consent_data=consent_data,
+            granted_at=datetime.utcnow(),
+            expires_at=datetime.utcnow() + timedelta(days=365)  # 1 year expiry
+        )
+        
+        # Save to database
+        if user_id:
+            # Remove old consent records for this user
+            UserConsent.query.filter_by(user_id=user_id).delete()
+        
+        db.session.add(consent_record)
+        db.session.commit()
+        
+        # Store consent in session for immediate use
+        session['consent_granted'] = True
+        session['consent_timestamp'] = datetime.utcnow().isoformat()
+        session['consent_preferences'] = {
+            'marketing': consent_data.get('marketing_communications', False),
+            'personalization': consent_data.get('personalization', False),
+            'analytics': consent_data.get('cookies_analytics', False)
+        }
+        
+        # Set consent cookies
+        response_data = {
+            'success': True,
+            'message': 'Consent preferences saved successfully',
+            'redirect_url': session.pop('intended_url', url_for('index')),
+            'features_enabled': {
+                'core_platform': True,
+                'marketing_communications': consent_data.get('marketing_communications', False),
+                'personalization': consent_data.get('personalization', False),
+                'analytics': consent_data.get('cookies_analytics', False)
+            }
+        }
+        
+        response = jsonify(response_data)
+        
+        # Set long-term consent cookie
+        response.set_cookie(
+            'laborlooker_consent', 
+            'granted', 
+            max_age=365*24*60*60,  # 1 year
+            secure=True, 
+            httponly=True,
+            samesite='Strict'
+        )
+        
+        return response
+        
+    except Exception as e:
+        app.logger.error(f"Consent submission error: {str(e)}")
+        return jsonify({
+            'success': False,
+            'error': 'Failed to process consent. Please try again.',
+            'technical_error': str(e) if app.debug else None
+        }), 500
         
         return jsonify({
             'success': True,
