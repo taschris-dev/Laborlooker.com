@@ -516,6 +516,12 @@ def liveness_check():
         "timestamp": datetime.utcnow().isoformat()
     }), 200
 
+# TEST DEPLOYMENT ROUTE
+@app.route("/test-deployment-v3")
+def test_deployment():
+    """Test route to verify deployment is working"""
+    return "DEPLOYMENT TEST v3.0 - Modern templates should be working! Time: " + str(datetime.utcnow())
+
 # HOME PAGE ROUTE
 @app.route("/")
 def index():
