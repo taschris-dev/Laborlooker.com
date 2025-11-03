@@ -3,352 +3,225 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>{% block title %}LaborLooker - Connecting Local Businesses{% endblock %}</title>
-<meta name="description" content="LaborLooker connects skilled workers with local businesses. Find work, hire professionals, and grow your network in the construction and trades industry.">
-<meta name="keywords" content="construction jobs, skilled labor, contractors, local business, job matching, trades, blue collar">
+<title>{% block title %}LaborLooker - South Carolina's Premier Business Network{% endblock %}</title>
+<meta name="description" content="LaborLooker connects skilled workers with local businesses across South Carolina. Find work, hire professionals, and grow your network.">
+<meta name="keywords" content="south carolina jobs, skilled labor, contractors, local business, job matching, trades, networking">
 <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='images/favicon.ico') }}">
 <link rel="icon" type="image/png" sizes="32x32" href="{{ url_for('static', filename='images/logo-small.png') }}">
 <link rel="apple-touch-icon" href="{{ url_for('static', filename='images/logo-square.png') }}">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 <link href="{{ url_for('static', filename='styles.css') }}" rel="stylesheet">
-<style>
-    .hamburger-menu {
-        position: fixed;
-        top: 0;
-        left: -300px;
-        width: 300px;
-        height: 100vh;
-        background: white;
-        box-shadow: 2px 0 10px rgba(0,0,0,0.1);
-        transition: left 0.3s ease;
-        z-index: 1000;
-        overflow-y: auto;
-    }
-    .hamburger-menu.open {
-        left: 0;
-    }
-    .hamburger-overlay {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100vw;
-        height: 100vh;
-        background: rgba(0,0,0,0.5);
-        z-index: 999;
-        display: none;
-    }
-    .hamburger-overlay.show {
-        display: block;
-    }
-    .rating-stars {
-        color: #ffc107;
-    }
-    .logo-container {
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-    }
-    .logo-image {
-        height: 40px;
-        width: auto;
-    }
-    @media (max-width: 768px) {
-        .logo-image {
-            height: 32px;
-        }
-    }
-</style>
 </head>
-<body class="bg-gray-50 text-gray-900" data-user-type="{{ current_user.account_type if current_user.is_authenticated else 'anonymous' }}">
 
-<!-- Hamburger Menu -->
-<div class="hamburger-overlay" id="hamburgerOverlay" onclick="toggleHamburgerMenu()"></div>
-<div class="hamburger-menu" id="hamburgerMenu">
-    <div class="p-4 border-b">
-        <div class="flex justify-between items-center">
-            <div class="logo-container">
+<body>
+<!-- Modern Navigation -->
+<nav class="navbar">
+    <div class="navbar-container">
+        <div class="navbar-brand">
+            <img src="{{ url_for('static', filename='images/logo.svg') }}" 
+                 alt="LaborLooker" 
+                 style="height: 32px; margin-right: 0.5rem;">
+            LaborLooker
+        </div>
+        
+        <div class="d-flex align-center gap-3">
+            <!-- Desktop Navigation -->
+            <ul class="navbar-nav" style="display: none;" id="desktopNav">
+                {% if current_user.is_authenticated %}
+                    <li><a href="{{ url_for('main_dashboard') }}" class="nav-link">
+                        <i class="fas fa-tachometer-alt"></i> Dashboard
+                    </a></li>
+                    <li><a href="/profile" class="nav-link">
+                        <i class="fas fa-user"></i> Profile
+                    </a></li>
+                    <li><a href="{{ url_for('logout') }}" class="nav-link">
+                        <i class="fas fa-sign-out-alt"></i> Logout
+                    </a></li>
+                {% else %}
+                    <li><a href="{{ url_for('login') }}" class="nav-link">
+                        <i class="fas fa-sign-in-alt"></i> Login
+                    </a></li>
+                    <li><a href="{{ url_for('register') }}" class="btn btn-primary btn-sm">
+                        <i class="fas fa-user-plus"></i> Join Now
+                    </a></li>
+                {% endif %}
+            </ul>
+            
+            <!-- Mobile Menu Button -->
+            <button onclick="toggleMobileMenu()" class="btn btn-ghost btn-sm" id="mobileMenuBtn">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+    </div>
+</nav>
+<!-- Mobile Menu Overlay -->
+<div class="hamburger-overlay" id="mobileOverlay" onclick="toggleMobileMenu()"></div>
+
+<!-- Mobile Menu -->
+<div class="hamburger-menu" id="mobileMenu">
+    <div class="hamburger-header">
+        <div class="d-flex justify-between align-center">
+            <div class="navbar-brand">
                 <img src="{{ url_for('static', filename='images/logo.svg') }}" 
                      alt="LaborLooker" 
-                     class="logo-image">
+                     style="height: 24px; margin-right: 0.5rem;">
+                LaborLooker
             </div>
-            <button onclick="toggleHamburgerMenu()" class="text-gray-500 hover:text-gray-700">
+            <button onclick="toggleMobileMenu()" class="btn btn-ghost btn-sm">
                 <i class="fas fa-times"></i>
             </button>
         </div>
         {% if current_user.is_authenticated %}
-        <p class="text-sm text-gray-600 mt-1">{{ current_user.email }}</p>
-        <span class="inline-block px-2 py-1 text-xs bg-blue-100 text-blue-800 rounded">
+        <p style="color: var(--gray-600); font-size: var(--text-sm); margin-top: 0.5rem;">
+            {{ current_user.email }}
+        </p>
+        <span class="status-indicator status-online" style="margin-top: 0.5rem;">
             {{ current_user.account_type.title() }}
         </span>
         {% endif %}
     </div>
     
-    <div class="p-4">
-        <h4 class="font-semibold text-gray-700 mb-2">Quick Links</h4>
-        <ul class="space-y-2">
-            <li><a href="/training/courses" class="flex items-center text-purple-600 hover:text-purple-800 font-medium">
-                <i class="fas fa-graduation-cap w-5"></i> Free Training & Certs
-            </a></li>
-            <li><a href="/about-us" class="flex items-center text-gray-600 hover:text-blue-600">
-                <i class="fas fa-info-circle w-5"></i> About Us
-            </a></li>
-            <li><a href="/contact-us" class="flex items-center text-gray-600 hover:text-blue-600">
-                <i class="fas fa-envelope w-5"></i> Contact Us
-            </a></li>
-            <li><a href="/careers" class="flex items-center text-gray-600 hover:text-blue-600">
-                <i class="fas fa-briefcase w-5"></i> Careers
-            </a></li>
-            <li><a href="/help" class="flex items-center text-gray-600 hover:text-blue-600">
-                <i class="fas fa-question-circle w-5"></i> Help & Support
-            </a></li>
-            <li><a href="/building-codes" class="flex items-center text-gray-600 hover:text-blue-600">
-                <i class="fas fa-building w-5"></i> Building Code Lookup
-            </a></li>
-        </ul>
-        
+    <div class="hamburger-nav">
         {% if current_user.is_authenticated %}
-        <h4 class="font-semibold text-gray-700 mb-2 mt-6">Account</h4>
-        <ul class="space-y-2">
-            <li><a href="{{ url_for('my_ratings') }}" class="flex items-center text-gray-600 hover:text-blue-600">
-                <i class="fas fa-star w-5"></i> My Ratings
-            </a></li>
-            <li><a href="/security" class="flex items-center text-gray-600 hover:text-blue-600">
-                <i class="fas fa-shield-alt w-5"></i> Security & 2FA
-            </a></li>
-            <li><a href="/id-verification" class="flex items-center text-gray-600 hover:text-blue-600">
-                <i class="fas fa-id-card w-5"></i> ID Verification
-            </a></li>
-            <li><a href="{{ url_for('privacy_settings') }}" class="flex items-center text-gray-600 hover:text-blue-600">
-                <i class="fas fa-user-shield w-5"></i> Privacy Settings
-            </a></li>
-        </ul>
+            <a href="{{ url_for('main_dashboard') }}">
+                <i class="fas fa-tachometer-alt"></i> Dashboard
+            </a>
+            <a href="/profile">
+                <i class="fas fa-user"></i> Profile
+            </a>
+            <a href="/help">
+                <i class="fas fa-question-circle"></i> Help & Support
+            </a>
+            <a href="{{ url_for('logout') }}">
+                <i class="fas fa-sign-out-alt"></i> Logout
+            </a>
+        {% else %}
+            <a href="{{ url_for('login') }}">
+                <i class="fas fa-sign-in-alt"></i> Login
+            </a>
+            <a href="{{ url_for('register') }}">
+                <i class="fas fa-user-plus"></i> Create Account
+            </a>
+            <a href="/about-us">
+                <i class="fas fa-info-circle"></i> About Us
+            </a>
+            <a href="/contact-us">
+                <i class="fas fa-envelope"></i> Contact
+            </a>
         {% endif %}
-        
-        <h4 class="font-semibold text-gray-700 mb-2 mt-6">Legal & Privacy</h4>
-        <ul class="space-y-2">
-            <li><a href="{{ url_for('privacy_policy') }}" class="flex items-center text-gray-600 hover:text-blue-600">
-                <i class="fas fa-user-secret w-5"></i> Privacy Policy
-            </a></li>
-            <li><a href="{{ url_for('terms_of_service') }}" class="flex items-center text-gray-600 hover:text-blue-600">
-                <i class="fas fa-file-contract w-5"></i> Terms of Service
-            </a></li>
-            {% if current_user.is_authenticated %}
-            <li><a href="{{ url_for('privacy_policy_docusign') }}" class="flex items-center text-gray-600 hover:text-blue-600">
-                <i class="fas fa-file-signature w-5"></i> DocuSign Privacy
-            </a></li>
-            <li><a href="{{ url_for('terms_of_use_docusign') }}" class="flex items-center text-gray-600 hover:text-blue-600">
-                <i class="fas fa-gavel w-5"></i> DocuSign Terms
-            </a></li>
-            {% endif %}
-        </ul>
     </div>
 </div>
 
-<nav class="bg-white border-b sticky top-0 z-10 shadow-sm">
-<div class="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
-<div class="flex items-center gap-4">
-    <!-- Hamburger Button -->
-    <button onclick="toggleHamburgerMenu()" class="text-gray-600 hover:text-gray-900 mr-2">
-        <i class="fas fa-bars text-xl"></i>
-    </button>
-    
-    <!-- Logo -->
-    <a class="logo-container" href="/">
-        <img src="{{ url_for('static', filename='images/logo.svg') }}" 
-             alt="LaborLooker" 
-             class="logo-image">
-    </a>
-    {% if current_user.is_authenticated %}
-        {% if current_user.account_type == "developer" %}
-            <a class="text-sm text-gray-600 hover:text-gray-900" href="{{ url_for('developer_dashboard') }}">🏠 Dashboard</a>
-            <a class="text-sm text-gray-600 hover:text-gray-900" href="{{ url_for('networking_labor_sourcing') }}">� Labor Sourcing</a>
-            <a class="text-sm text-gray-600 hover:text-gray-900" href="{{ url_for('billing_overview') }}">� Billing</a>
-            <a class="text-sm text-gray-600 hover:text-gray-900" href="{{ url_for('advertising_marketplace') }}">📢 Advertising</a>
-        {% elif current_user.account_type == "contractor" %}
-            <a class="text-sm text-gray-600 hover:text-gray-900" href="{{ url_for('contractor_dashboard') }}">🏠 Dashboard</a>
-            <a class="text-sm text-gray-600 hover:text-gray-900" href="{{ url_for('swipe_system') }}">� Find Jobs</a>
-            <a class="text-sm text-gray-600 hover:text-gray-900" href="{{ url_for('contractor_advertisement_campaigns') }}">📢 Campaigns</a>
-            <a class="text-sm text-gray-600 hover:text-gray-900" href="/contractor/invoices">🧾 Invoices</a>
-        {% elif current_user.account_type == "customer" %}
-            <a class="text-sm text-gray-600 hover:text-gray-900" href="{{ url_for('customer_dashboard') }}">🏠 Dashboard</a>
-            <a class="text-sm text-gray-600 hover:text-gray-900" href="{{ url_for('swipe_system') }}">� Find Contractors</a>
-            <a class="text-sm text-gray-600 hover:text-gray-900" href="/customer/schedule-work">� Schedule Work</a>
-            <a class="text-sm text-gray-600 hover:text-gray-900" href="/customer/billing">💳 Billing</a>
-        {% endif %}
-    {% else %}
-        <a class="text-sm text-gray-600 hover:text-gray-900" href="/guide">📖 Guide</a>
-        <a class="text-sm text-gray-600 hover:text-gray-900" href="/prospects">👥 Prospects</a>
-        <a class="text-sm text-gray-600 hover:text-gray-900" href="/schedule">📅 Schedule</a>
-    {% endif %}
-</div>
-<div class="flex items-center gap-4">
-{% if current_user.is_authenticated %}
-    <!-- User Rating Display -->
-    {% set user_rating, rating_count = calculate_user_rating_template(current_user.id) %}
-    {% if user_rating > 0 %}
-    <div class="flex items-center text-sm">
-        <span class="rating-stars mr-1">
-            {% for i in range(1, 6) %}
-                {% if i <= user_rating %}★{% else %}☆{% endif %}
-            {% endfor %}
-        </span>
-        <span class="text-gray-600">({{ rating_count }})</span>
-    </div>
-    {% else %}
-    <span class="text-xs bg-green-100 text-green-800 px-2 py-1 rounded">New User</span>
-    {% endif %}
-    
-    <span class="text-sm text-gray-600">{{ current_user.email.split('@')[0] }}</span>
-    <a class="text-sm text-blue-600 hover:text-blue-900" href="{{ url_for('privacy_settings') }}">Privacy</a>
-    <a class="text-sm text-red-600 hover:text-red-900" href="{{ url_for('logout') }}">Logout</a>
-{% else %}
-    <a class="text-sm text-blue-600 hover:text-blue-900" href="{{ url_for('login') }}">Login</a>
-    <a class="text-sm text-green-600 hover:text-green-900" href="{{ url_for('register') }}">Register</a>
-{% endif %}
-</div>
-</div>
-</nav>
-
-<script>
-function toggleHamburgerMenu() {
-    const menu = document.getElementById('hamburgerMenu');
-    const overlay = document.getElementById('hamburgerOverlay');
-    
-    menu.classList.toggle('open');
-    overlay.classList.toggle('show');
-}
-
-// Close menu when clicking outside
-document.addEventListener('click', function(e) {
-    const menu = document.getElementById('hamburgerMenu');
-    const overlay = document.getElementById('hamburgerOverlay');
-    const hamburgerBtn = e.target.closest('button[onclick="toggleHamburgerMenu()"]');
-    
-    if (!menu.contains(e.target) && !hamburgerBtn && menu.classList.contains('open')) {
-        menu.classList.remove('open');
-        overlay.classList.remove('show');
-    }
-});
-</script>
-
-<main class="max-w-6xl mx-auto px-4 py-6">
+<!-- Flash Messages -->
 {% with messages = get_flashed_messages(with_categories=true) %}
-{% if messages %}
-<div class="space-y-2 mb-4">
-{% for category, message in messages %}
-<div class="p-3 rounded {{ 'bg-green-100 text-green-900' if category=='success' else 'bg-red-100 text-red-900' }}">{{ message }}</div>
-{% endfor %}
-</div>
-{% endif %}
+    {% if messages %}
+        <div class="flashes">
+            {% for category, message in messages %}
+                <div class="flash flash-{{ category }}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
 {% endwith %}
 
-
-{% block content %}{% endblock %}
+<!-- Main Content -->
+<main>
+    {% block content %}{% endblock %}
 </main>
 
 <!-- Footer -->
-<footer class="bg-gray-800 text-white py-8 mt-12">
-    <div class="max-w-6xl mx-auto px-4">
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
-            <div>
-                <h3 class="text-lg font-bold mb-4">LaborLooker</h3>
-                <p class="text-sm text-gray-300">Connecting customers with qualified contractors for home improvement and construction services.</p>
-            </div>
-            
-            <div>
-                <h4 class="font-semibold mb-4">Services</h4>
-                <ul class="space-y-2 text-sm">
-                    <li><a href="{{ url_for('customer_search_contractors') if current_user.is_authenticated else url_for('register') }}" class="text-gray-300 hover:text-white">Find Contractors</a></li>
-                    <li><a href="{{ url_for('register') }}" class="text-gray-300 hover:text-white">Join as Contractor</a></li>
-                    <li><a href="{{ url_for('register') }}" class="text-gray-300 hover:text-white">Network Management</a></li>
-                    <li><a href="{{ url_for('contracts_dashboard') if current_user.is_authenticated else url_for('register') }}" class="text-gray-300 hover:text-white">Digital Contracts</a></li>
-                </ul>
-            </div>
-            
-            <div>
-                <h4 class="font-semibold mb-4">Support</h4>
-                <ul class="space-y-2 text-sm">
-                    <li><a href="mailto:support@laborlooker.com" class="text-gray-300 hover:text-white">Contact Support</a></li>
-                    <li><a href="{{ url_for('guide') }}" class="text-gray-300 hover:text-white">User Guide</a></li>
-                    {% if current_user.is_authenticated %}
-                    <li><a href="{{ url_for('privacy_settings') }}" class="text-gray-300 hover:text-white">Privacy Settings</a></li>
-                    {% endif %}
-                    <li><a href="mailto:help@laborlooker.com" class="text-gray-300 hover:text-white">Help Center</a></li>
-                </ul>
-            </div>
-            
-            <div>
-                <h4 class="font-semibold mb-4">Legal</h4>
-                <ul class="space-y-2 text-sm">
-                    <li><a href="{{ url_for('privacy_policy') }}" class="text-gray-300 hover:text-white">Privacy Policy</a></li>
-                    <li><a href="{{ url_for('terms_of_service') }}" class="text-gray-300 hover:text-white">Terms of Service</a></li>
-                    {% if current_user.is_authenticated %}
-                    <li><a href="{{ url_for('privacy_policy_docusign') }}" class="text-gray-300 hover:text-white">DocuSign Privacy</a></li>
-                    <li><a href="{{ url_for('terms_of_use_docusign') }}" class="text-gray-300 hover:text-white">DocuSign Terms</a></li>
-                    {% endif %}
-                </ul>
+<footer class="footer">
+    <div class="footer-content">
+        <div class="footer-section">
+            <h3>LaborLooker</h3>
+            <p style="color: var(--gray-600); margin-bottom: 1rem;">
+                Connecting skilled professionals across South Carolina.
+            </p>
+            <div class="social-proof">
+                <div class="social-proof-avatars">
+                    <div class="user-avatar">SC</div>
+                    <div class="user-avatar">CHS</div>
+                    <div class="user-avatar">CLT</div>
+                </div>
+                <span class="social-proof-text">Trusted in Charleston, Columbia, and beyond</span>
             </div>
         </div>
         
-        <div class="border-t border-gray-700 mt-8 pt-8 flex flex-col md:flex-row justify-between items-center">
-            <div class="text-sm text-gray-400">
-                © 2024 LaborLooker. All rights reserved.
-            </div>
-            <div class="text-sm text-gray-400 mt-4 md:mt-0">
-                <a href="mailto:privacy@laborlooker.com" class="hover:text-white">Privacy Questions</a> |
-                <a href="mailto:legal@laborlooker.com" class="hover:text-white">Legal Inquiries</a>
-            </div>
+        <div class="footer-section">
+            <h3>Quick Links</h3>
+            <a href="/about-us">About Us</a>
+            <a href="/contact-us">Contact</a>
+            <a href="/help">Help & Support</a>
+            <a href="/careers">Careers</a>
         </div>
+        
+        <div class="footer-section">
+            <h3>For Professionals</h3>
+            <a href="{{ url_for('register') }}">Join Network</a>
+            <a href="/training">Training</a>
+            <a href="/resources">Resources</a>
+        </div>
+        
+        <div class="footer-section">
+            <h3>For Businesses</h3>
+            <a href="{{ url_for('register') }}">Find Talent</a>
+            <a href="/solutions">Solutions</a>
+            <a href="/partnerships">Partnerships</a>
+        </div>
+    </div>
+    
+    <div class="footer-bottom">
+        <p>&copy; 2025 LaborLooker. Connecting South Carolina's workforce.</p>
     </div>
 </footer>
 
 <script>
-// Logo fallback management
-document.addEventListener('DOMContentLoaded', function() {
-    const logoImages = document.querySelectorAll('.logo-image');
+// Modern Mobile Menu Toggle
+function toggleMobileMenu() {
+    const menu = document.getElementById('mobileMenu');
+    const overlay = document.getElementById('mobileOverlay');
+    const isOpen = menu.classList.contains('open');
     
-    logoImages.forEach(function(img) {
-        img.addEventListener('error', function() {
-            console.log('Logo image failed to load, trying fallback...');
-            
-            // Try PNG fallback first
-            if (this.src.includes('.svg')) {
-                this.src = this.src.replace('.svg', '.png');
-                return;
-            }
-            
-            // If still failing, create text fallback
-            if (this.src.includes('.png') && !this.dataset.fallbackAttempted) {
-                this.dataset.fallbackAttempted = 'true';
-                this.style.display = 'none';
-                
-                // Create text logo fallback
-                const textLogo = document.createElement('div');
-                textLogo.className = 'text-logo font-bold text-2xl bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent';
-                textLogo.textContent = 'LaborLooker';
-                textLogo.style.height = '40px';
-                textLogo.style.display = 'flex';
-                textLogo.style.alignItems = 'center';
-                
-                this.parentNode.insertBefore(textLogo, this);
-            }
-        });
+    if (isOpen) {
+        menu.classList.remove('open');
+        overlay.classList.remove('show');
+    } else {
+        menu.classList.add('open');
+        overlay.classList.add('show');
+    }
+}
+
+// Show desktop nav on larger screens
+function updateNavigation() {
+    const desktopNav = document.getElementById('desktopNav');
+    const mobileBtn = document.getElementById('mobileMenuBtn');
+    
+    if (window.innerWidth >= 768) {
+        if (desktopNav) desktopNav.style.display = 'flex';
+        if (mobileBtn) mobileBtn.style.display = 'none';
+    } else {
+        if (desktopNav) desktopNav.style.display = 'none';
+        if (mobileBtn) mobileBtn.style.display = 'flex';
+    }
+}
+
+// Initialize on load and resize
+window.addEventListener('load', updateNavigation);
+window.addEventListener('resize', updateNavigation);
+
+// Auto-hide flash messages
+setTimeout(() => {
+    const flashes = document.querySelectorAll('.flash');
+    flashes.forEach(flash => {
+        flash.style.opacity = '0';
+        flash.style.transform = 'translateX(400px)';
+        setTimeout(() => flash.remove(), 300);
     });
-});
-
-// Hamburger menu functions (existing)
-function toggleHamburgerMenu() {
-    const menu = document.getElementById('hamburgerMenu');
-    menu.classList.toggle('hidden');
-}
-
-}
-
-});
+}, 5000);
 </script>
 
 </body>

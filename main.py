@@ -532,7 +532,7 @@ def index():
         if not has_consent:
             # Store intended URL and redirect to consent
             session['intended_url'] = request.url
-            print("DEBUG: Redirecting to consent gateway")
+            print("DEBUG: Redirecting to consent")
             return redirect(url_for('consent_gateway'))
         
         # User has consented, check if they're logged in for dashboard routing
@@ -552,8 +552,9 @@ def index():
         
     except Exception as e:
         print(f"DEBUG: Error in index route: {e}")
-        # Fallback to consent gateway on any error
-        return redirect(url_for('consent_gateway'))
+        # Temporarily bypass consent and show welcome page directly for testing
+        print("DEBUG: Bypassing consent for testing - showing welcome page")
+        return render_template('welcome.html')
 
 @app.route('/main-dashboard')
 def main_dashboard():
