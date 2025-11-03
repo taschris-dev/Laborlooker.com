@@ -522,6 +522,12 @@ def test_deployment():
     """Test route to verify deployment is working"""
     return "DEPLOYMENT TEST v3.0 - Modern templates should be working! Time: " + str(datetime.utcnow())
 
+# DIRECT TEMPLATE TEST
+@app.route("/test-modern-template")
+def test_modern_template():
+    """Direct test of the modern welcome template"""
+    return render_template('welcome.html')
+
 # HOME PAGE ROUTE
 @app.route("/")
 def index():
