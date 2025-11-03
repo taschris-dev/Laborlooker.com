@@ -517,11 +517,11 @@ def liveness_check():
     }), 200
 
 # HOME PAGE ROUTE
-@app.route('/')
+@app.route("/")
 def index():
-    """Home page for LaborLooker marketplace"""
+    """Home page for LaborLooker marketplace - always check consent first"""
     try:
-        # Check if consent has been granted
+        # ALWAYS check consent first before anything else
         has_consent = (
             session.get('consent_granted') or 
             request.cookies.get('consent_granted') == 'true'
@@ -535,7 +535,18 @@ def index():
             print("DEBUG: Redirecting to consent gateway")
             return redirect(url_for('consent_gateway'))
         
-        # User has consented, show main site
+        # User has consented, check if they're logged in for dashboard routing
+        if current_user.is_authenticated:
+            if current_user.account_type == "networking":
+                return redirect(url_for("networking_dashboard"))
+            elif current_user.account_type == "professional":
+                return redirect(url_for("professional_dashboard"))
+            elif current_user.account_type == "job_seeker":
+                return redirect(url_for("job_seeker_dashboard"))
+            else:  # customer
+                return redirect(url_for("customer_dashboard"))
+        
+        # For non-authenticated users who have consented, show welcome page
         print("DEBUG: Showing welcome page")
         return render_template('welcome.html')
         
@@ -5787,22 +5798,7 @@ def contact_contractor(contractor_id):
 # Note: billing_overview route already exists further down
 
 # --- Original Dashboard (for backward compatibility) ---
-@app.route("/")
-def dashboard():
-    # If user is logged in, redirect to their appropriate dashboard
-    if current_user.is_authenticated:
-        if current_user.account_type == "networking":
-            return redirect(url_for("networking_dashboard"))
-        elif current_user.account_type == "professional":
-            return redirect(url_for("professional_dashboard"))
-        elif current_user.account_type == "job_seeker":
-            return redirect(url_for("job_seeker_dashboard"))
-        else:  # customer
-            return redirect(url_for("customer_dashboard"))
-    
-    # For non-authenticated users, show a welcome/landing page
-    return render_template("welcome.html")
-
+# --- About Us Route ---
 
 @app.route("/about-us")
 def about_us():
