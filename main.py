@@ -544,8 +544,8 @@ def index():
         # Fallback to consent gateway on any error
         return redirect(url_for('consent_gateway'))
 
-@app.route('/dashboard')
-def dashboard():
+@app.route('/main-dashboard')
+def main_dashboard():
     """Main dashboard after consent"""
     try:
         # Check if consent has been granted
@@ -9182,7 +9182,7 @@ def submit_consent():
         print("DEBUG: Consent stored in session successfully")
         
         # Determine redirect URL
-        redirect_url = session.pop('intended_url', url_for('welcome'))
+        redirect_url = session.pop('intended_url', url_for('main_dashboard'))
         
         if request.is_json:
             # JSON response for AJAX
