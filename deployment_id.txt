@@ -1,0 +1,3 @@
+﻿DEPLOYMENT_ID=20251102-151722
+LATEST_FEATURES=consent_system_v2_live
+COMMIT_HASH=latest_with_consent_fixes

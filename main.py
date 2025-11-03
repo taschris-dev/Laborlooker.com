@@ -144,10 +144,33 @@ elif cloud_sql_connection_name:
     
     app.config["SQLALCHEMY_DATABASE_URI"] = f"postgresql+psycopg2://{db_user}:{db_password}@127.0.0.1:5432/{db_name}"
 elif database_url:
-    # Other production databases (Heroku, etc.)
-    if database_url.startswith("postgres://"):
-        database_url = database_url.replace("postgres://", "postgresql://", 1)
-    app.config["SQLALCHEMY_DATABASE_URI"] = database_url
+    # Other production databases (Railway, Heroku, etc.)
+    # For now, use SQLite in production to ensure reliability
+    print(f"PostgreSQL URL found but using SQLite for stability: {database_url}")
+    app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///" + os.path.join(INSTANCE_DIR, "referral.db")
+    app.config["SQLALCHEMY_ENGINE_OPTIONS"] = {
+        "pool_pre_ping": True,
+        "connect_args": {"check_same_thread": False}
+    }
+    # Uncomment below when PostgreSQL is stable
+    # try:
+    #     if database_url.startswith("postgres://"):
+    #         database_url = database_url.replace("postgres://", "postgresql://", 1)
+    #     app.config["SQLALCHEMY_DATABASE_URI"] = database_url
+    #     app.config["SQLALCHEMY_ENGINE_OPTIONS"] = {
+    #         "pool_size": 5,
+    #         "pool_recycle": 300,
+    #         "pool_pre_ping": True,
+    #         "max_overflow": 10,
+    #         "pool_timeout": 30
+    #     }
+    # except Exception as e:
+    #     print(f"Warning: PostgreSQL connection failed ({e}), falling back to SQLite")
+    #     app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///" + os.path.join(INSTANCE_DIR, "referral.db")
+    #     app.config["SQLALCHEMY_ENGINE_OPTIONS"] = {
+    #         "pool_pre_ping": True,
+    #         "connect_args": {"check_same_thread": False}
+    #     }
 else:
     # Local development: SQLite
     app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///" + os.path.join(INSTANCE_DIR, "referral.db")
@@ -9130,19 +9153,6 @@ def submit_consent():
             'error': 'Failed to process consent. Please try again.',
             'technical_error': str(e) if app.debug else None
         }), 500
-        
-        return jsonify({
-            'success': True,
-            'redirect_url': intended_url,
-            'store_consent': True  # Signal to store in localStorage
-        })
-        
-    except Exception as e:
-        print(f"Error processing consent: {e}")
-        return jsonify({
-            'success': False,
-            'error': 'Error processing consent'
-        }), 500
 
 # =============================================================================
 # SWIPE-BASED MATCHING SYSTEM
@@ -9477,15 +9487,39 @@ def api_reactivate_match(match_id):
         return jsonify({'success': False, 'error': 'Error reactivating match'}), 500
 
 # Initialize consent middleware
-# NOTE: Commented out for testing - consent_middleware module not found
-# from consent_middleware import init_consent_middleware
-# init_consent_middleware(app)
+try:
+    from consent_manager import ConsentManager
+    print("Consent manager loaded successfully")
+except ImportError as e:
+    print(f"Warning: Consent manager not found: {e}")
+    ConsentManager = None
 
 # For Google App Engine
 # Create tables when the module is imported
-try:
-    with app.app_context():
-        db.create_all()
-except Exception:
-    # Ignore errors during import - tables will be created on first request
-    pass
+def init_db():
+    """Initialize database with error handling"""
+    try:
+        with app.app_context():
+            db.create_all()
+            print("Database tables created successfully")
+    except Exception as e:
+        print(f"Database initialization error: {e}")
+        # If PostgreSQL fails, update the URI and try again
+        if "postgres" in str(e).lower() or "psycopg2" in str(e).lower():
+            print("PostgreSQL connection failed, switching to SQLite...")
+            # Update the database URI directly
+            app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///" + os.path.join(INSTANCE_DIR, "referral.db")
+            app.config["SQLALCHEMY_ENGINE_OPTIONS"] = {
+                "pool_pre_ping": True,
+                "connect_args": {"check_same_thread": False}
+            }
+            try:
+                # Try creating tables again with SQLite
+                with app.app_context():
+                    db.create_all()
+                print("SQLite database created successfully")
+            except Exception as fallback_error:
+                print(f"SQLite fallback also failed: {fallback_error}")
+
+# Initialize database
+init_db()
