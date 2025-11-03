@@ -9104,7 +9104,7 @@ def submit_consent():
         print(f"DEBUG: Consent submission - Email: {email}, Data: {consent_data}")
         
         # Validate required consents (essential only)
-        required_consents = ['terms_required', 'privacy_required']
+        required_consents = ['terms_required', 'privacy_required', 'cookie_policy', 'data_usage']
         missing_consents = []
         for consent_type in required_consents:
             if not consent_data.get(consent_type, False):
@@ -9138,19 +9138,19 @@ def submit_consent():
                 cookies_essential=True,  # Always required
                 terms_of_service=consent_data.get('terms_required', False),
                 privacy_policy=consent_data.get('privacy_required', False),
-                data_collection=True,  # Always required for platform function
-                safety_verification=True,  # Always required
+                data_collection=consent_data.get('data_usage', False),
+                safety_verification=True,  # Always required for platform function
                 
                 # Optional consents
-                marketing_communications=consent_data.get('marketing_communications', False),
-                personalization=consent_data.get('personalization', False),
+                marketing_communications=consent_data.get('marketing_emails', False),
+                personalization=False,  # Not used in new form
                 market_research=consent_data.get('data_monetization', False),
                 cookies_analytics=consent_data.get('analytics_cookies', False),
-                cookies_marketing=consent_data.get('marketing_communications', False),
+                cookies_marketing=consent_data.get('marketing_emails', False),
                 
                 # Metadata
                 consent_method='gateway',
-                consent_version='3.0',
+                consent_version='4.0',
                 consent_data=consent_data,
                 granted_at=datetime.utcnow(),
                 expires_at=datetime.utcnow() + timedelta(days=365)  # 1 year expiry
@@ -9173,8 +9173,8 @@ def submit_consent():
         session['consent_granted'] = True
         session['consent_timestamp'] = datetime.utcnow().isoformat()
         session['consent_preferences'] = {
-            'marketing': consent_data.get('marketing_communications', False),
-            'personalization': consent_data.get('personalization', False),
+            'marketing': consent_data.get('marketing_emails', False),
+            'personalization': False,  # Not used in simplified form
             'analytics': consent_data.get('analytics_cookies', False),
             'data_monetization': consent_data.get('data_monetization', False)
         }
@@ -9192,8 +9192,8 @@ def submit_consent():
                 'redirect_url': redirect_url,
                 'features_enabled': {
                     'core_platform': True,
-                    'marketing_communications': consent_data.get('marketing_communications', False),
-                    'personalization': consent_data.get('personalization', False),
+                    'marketing_communications': consent_data.get('marketing_emails', False),
+                    'personalization': False,  # Simplified form doesn't use this
                     'analytics': consent_data.get('analytics_cookies', False),
                     'data_monetization': consent_data.get('data_monetization', False)
                 }
