@@ -4554,36 +4554,9 @@ def delete_account():
     return render_template("privacy/delete_account.html")
 
 @app.route("/privacy/consent", methods=["GET", "POST"])
-@login_required
 def data_consent():
-    """Manage data processing consent"""
-    if request.method == "POST":
-        consent_analytics = request.form.get("consent_analytics") == "on"
-        consent_marketing = request.form.get("consent_marketing") == "on"
-        consent_third_party = request.form.get("consent_third_party") == "on"
-        
-        # Store consent in session
-        session['data_consent'] = {
-            'analytics': consent_analytics,
-            'marketing': consent_marketing,
-            'third_party': consent_third_party,
-            'timestamp': datetime.utcnow().isoformat()
-        }
-        session['consent_timestamp'] = datetime.utcnow()
-        
-        # Log consent changes
-        track_user_activity(
-            user_id=current_user.id,
-            action_type="consent_update",
-            page_url=request.url,
-            action_data=f"analytics:{consent_analytics},marketing:{consent_marketing},third_party:{consent_third_party}"
-        )
-        
-        flash("Consent preferences updated successfully!", "success")
-        return redirect(url_for("data_consent"))
-    
-    current_consent = session.get('data_consent', {})
-    return render_template("privacy/consent.html", consent=current_consent)
+    """Redirect to new simplified consent gateway"""
+    return redirect(url_for('consent_gateway'))
 
 # --- Enhanced Consent Management (Legal Compliant) ---
 @app.route("/privacy/consent-settings", methods=["GET"])
