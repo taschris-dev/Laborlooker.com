@@ -4232,8 +4232,8 @@ def login():
             login_user(user)
             flash(f"Welcome back, {user.email}!", "success")
             
-            # Redirect to dashboard - simplified for South Carolina platform
-            return redirect(url_for("dashboard"))
+            # Redirect to main dashboard - simplified for South Carolina platform
+            return redirect(url_for("main_dashboard"))
         else:
             flash("Invalid email or password.", "error")
     
