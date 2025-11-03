@@ -9596,4 +9596,4 @@ try:
 except Exception as e:
     print(f"❌ Route debugging failed: {e}")
 
-print("🚀 Application startup complete")
+print("🚀 Application startup complete - v1.1")
