@@ -9565,4 +9565,35 @@ def init_db():
                 print(f"SQLite fallback also failed: {fallback_error}")
 
 # Initialize database
-init_db()
+try:
+    init_db()
+    print("✅ Database initialization completed successfully")
+except Exception as e:
+    print(f"❌ Database initialization failed: {e}")
+
+# Print route registration status for debugging
+print("🔧 Debugging route registration...")
+try:
+    with app.app_context():
+        routes = list(app.url_map.iter_rules())
+        print(f"📊 Total routes registered: {len(routes)}")
+        
+        # Check for critical routes
+        critical_routes = ['/consent', '/login', '/register', '/dashboard']
+        found_routes = []
+        for rule in routes:
+            if str(rule) in critical_routes or any(cr in str(rule) for cr in critical_routes):
+                found_routes.append(str(rule))
+        
+        if found_routes:
+            print(f"✅ Found critical routes: {found_routes}")
+        else:
+            print("❌ Critical routes not found!")
+            print("📋 First 10 registered routes:")
+            for rule in routes[:10]:
+                print(f"  {rule}")
+                
+except Exception as e:
+    print(f"❌ Route debugging failed: {e}")
+
+print("🚀 Application startup complete")
