@@ -531,10 +531,42 @@ def test_modern_template():
 # HOME PAGE ROUTE
 @app.route("/")
 def index():
-    """Home page for LaborLooker marketplace - TEMPORARY: Force modern template"""
-    # TEMPORARY FIX: Bypass all consent logic and show modern template
-    print("DEBUG: FORCING MODERN TEMPLATE")
-    return render_template('welcome.html')
+    """Home page for LaborLooker marketplace - with consent and modern template"""
+    try:
+        # Check consent first
+        has_consent = (
+            session.get('consent_granted') or 
+            request.cookies.get('consent_granted') == 'true'
+        )
+        
+        print(f"DEBUG: Index route - Has consent: {has_consent}")
+        
+        if not has_consent:
+            # Store intended URL and redirect to consent
+            session['intended_url'] = request.url
+            print("DEBUG: Redirecting to consent")
+            return redirect(url_for('consent_gateway'))
+        
+        # User has consented, check if they're logged in for dashboard routing
+        if current_user.is_authenticated:
+            if current_user.account_type == "networking":
+                return redirect(url_for("networking_dashboard"))
+            elif current_user.account_type == "professional":
+                return redirect(url_for("professional_dashboard"))
+            elif current_user.account_type == "job_seeker":
+                return redirect(url_for("job_seeker_dashboard"))
+            else:  # customer
+                return redirect(url_for("customer_dashboard"))
+        
+        # For non-authenticated users who have consented, show modern welcome page
+        print("DEBUG: Showing modern welcome page")
+        return render_template('welcome.html')
+        
+    except Exception as e:
+        print(f"DEBUG: Error in index route: {e}")
+        # On error, still show modern template
+        print("DEBUG: Error occurred, showing modern welcome page")
+        return render_template('welcome.html')
 
 @app.route('/main-dashboard')
 def main_dashboard():

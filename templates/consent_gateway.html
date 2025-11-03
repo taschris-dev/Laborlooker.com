@@ -1,23 +1,94 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Welcome to LaborLooker - Canada's Premier Skilled Trades Marketplace [UPDATED]</title>
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <style>
-        :root {
-            --primary-orange: #FF6B35;
-            --primary-blue: #1E3A8A;
-            --secondary-blue: #3B82F6;
-            --accent-green: #10B981;
-            --neutral-gray: #6B7280;
-        }
+{% extends "base.html" %}
 
-        body {
-            font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, var(--primary-blue) 0%, var(--secondary-blue) 100%);
+{% block title %}Privacy & Cookie Consent - LaborLooker{% endblock %}
+
+{% block content %}
+<div class="auth-container">
+    <div class="auth-card">
+        <div class="auth-header">
+            <h1>Welcome to LaborLooker</h1>
+            <p>South Carolina's Premier Business Network</p>
+        </div>
+        
+        <div class="consent-content">
+            <h2>Privacy & Cookie Consent</h2>
+            <p>We value your privacy and want to be transparent about how we use cookies and collect data to provide you with the best experience.</p>
+            
+            <div class="consent-options">
+                <h3>Cookie Categories</h3>
+                
+                <div class="consent-category">
+                    <div class="d-flex justify-between align-center">
+                        <span><strong>Essential Cookies</strong></span>
+                        <span class="status-indicator status-required">Required</span>
+                    </div>
+                    <p class="consent-description">These cookies are necessary for the website to function and cannot be disabled.</p>
+                </div>
+                
+                <div class="consent-category">
+                    <div class="d-flex justify-between align-center">
+                        <span><strong>Analytics Cookies</strong></span>
+                        <label class="switch">
+                            <input type="checkbox" id="analytics-consent" checked>
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    <p class="consent-description">Help us understand how you use our site to improve your experience.</p>
+                </div>
+                
+                <div class="consent-category">
+                    <div class="d-flex justify-between align-center">
+                        <span><strong>Marketing Cookies</strong></span>
+                        <label class="switch">
+                            <input type="checkbox" id="marketing-consent">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    <p class="consent-description">Allow us to show you relevant content and advertisements.</p>
+                </div>
+            </div>
+            
+            <form method="POST" action="{{ url_for('submit_consent') }}">
+                <input type="hidden" name="analytics" id="analytics-value" value="true">
+                <input type="hidden" name="marketing" id="marketing-value" value="false">
+                
+                <div class="consent-actions">
+                    <button type="submit" class="btn btn-primary btn-large">
+                        Accept & Continue
+                    </button>
+                    <button type="button" onclick="rejectAll()" class="btn btn-secondary">
+                        Reject All
+                    </button>
+                </div>
+            </form>
+            
+            <div class="consent-links">
+                <a href="/privacy-policy" target="_blank">Privacy Policy</a>
+                <a href="/cookie-policy" target="_blank">Cookie Policy</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Update hidden form values when checkboxes change
+document.getElementById('analytics-consent').addEventListener('change', function() {
+    document.getElementById('analytics-value').value = this.checked;
+});
+
+document.getElementById('marketing-consent').addEventListener('change', function() {
+    document.getElementById('marketing-value').value = this.checked;
+});
+
+function rejectAll() {
+    document.getElementById('analytics-consent').checked = false;
+    document.getElementById('marketing-consent').checked = false;
+    document.getElementById('analytics-value').value = 'false';
+    document.getElementById('marketing-value').value = 'false';
+    document.querySelector('form').submit();
+}
+</script>
+{% endblock %}
             min-height: 100vh;
         }
 
