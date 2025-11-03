@@ -1,0 +1,200 @@
+{% extends "base.html" %}
+
+{% block title %}Contact Us - LaborLooker{% endblock %}
+
+{% block content %}
+<div class="container" style="max-width: 900px; margin: 2rem auto; padding: 0 1rem;">
+    <!-- Page Header -->
+    <div class="card" style="margin-bottom: 2rem; text-align: center;">
+        <div style="padding: 2rem;">
+            <h1 style="font-size: 2.5rem; font-weight: 700; color: var(--primary); margin-bottom: 1rem;">
+                <i class="fas fa-envelope" style="color: var(--primary);"></i>
+                Contact Us
+            </h1>
+            <p style="font-size: 1.125rem; color: var(--gray-600);">
+                We'd love to hear from you. Send us a message and we'll respond as soon as possible.
+            </p>
+        </div>
+    </div>
+
+    <div class="grid" style="grid-template-columns: 1fr; gap: 2rem;">
+        <!-- Contact Form -->
+        <div class="card">
+            <h2 style="font-size: 1.5rem; font-weight: 700; margin-bottom: 1.5rem; padding-bottom: 1rem; border-bottom: 2px solid var(--gray-200);">
+                <i class="fas fa-paper-plane" style="color: var(--primary);"></i>
+                Send Us a Message
+            </h2>
+
+            <form method="POST" action="/contact-us" id="contactForm">
+                <div class="form-group" style="margin-bottom: 1.5rem;">
+                    <label for="name" class="form-label">Your Name *</label>
+                    <input type="text" id="name" name="name" class="form-control" required
+                           placeholder="John Doe">
+                </div>
+
+                <div class="form-group" style="margin-bottom: 1.5rem;">
+                    <label for="email" class="form-label">Email Address *</label>
+                    <input type="email" id="email" name="email" class="form-control" required
+                           placeholder="john@example.com"
+                           {% if current_user.is_authenticated %}value="{{ current_user.email }}"{% endif %}>
+                </div>
+
+                <div class="form-group" style="margin-bottom: 1.5rem;">
+                    <label for="subject" class="form-label">Subject *</label>
+                    <select id="subject" name="subject" class="form-control" required>
+                        <option value="">Select a subject...</option>
+                        <option value="general">General Inquiry</option>
+                        <option value="support">Technical Support</option>
+                        <option value="billing">Billing Question</option>
+                        <option value="feature">Feature Request</option>
+                        <option value="bug">Report a Bug</option>
+                        <option value="privacy">Privacy Concern</option>
+                        <option value="partnership">Partnership Opportunity</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+
+                <div class="form-group" style="margin-bottom: 1.5rem;">
+                    <label for="message" class="form-label">Message *</label>
+                    <textarea id="message" name="message" class="form-control" rows="6" required
+                              placeholder="Tell us more about your inquiry..."></textarea>
+                </div>
+
+                <div class="form-group" style="margin-bottom: 1.5rem;">
+                    <label class="checkbox-label" style="display: flex; align-items: center; cursor: pointer;">
+                        <input type="checkbox" name="copy_me" id="copy_me" style="margin-right: 0.5rem;">
+                        <span>Send me a copy of this message</span>
+                    </label>
+                </div>
+
+                <button type="submit" class="btn btn-primary" style="width: 100%; padding: 1rem;">
+                    <i class="fas fa-paper-plane"></i> Send Message
+                </button>
+            </form>
+        </div>
+
+        <!-- Contact Information -->
+        <div class="card" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);">
+            <h2 style="font-size: 1.5rem; font-weight: 700; margin-bottom: 1.5rem; padding-bottom: 1rem; border-bottom: 2px solid var(--gray-200);">
+                <i class="fas fa-info-circle" style="color: var(--primary);"></i>
+                Contact Information
+            </h2>
+
+            <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+                <div style="display: flex; align-items: start; gap: 1rem;">
+                    <i class="fas fa-envelope" style="color: var(--primary); font-size: 1.5rem; margin-top: 0.25rem;"></i>
+                    <div>
+                        <h3 style="font-size: 1.125rem; font-weight: 600; margin-bottom: 0.25rem;">Email</h3>
+                        <p style="color: var(--gray-600);">
+                            <a href="mailto:support@laborlooker.com" style="color: var(--primary); text-decoration: none;">
+                                support@laborlooker.com
+                            </a>
+                        </p>
+                    </div>
+                </div>
+
+                <div style="display: flex; align-items: start; gap: 1rem;">
+                    <i class="fas fa-clock" style="color: var(--primary); font-size: 1.5rem; margin-top: 0.25rem;"></i>
+                    <div>
+                        <h3 style="font-size: 1.125rem; font-weight: 600; margin-bottom: 0.25rem;">Support Hours</h3>
+                        <p style="color: var(--gray-600); margin: 0;">Monday - Friday: 9:00 AM - 6:00 PM EST</p>
+                        <p style="color: var(--gray-600); margin: 0;">Saturday: 10:00 AM - 4:00 PM EST</p>
+                        <p style="color: var(--gray-600); margin: 0;">Sunday: Closed</p>
+                    </div>
+                </div>
+
+                <div style="display: flex; align-items: start; gap: 1rem;">
+                    <i class="fas fa-map-marker-alt" style="color: var(--primary); font-size: 1.5rem; margin-top: 0.25rem;"></i>
+                    <div>
+                        <h3 style="font-size: 1.125rem; font-weight: 600; margin-bottom: 0.25rem;">Location</h3>
+                        <p style="color: var(--gray-600);">
+                            South Carolina, USA<br>
+                            Connecting skilled trades across the region
+                        </p>
+                    </div>
+                </div>
+
+                <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--gray-300);">
+                    <h3 style="font-size: 1.125rem; font-weight: 600; margin-bottom: 0.75rem;">Quick Links</h3>
+                    <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+                        <a href="/help" style="color: var(--primary); text-decoration: none;">
+                            <i class="fas fa-question-circle"></i> Help & Support
+                        </a>
+                        <a href="/guide" style="color: var(--primary); text-decoration: none;">
+                            <i class="fas fa-book"></i> User Guide
+                        </a>
+                        <a href="/privacy-policy" style="color: var(--primary); text-decoration: none;">
+                            <i class="fas fa-shield-alt"></i> Privacy Policy
+                        </a>
+                        <a href="/terms-of-service" style="color: var(--primary); text-decoration: none;">
+                            <i class="fas fa-file-contract"></i> Terms of Service
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Response Time Notice -->
+    <div class="card" style="margin-top: 2rem; background: #fef3c7; border: 1px solid #fbbf24;">
+        <div style="display: flex; align-items: center; gap: 1rem;">
+            <i class="fas fa-info-circle" style="font-size: 2rem; color: #f59e0b;"></i>
+            <div>
+                <h3 style="font-size: 1.125rem; font-weight: 600; margin-bottom: 0.25rem; color: #92400e;">
+                    Response Time
+                </h3>
+                <p style="color: #78350f; margin: 0;">
+                    We typically respond to all inquiries within 24-48 hours during business days.
+                    For urgent issues, please mark your subject as "Technical Support" or "Billing Question".
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Form validation and submission
+document.getElementById('contactForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+
+    const formData = new FormData(this);
+    const submitBtn = this.querySelector('button[type="submit"]');
+    const originalBtnText = submitBtn.innerHTML;
+
+    // Show loading state
+    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
+    submitBtn.disabled = true;
+
+    // Simulate form submission (replace with actual AJAX call to backend)
+    fetch('/contact-us', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        // Show success message
+        submitBtn.innerHTML = '<i class="fas fa-check-circle"></i> Message Sent!';
+        submitBtn.style.background = '#10b981';
+
+        // Reset form after 2 seconds
+        setTimeout(() => {
+            this.reset();
+            submitBtn.innerHTML = originalBtnText;
+            submitBtn.style.background = '';
+            submitBtn.disabled = false;
+        }, 2000);
+    })
+    .catch(error => {
+        // Show error message
+        submitBtn.innerHTML = '<i class="fas fa-exclamation-triangle"></i> Error - Try Again';
+        submitBtn.style.background = '#ef4444';
+
+        setTimeout(() => {
+            submitBtn.innerHTML = originalBtnText;
+            submitBtn.style.background = '';
+            submitBtn.disabled = false;
+        }, 3000);
+    });
+});
+</script>
+{% endblock %}

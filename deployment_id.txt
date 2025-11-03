@@ -1,3 +1,3 @@
-﻿DEPLOYMENT_ID=20251102-151722
-LATEST_FEATURES=consent_system_v2_live
-COMMIT_HASH=latest_with_consent_fixes
+DEPLOYMENT_ID=20251103-refined-v4.0
+LATEST_FEATURES=cache_busting_support_pages_consent_fix
+COMMIT_HASH=refined_functionality_deployment

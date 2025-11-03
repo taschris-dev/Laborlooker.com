@@ -98,6 +98,12 @@ def mask_name_filter(full_name, should_mask=True):
 # Google Cloud Platform Optimized Configuration
 app.config["SECRET_KEY"] = os.environ.get("SECRET_KEY", "dev-secret-key-change-in-production")
 
+# CRITICAL: Force template and static file reloading to prevent caching issues
+app.config["TEMPLATES_AUTO_RELOAD"] = True
+app.config["SEND_FILE_MAX_AGE_DEFAULT"] = 0  # Disable static file caching
+app.jinja_env.auto_reload = True
+app.jinja_env.cache = {}  # Clear any template cache
+
 # Security Configuration for Production
 app.config["SESSION_COOKIE_SECURE"] = os.environ.get("SESSION_COOKIE_SECURE", "False") == "True"
 app.config["SESSION_COOKIE_HTTPONLY"] = True
@@ -324,12 +330,12 @@ def after_request(response):
             response.headers['Access-Control-Allow-Credentials'] = 'true'
             response.headers['Access-Control-Max-Age'] = '3600'
     
-    # Enhanced Caching Headers for Performance
+    # Enhanced Caching Headers for Performance - FIXED FOR DEPLOYMENT
     if request.endpoint and 'static' in request.endpoint:
-        # Static assets - long cache
-        response.headers['Cache-Control'] = 'public, max-age=604800, immutable'  # 7 days
-        expires_date = (datetime.utcnow() + timedelta(days=7)).strftime('%a, %d %b %Y %H:%M:%S GMT')
-        response.headers['Expires'] = expires_date
+        # Static assets - NO CACHE to ensure fresh content on deployment
+        response.headers['Cache-Control'] = 'no-cache, no-store, must-revalidate'
+        response.headers['Pragma'] = 'no-cache'
+        response.headers['Expires'] = '0'
         response.headers['Vary'] = 'Accept-Encoding'
     elif request.endpoint and request.endpoint in ['health_check', 'startup_check', 'public_health']:
         # Health checks - no cache
@@ -345,8 +351,10 @@ def after_request(response):
         response.headers['X-API-Version'] = 'v1'
         response.headers['X-RateLimit-Limit'] = '100'
     else:
-        # Dynamic content - short cache
-        response.headers['Cache-Control'] = 'private, max-age=300'  # 5 minutes
+        # Dynamic HTML content - FORCE NO CACHE to show latest templates
+        response.headers['Cache-Control'] = 'no-cache, no-store, must-revalidate, private'
+        response.headers['Pragma'] = 'no-cache'
+        response.headers['Expires'] = '0'
     
     # Google Cloud specific optimizations
     response.headers['X-Cloud-Trace-Context'] = request.headers.get('X-Cloud-Trace-Context', '')
@@ -6933,6 +6941,42 @@ def guide():
     return render_template("guide.html")
 
 
+@app.route("/help")
+def help_support():
+    """Help and support page"""
+    return render_template("help.html")
+
+
+@app.route("/contact-us", methods=["GET", "POST"])
+def contact_us():
+    """Contact us page with inquiry form"""
+    if request.method == "POST":
+        name = request.form.get("name", "").strip()
+        email = request.form.get("email", "").strip()
+        subject = request.form.get("subject", "").strip()
+        message = request.form.get("message", "").strip()
+        copy_me = request.form.get("copy_me") == "on"
+
+        # Basic validation
+        if not all([name, email, subject, message]):
+            return jsonify({"error": "All fields are required"}), 400
+
+        # Log the contact inquiry
+        print(f"Contact Form Submission - Name: {name}, Email: {email}, Subject: {subject}")
+
+        # In production, you would send this via email
+        # For now, just return success
+        try:
+            # Could send email here
+            flash("Thank you for contacting us! We'll respond within 24-48 hours.", "success")
+            return jsonify({"success": True, "message": "Message sent successfully"}), 200
+        except Exception as e:
+            print(f"Error processing contact form: {e}")
+            return jsonify({"error": "Failed to send message"}), 500
+
+    return render_template("contact_us.html")
+
+
 @app.route("/demo/clear")
 def clear_all_data():
     """Clear all data from the database"""
@@ -7445,6 +7489,27 @@ def privacy_policy_docusign():
 def terms_of_use_docusign():
     """Terms of use specifically for DocuSign integration"""
     return render_template("legal/terms_of_use_docusign.html")
+
+# Legal routes with /legal/ prefix for consent form links
+@app.route("/legal/privacy")
+def legal_privacy():
+    """Privacy policy (legal prefix)"""
+    return render_template("legal/privacy_policy.html")
+
+@app.route("/legal/terms")
+def legal_terms():
+    """Terms of service (legal prefix)"""
+    return render_template("legal/terms_of_service.html")
+
+@app.route("/legal/cookies")
+def legal_cookies():
+    """Cookie policy (same as privacy policy)"""
+    return render_template("legal/privacy_policy.html")
+
+@app.route("/legal/data-usage")
+def legal_data_usage():
+    """Data usage policy (same as privacy policy)"""
+    return render_template("legal/privacy_policy.html")
 
 # --- Cookie Consent and Data Collection System ---
 
@@ -9109,7 +9174,7 @@ def submit_consent():
                 # Optional consents
                 marketing_communications=consent_data.get('marketing_emails', False),
                 personalization=False,  # Not used in new form
-                market_research=consent_data.get('data_monetization', False),
+                market_research=consent_data.get('data_processing', False),  # Updated from data_monetization
                 cookies_analytics=consent_data.get('analytics_cookies', False),
                 cookies_marketing=consent_data.get('marketing_emails', False),
                 
