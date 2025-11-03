@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+﻿{% extends "base.html" %}
 
 {% block title %}Sign In - LaborLooker{% endblock %}
 
@@ -7,20 +7,10 @@
     <div class="auth-card">
         <div class="auth-header">
             <h1 class="auth-title">Welcome back</h1>
-            <p class="text-center" style="color: var(--gray-600); font-size: var(--text-base);">
+            <p class="text-center" style="color: var(--gray-600);">
                 Sign in to your LaborLooker account
             </p>
         </div>
-        
-        {% with messages = get_flashed_messages(with_categories=true) %}
-            {% if messages %}
-                {% for category, message in messages %}
-                    <div class="alert alert-{{ 'error' if category == 'error' else 'info' }} mb-3">
-                        {{ message }}
-                    </div>
-                {% endfor %}
-            {% endif %}
-        {% endwith %}
         
         <form class="auth-form" method="POST">
             <div class="form-group">
@@ -31,7 +21,6 @@
                     required
                     class="form-control"
                     placeholder="Email address"
-                    autocomplete="email"
                 >
             </div>
             
@@ -43,12 +32,10 @@
                     required
                     class="form-control"
                     placeholder="Password"
-                    autocomplete="current-password"
                 >
             </div>
 
             <button type="submit" class="btn btn-primary">
-                <i class="fas fa-sign-in-alt"></i>
                 Sign In
             </button>
         </form>
@@ -69,25 +56,4 @@
         </div>
     </div>
 </div>
-
-<style>
-.alert {
-    padding: 1rem;
-    border-radius: var(--radius-md);
-    margin-bottom: 1rem;
-    border-left: 4px solid;
-}
-
-.alert-error {
-    background: rgba(231, 76, 60, 0.1);
-    border-left-color: var(--error-red);
-    color: var(--error-red);
-}
-
-.alert-info {
-    background: var(--brand-blue-light);
-    border-left-color: var(--brand-blue);
-    color: var(--brand-blue);
-}
-</style>
 {% endblock %}
