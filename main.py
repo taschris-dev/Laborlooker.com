@@ -4232,13 +4232,8 @@ def login():
             login_user(user)
             flash(f"Welcome back, {user.email}!", "success")
             
-            # Redirect based on account type
-            if user.account_type == "developer":
-                return redirect(url_for("developer_dashboard"))
-            elif user.account_type == "contractor":
-                return redirect(url_for("contractor_dashboard"))
-            else:  # customer
-                return redirect(url_for("customer_dashboard"))
+            # Redirect to dashboard - simplified for South Carolina platform
+            return redirect(url_for("dashboard"))
         else:
             flash("Invalid email or password.", "error")
     
