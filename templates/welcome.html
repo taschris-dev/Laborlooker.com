@@ -1,53 +1,147 @@
 {% extends "base.html" %}
 
-{% block title %}LaborLooker - Connecting Skilled Workers with Local Businesses{% endblock %}
+{% block title %}LaborLooker - Canada's Premier Skilled Trades Marketplace{% endblock %}
 
 {% block content %}
-<div class="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
-    <!-- Hero Section -->
-    <div class="container mx-auto px-4 py-20">
-        <div class="text-center max-w-5xl mx-auto">
-            <!-- Logo Section -->
-            <div class="mb-8">
-                <img src="{{ url_for('static', filename='images/logo.svg') }}" 
-                     alt="LaborLooker" 
-                     class="mx-auto h-20 mb-6">
+<style>
+    :root {
+        --primary-orange: #FF6B35;
+        --primary-blue: #1E3A8A;
+        --secondary-blue: #3B82F6;
+        --accent-green: #10B981;
+    }
+    
+    .hero-section {
+        background: linear-gradient(135deg, var(--primary-blue) 0%, var(--secondary-blue) 100%);
+        color: white;
+        min-height: 90vh;
+    }
+    
+    .logo-main {
+        font-size: 4rem;
+        font-weight: 900;
+        color: white;
+        text-shadow: 0 4px 8px rgba(0,0,0,0.3);
+        margin: 0;
+    }
+    
+    .cta-button {
+        background: linear-gradient(135deg, var(--primary-orange), #E55930);
+        padding: 1.2rem 3rem;
+        border-radius: 12px;
+        font-weight: 700;
+        font-size: 1.3rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        transition: all 0.3s ease;
+        box-shadow: 0 8px 25px rgba(255, 107, 53, 0.3);
+        text-decoration: none;
+        display: inline-block;
+    }
+    
+    .cta-button:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 12px 35px rgba(255, 107, 53, 0.4);
+        text-decoration: none;
+        color: white;
+    }
+    
+    .feature-card {
+        background: white;
+        border-radius: 20px;
+        padding: 2.5rem;
+        box-shadow: 0 15px 40px rgba(0,0,0,0.1);
+        transition: all 0.3s ease;
+        border-top: 5px solid var(--primary-orange);
+        height: 100%;
+    }
+    
+    .feature-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 25px 60px rgba(0,0,0,0.15);
+    }
+    
+    .logo-icon {
+        font-size: 4rem;
+        color: var(--primary-orange);
+        margin-right: 1.5rem;
+        text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+</style>
+
+<!-- Hero Section -->
+<div class="hero-section flex items-center justify-center px-4">
+    <div class="text-center max-w-6xl mx-auto">
+        <div class="flex items-center justify-center mb-10">
+            <i class="fas fa-hard-hat logo-icon"></i>
+            <h1 class="logo-main">LaborLooker</h1>
+        </div>
+        
+        <p class="text-3xl md:text-4xl font-light mb-6 text-blue-100">
+            Canada's Premier Skilled Trades Marketplace
+        </p>
+        
+        <p class="text-xl md:text-2xl mb-10 text-blue-200 max-w-4xl mx-auto leading-relaxed">
+            Connect contractors with verified skilled tradespeople. Find your next project or discover amazing job opportunities across Canada.
+        </p>
+        
+        <div class="flex flex-col md:flex-row gap-6 justify-center items-center mb-12">
+            <a href="/auth/register?type=contractor" class="cta-button text-white">
+                <i class="fas fa-hammer mr-3"></i>
+                Find Skilled Workers
+            </a>
+            <a href="/auth/register?type=worker" class="cta-button text-white">
+                <i class="fas fa-briefcase mr-3"></i>
+                Find Great Jobs
+            </a>
+        </div>
+        
+        <div class="grid md:grid-cols-3 gap-6 text-blue-200 max-w-4xl mx-auto">
+            <div class="flex items-center justify-center">
+                <i class="fas fa-shield-alt text-2xl text-green-400 mr-3"></i>
+                <span class="font-semibold">Verified Professionals</span>
+            </div>
+            <div class="flex items-center justify-center">
+                <i class="fas fa-credit-card text-2xl text-green-400 mr-3"></i>
+                <span class="font-semibold">Secure Payments</span>
+            </div>
+            <div class="flex items-center justify-center">
+                <i class="fas fa-maple-leaf text-2xl text-red-400 mr-3"></i>
+                <span class="font-semibold">Canadian-Focused</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Features Section -->
+<div class="py-20 bg-gray-50">
+    <div class="max-w-7xl mx-auto px-4">
+        <div class="text-center mb-16">
+            <h2 class="text-5xl font-bold text-gray-800 mb-6">Why Choose LaborLooker?</h2>
+            <p class="text-2xl text-gray-600">Built specifically for the Canadian skilled trades industry</p>
+        </div>
+        
+        <div class="grid md:grid-cols-3 gap-10">
+            <div class="feature-card text-center">
+                <i class="fas fa-certificate text-6xl text-blue-500 mb-6"></i>
+                <h3 class="text-2xl font-bold text-gray-800 mb-4">Verified Professionals</h3>
+                <p class="text-gray-600 text-lg leading-relaxed">All contractors and workers undergo thorough verification including certifications, insurance, and comprehensive reference checks for your complete peace of mind.</p>
             </div>
             
-            <h1 class="text-6xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-6">
-                Find Work. Hire Talent. Grow Together.
-            </h1>
-            <p class="text-2xl text-gray-600 mb-8 leading-relaxed">
-                The premier platform connecting skilled workers with local businesses across the construction and trades industry
-            </p>
-            
-            <!-- Value Proposition -->
-            <div class="flex flex-wrap justify-center gap-6 mb-12">
-                <div class="flex items-center bg-white rounded-full px-6 py-3 shadow-md">
-                    <i class="fas fa-certificate text-purple-600 mr-2"></i>
-                    <span class="font-medium">Free Training & Certifications</span>
-                </div>
-                <div class="flex items-center bg-white rounded-full px-6 py-3 shadow-md">
-                    <i class="fas fa-shield-check text-blue-600 mr-2"></i>
-                    <span class="font-medium">Verified Professionals</span>
-                </div>
-                <div class="flex items-center bg-white rounded-full px-6 py-3 shadow-md">
-                    <i class="fas fa-handshake text-green-600 mr-2"></i>
-                    <span class="font-medium">Secure Payments</span>
-                </div>
+            <div class="feature-card text-center">
+                <i class="fas fa-handshake text-6xl text-orange-500 mb-6"></i>
+                <h3 class="text-2xl font-bold text-gray-800 mb-4">Fair Commission Structure</h3>
+                <p class="text-gray-600 text-lg leading-relaxed">Transparent 5-10% commission with potential networking partner revenue sharing. Know exactly what you're paying with no hidden fees or surprises.</p>
             </div>
             
-            <!-- Call to Action -->
-            <div class="flex flex-col sm:flex-row gap-4 justify-center mb-16">
-                <a href="{{ url_for('register') }}" 
-                   class="btn btn-primary gradient-primary text-white font-semibold px-10 py-4 rounded-xl transition duration-200 text-lg shadow-lg">
-                    <i class="fas fa-rocket mr-2"></i>Get Started Free
-                </a>
-                <a href="{{ url_for('login') }}" 
-                   class="bg-white hover:bg-gray-50 text-blue-600 font-semibold px-10 py-4 rounded-xl border-2 border-blue-600 transition duration-200 text-lg shadow-lg">
-                    <i class="fas fa-sign-in-alt mr-2"></i>Sign In
-                </a>
+            <div class="feature-card text-center">
+                <i class="fas fa-maple-leaf text-6xl text-red-500 mb-6"></i>
+                <h3 class="text-2xl font-bold text-gray-800 mb-4">Canadian-Focused Platform</h3>
+                <p class="text-gray-600 text-lg leading-relaxed">Built specifically for Canadian trades, understanding local regulations, standards, and market needs from coast to coast.</p>
             </div>
+        </div>
+    </div>
+</div>
         </div>
 
         <!-- Features Grid -->

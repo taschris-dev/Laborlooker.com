@@ -3,45 +3,83 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Welcome to LaborLooker</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <title>Welcome to LaborLooker - Canada's Premier Skilled Trades Marketplace</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        body { 
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            overflow-x: hidden; 
+        :root {
+            --primary-orange: #FF6B35;
+            --primary-blue: #1E3A8A;
+            --secondary-blue: #3B82F6;
+            --accent-green: #10B981;
+            --neutral-gray: #6B7280;
         }
+        
+        body { 
+            font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, var(--primary-blue) 0%, var(--secondary-blue) 100%);
+            min-height: 100vh;
+        }
+        
+        .logo-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 2rem;
+        }
+        
+        .logo-icon {
+            font-size: 3rem;
+            color: var(--primary-orange);
+            margin-right: 1rem;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .logo-text {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--primary-blue);
+            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
         .consent-container {
             min-height: 100vh;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 2rem 1rem;
         }
+        
         .consent-card {
             background: white;
-            border-radius: 20px;
-            box-shadow: 0 25px 50px rgba(0,0,0,0.2);
-            max-width: 800px;
+            border-radius: 24px;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.15);
+            max-width: 900px;
             margin: 0 auto;
-            animation: slideUp 0.5s ease-out;
+            animation: slideUp 0.6s ease-out;
+            border: 3px solid var(--primary-orange);
         }
+        
         @keyframes slideUp {
-            from { opacity: 0; transform: translateY(30px); }
+            from { opacity: 0; transform: translateY(40px); }
             to { opacity: 1; transform: translateY(0); }
         }
+        
         .checkbox-custom {
-            width: 20px;
-            height: 20px;
-            border: 2px solid #d1d5db;
-            border-radius: 4px;
+            width: 24px;
+            height: 24px;
+            border: 2px solid var(--neutral-gray);
+            border-radius: 6px;
             background: white;
             cursor: pointer;
             position: relative;
             margin-right: 12px;
             flex-shrink: 0;
+            transition: all 0.3s ease;
         }
+        
         .checkbox-custom.checked {
-            background: #3b82f6;
-            border-color: #3b82f6;
+            background: var(--accent-green);
+            border-color: var(--accent-green);
         }
+        
         .checkbox-custom.checked::after {
             content: '✓';
             color: white;
@@ -49,172 +87,257 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            font-size: 14px;
+            font-size: 16px;
             font-weight: bold;
         }
-        .section-card {
-            border: 2px solid #e5e7eb;
-            border-radius: 12px;
-            padding: 24px;
-            margin-bottom: 24px;
-            transition: all 0.3s ease;
-        }
-        .section-card.required {
-            border-color: #dc2626;
-            background: #fef2f2;
-        }
-        .section-card.optional {
-            border-color: #3b82f6;
-            background: #eff6ff;
-        }
+        
         .btn-primary {
-            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+            background: linear-gradient(135deg, var(--primary-orange), #E55930);
             color: white;
-            padding: 16px 32px;
+            padding: 16px 48px;
             border-radius: 12px;
-            font-weight: 600;
+            font-weight: 700;
             font-size: 18px;
             border: none;
             cursor: pointer;
             transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+            box-shadow: 0 8px 25px rgba(255, 107, 53, 0.3);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
+        
         .btn-primary:hover:not(:disabled) {
-            background: linear-gradient(135deg, #1d4ed8, #1e40af);
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(59, 130, 246, 0.4);
+            background: linear-gradient(135deg, #E55930, #CC4914);
+            transform: translateY(-3px);
+            box-shadow: 0 12px 35px rgba(255, 107, 53, 0.4);
         }
+        
         .btn-primary:disabled {
-            background: #9ca3af;
+            background: #9CA3AF;
             cursor: not-allowed;
             transform: none;
-            box-shadow: none;
+            box-shadow: 0 4px 15px rgba(156, 163, 175, 0.2);
         }
     </style>
 </head>
 <body>
-    <div class="consent-container p-4 md:p-8">
-        <div class="consent-card p-6 md:p-8">
+    <div class="consent-container">
+        <div class="consent-card p-8 md:p-12">
             
-            <!-- Header -->
-            <div class="text-center mb-8">
-                <div class="mb-6">
-                    <i class="fas fa-hard-hat text-6xl text-blue-600 mb-4"></i>
-                    <h1 class="text-3xl md:text-4xl font-bold text-gray-800 mb-2">Welcome to LaborLooker</h1>
-                    <p class="text-gray-600 text-lg">Canada's premier skilled trades marketplace</p>
+            <!-- Header with Logo -->
+            <div class="text-center mb-10">
+                <div class="logo-container">
+                    <i class="fas fa-hard-hat logo-icon"></i>
+                    <h1 class="logo-text">LaborLooker</h1>
                 </div>
+                <p class="text-xl text-gray-600 font-medium mb-6">Canada's Premier Skilled Trades Marketplace</p>
                 
-                <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
-                    <p class="text-blue-800 font-medium">
-                        <i class="fas fa-info-circle mr-2"></i>
-                        We respect your privacy. Please review and accept our terms to continue.
+                <div class="bg-gradient-to-r from-blue-50 to-orange-50 border border-orange-200 rounded-xl p-6 mb-8">
+                    <p class="text-gray-800 font-semibold text-lg">
+                        <i class="fas fa-shield-alt text-orange-500 mr-3"></i>
+                        Your privacy matters. Review our policies below to continue.
+                    </p>
+                    <p class="text-sm text-gray-600 mt-2">
+                        Note: Some features may have limited functionality if you decline optional consents.
                     </p>
                 </div>
             </div>
 
-            <form id="consentForm">
+            <form id="consentForm" action="/consent/submit" method="POST">
                 
-                <!-- Required Section -->
-                <div class="section-card required">
-                    <h3 class="text-xl font-bold text-red-700 mb-4 flex items-center">
-                        <i class="fas fa-exclamation-circle mr-2"></i>
-                        Required Agreements
+                <!-- Legal Agreement Section -->
+                <div class="bg-red-50 border-2 border-red-200 rounded-xl p-8 mb-8">
+                    <h3 class="text-2xl font-bold text-red-700 mb-6 flex items-center">
+                        <i class="fas fa-gavel mr-3"></i>
+                        Legal Agreements Required
                     </h3>
-                    <p class="text-gray-700 mb-6">These agreements are essential to use our platform:</p>
                     
-                    <div class="space-y-4">
-                        <label class="flex items-start cursor-pointer">
-                            <div class="checkbox-custom" data-name="terms_of_service"></div>
-                            <div>
-                                <span class="font-semibold text-gray-900">Terms of Service</span>
-                                <p class="text-sm text-gray-600 mt-1">I accept the platform rules and usage guidelines</p>
+                    <div class="space-y-6">
+                        <label class="flex items-start cursor-pointer group">
+                            <div class="checkbox-custom" data-name="terms_required"></div>
+                            <div class="flex-1">
+                                <span class="font-semibold text-gray-900 text-lg">Terms of Service Agreement</span>
+                                <p class="text-gray-700 mt-1 mb-2">
+                                    I acknowledge that LaborLooker may charge up to 10% commission on successful connections, 
+                                    with potential revenue sharing arrangements with networking partners (5% each).
+                                </p>
+                                <a href="/legal/terms" target="_blank" class="text-blue-600 hover:text-blue-800 font-medium underline">
+                                    <i class="fas fa-external-link-alt mr-1"></i>View Terms of Service
+                                </a>
                             </div>
                         </label>
                         
-                        <label class="flex items-start cursor-pointer">
-                            <div class="checkbox-custom" data-name="privacy_policy"></div>
-                            <div>
-                                <span class="font-semibold text-gray-900">Privacy Policy</span>
-                                <p class="text-sm text-gray-600 mt-1">I understand how my data is collected and used</p>
-                            </div>
-                        </label>
-                        
-                        <label class="flex items-start cursor-pointer">
-                            <div class="checkbox-custom" data-name="data_collection"></div>
-                            <div>
-                                <span class="font-semibold text-gray-900">Essential Data Collection</span>
-                                <p class="text-sm text-gray-600 mt-1">Collection of account data necessary for platform operation</p>
-                            </div>
-                        </label>
-                        
-                        <label class="flex items-start cursor-pointer">
-                            <div class="checkbox-custom" data-name="cookies_essential"></div>
-                            <div>
-                                <span class="font-semibold text-gray-900">Essential Cookies</span>
-                                <p class="text-sm text-gray-600 mt-1">Technical cookies required for login and security</p>
-                            </div>
-                        </label>
-                        
-                        <label class="flex items-start cursor-pointer">
-                            <div class="checkbox-custom" data-name="safety_verification"></div>
-                            <div>
-                                <span class="font-semibold text-gray-900">Safety & Verification</span>
-                                <p class="text-sm text-gray-600 mt-1">Identity verification and safety checks for secure platform use</p>
+                        <label class="flex items-start cursor-pointer group">
+                            <div class="checkbox-custom" data-name="privacy_required"></div>
+                            <div class="flex-1">
+                                <span class="font-semibold text-gray-900 text-lg">Privacy Policy Agreement</span>
+                                <p class="text-gray-700 mt-1 mb-2">
+                                    I understand how my personal and professional data will be collected, used, and protected.
+                                </p>
+                                <a href="/legal/privacy" target="_blank" class="text-blue-600 hover:text-blue-800 font-medium underline">
+                                    <i class="fas fa-external-link-alt mr-1"></i>View Privacy Policy
+                                </a>
                             </div>
                         </label>
                     </div>
-                </div>
-
-                <!-- Optional Section -->
-                <div class="section-card optional">
-                    <h3 class="text-xl font-bold text-blue-700 mb-4 flex items-center">
-                        <i class="fas fa-star mr-2"></i>
-                        Optional Enhancements
+                
+                <!-- Data Collection & Usage Section -->
+                <div class="bg-blue-50 border-2 border-blue-200 rounded-xl p-8 mb-8">
+                    <h3 class="text-2xl font-bold text-blue-700 mb-6 flex items-center">
+                        <i class="fas fa-chart-line mr-3"></i>
+                        Data Collection & Usage (Optional)
                     </h3>
-                    <p class="text-gray-700 mb-6">These are optional and improve your experience:</p>
+                    <p class="text-gray-700 mb-6">
+                        Choose which data we can collect to enhance your experience. 
+                        <strong>Declining these won't prevent site access, but some features may be limited.</strong>
+                    </p>
                     
-                    <div class="space-y-4">
-                        <label class="flex items-start cursor-pointer">
+                    <div class="space-y-6">
+                        <label class="flex items-start cursor-pointer group">
+                            <div class="checkbox-custom" data-name="data_monetization"></div>
+                            <div class="flex-1">
+                                <span class="font-semibold text-gray-900 text-lg">Data Monetization Consent</span>
+                                <p class="text-gray-700 mt-1 mb-2">
+                                    Allow LaborLooker to sell anonymized, aggregated market data to improve industry insights. 
+                                    No personal information is included.
+                                </p>
+                                <a href="/legal/data-usage" target="_blank" class="text-blue-600 hover:text-blue-800 font-medium underline">
+                                    <i class="fas fa-external-link-alt mr-1"></i>View Data Usage Policy
+                                </a>
+                            </div>
+                        </label>
+                        
+                        <label class="flex items-start cursor-pointer group">
                             <div class="checkbox-custom" data-name="marketing_communications"></div>
-                            <div>
-                                <span class="font-semibold text-gray-900">Marketing Updates</span>
-                                <p class="text-sm text-gray-600 mt-1">
-                                    Job alerts, platform updates, and industry news
-                                    <span class="text-blue-600 font-medium block">✓ Job matching notifications</span>
+                            <div class="flex-1">
+                                <span class="font-semibold text-gray-900 text-lg">Marketing Communications</span>
+                                <p class="text-gray-700 mt-1 mb-2">
+                                    Receive job alerts, platform updates, and industry insights via email.
                                 </p>
+                                <span class="inline-block bg-green-100 text-green-800 text-sm font-medium px-3 py-1 rounded-full">
+                                    ✓ Better job matching
+                                </span>
                             </div>
                         </label>
                         
-                        <label class="flex items-start cursor-pointer">
-                            <div class="checkbox-custom" data-name="personalization"></div>
-                            <div>
-                                <span class="font-semibold text-gray-900">Personalization</span>
-                                <p class="text-sm text-gray-600 mt-1">
-                                    Customized recommendations and smart matching
-                                    <span class="text-blue-600 font-medium block">✓ Better job suggestions</span>
+                        <label class="flex items-start cursor-pointer group">
+                            <div class="checkbox-custom" data-name="analytics_cookies"></div>
+                            <div class="flex-1">
+                                <span class="font-semibold text-gray-900 text-lg">Analytics & Performance</span>
+                                <p class="text-gray-700 mt-1 mb-2">
+                                    Help us improve platform performance and user experience through usage analytics.
                                 </p>
-                            </div>
-                        </label>
-                        
-                        <label class="flex items-start cursor-pointer">
-                            <div class="checkbox-custom" data-name="cookies_analytics"></div>
-                            <div>
-                                <span class="font-semibold text-gray-900">Analytics Cookies</span>
-                                <p class="text-sm text-gray-600 mt-1">
-                                    Help us improve platform performance
-                                    <span class="text-blue-600 font-medium block">✓ Faster, better experience</span>
-                                </p>
+                                <a href="/legal/cookies" target="_blank" class="text-blue-600 hover:text-blue-800 font-medium underline">
+                                    <i class="fas fa-external-link-alt mr-1"></i>View Cookie Policy
+                                </a>
                             </div>
                         </label>
                     </div>
                 </div>
-
+                
+                <!-- Hidden input for email (will be populated by JS) -->
+                <input type="hidden" name="email" id="emailInput" value="">
+                
                 <!-- Action Buttons -->
-                <div class="text-center mt-8">
-                    <button type="submit" id="acceptBtn" class="btn-primary w-full md:w-auto" disabled>
-                        <i class="fas fa-check mr-2"></i>
-                        Accept & Continue to LaborLooker
+                <div class="text-center mt-10">
+                    <div class="mb-6">
+                        <p class="text-sm text-gray-600 mb-4">
+                            <i class="fas fa-info-circle text-blue-500 mr-1"></i>
+                            You can modify these preferences anytime in your account settings
+                        </p>
+                    </div>
+                    
+                    <button type="submit" id="acceptBtn" class="btn-primary" disabled>
+                        <i class="fas fa-rocket mr-2"></i>
+                        Enter LaborLooker Marketplace
                     </button>
+                    
+                    <div class="mt-4">
+                        <p class="text-xs text-gray-500">
+                            By continuing, you confirm you've read and agree to the checked policies above
+                        </p>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const checkboxes = document.querySelectorAll('.checkbox-custom');
+            const acceptBtn = document.getElementById('acceptBtn');
+            const form = document.getElementById('consentForm');
+            const emailInput = document.getElementById('emailInput');
+            
+            // Generate a simple user identifier for consent tracking
+            emailInput.value = 'user_' + Date.now() + '@consent.temp';
+            
+            // Handle checkbox interactions
+            checkboxes.forEach(checkbox => {
+                checkbox.addEventListener('click', function() {
+                    this.classList.toggle('checked');
+                    checkRequiredConsents();
+                });
+            });
+            
+            function checkRequiredConsents() {
+                const requiredCheckboxes = document.querySelectorAll('[data-name="terms_required"], [data-name="privacy_required"]');
+                const allRequiredChecked = Array.from(requiredCheckboxes).every(cb => cb.classList.contains('checked'));
+                
+                acceptBtn.disabled = !allRequiredChecked;
+                
+                if (allRequiredChecked) {
+                    acceptBtn.classList.add('animate-pulse');
+                } else {
+                    acceptBtn.classList.remove('animate-pulse');
+                }
+            }
+            
+            // Handle form submission
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const consentData = {};
+                checkboxes.forEach(checkbox => {
+                    const name = checkbox.getAttribute('data-name');
+                    consentData[name] = checkbox.classList.contains('checked');
+                });
+                
+                // Add email and consent data to form
+                const formData = new FormData();
+                formData.append('email', emailInput.value);
+                formData.append('consent_data', JSON.stringify(consentData));
+                
+                // Show loading state
+                acceptBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Processing...';
+                acceptBtn.disabled = true;
+                
+                // Submit to backend
+                fetch('/consent/submit', {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => {
+                    if (response.ok) {
+                        // Redirect to main site
+                        window.location.href = '/dashboard';
+                    } else {
+                        throw new Error('Consent submission failed');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    acceptBtn.innerHTML = '<i class="fas fa-exclamation-triangle mr-2"></i>Error - Try Again';
+                    acceptBtn.disabled = false;
+                    setTimeout(() => {
+                        acceptBtn.innerHTML = '<i class="fas fa-rocket mr-2"></i>Enter LaborLooker Marketplace';
+                    }, 3000);
+                });
+            });
+        });
+    </script>
+</body>
+</html>
                     
                     <p class="text-sm text-gray-500 mt-4">
                         <i class="fas fa-shield-alt mr-1"></i>

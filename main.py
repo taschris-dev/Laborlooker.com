@@ -521,42 +521,51 @@ def liveness_check():
 def index():
     """Home page for LaborLooker marketplace"""
     try:
-        # Render the landing page for visitors
-        return render_template('landing.html')
+        # Check if consent has been granted
+        has_consent = (
+            session.get('consent_granted') or 
+            request.cookies.get('consent_granted') == 'true'
+        )
+        
+        print(f"DEBUG: Index route - Has consent: {has_consent}")
+        
+        if not has_consent:
+            # Store intended URL and redirect to consent
+            session['intended_url'] = request.url
+            print("DEBUG: Redirecting to consent gateway")
+            return redirect(url_for('consent_gateway'))
+        
+        # User has consented, show main site
+        print("DEBUG: Showing welcome page")
+        return render_template('welcome.html')
+        
     except Exception as e:
-        # Fallback to welcome page if landing.html has issues
-        try:
-            return render_template('welcome.html')
-        except Exception as e2:
-            # Ultimate fallback - simple HTML
-            return """
-            <!DOCTYPE html>
-            <html>
-            <head>
-                <title>LaborLooker - Professional Marketplace</title>
-                <meta charset="UTF-8">
-                <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                <style>
-                    body { font-family: Arial, sans-serif; text-align: center; padding: 50px; }
-                    .container { max-width: 600px; margin: 0 auto; }
-                    .btn { display: inline-block; background: #007bff; color: white; 
-                           padding: 12px 24px; text-decoration: none; border-radius: 5px; margin: 10px; }
-                    .btn:hover { background: #0056b3; }
-                </style>
-            </head>
-            <body>
-                <div class="container">
-                    <h1>Welcome to LaborLooker</h1>
-                    <p>The Professional Marketplace Platform</p>
-                    <p>Connect contractors, customers, and job seekers in one platform.</p>
-                    <div>
-                        <a href="/login" class="btn">Login</a>
-                        <a href="/register" class="btn">Register</a>
-                    </div>
-                </div>
-            </body>
-            </html>
-            """
+        print(f"DEBUG: Error in index route: {e}")
+        # Fallback to consent gateway on any error
+        return redirect(url_for('consent_gateway'))
+
+@app.route('/dashboard')
+def dashboard():
+    """Main dashboard after consent"""
+    try:
+        # Check if consent has been granted
+        has_consent = (
+            session.get('consent_granted') or 
+            request.cookies.get('consent_granted') == 'true'
+        )
+        
+        if not has_consent:
+            # Store intended URL and redirect to consent
+            session['intended_url'] = request.url
+            return redirect(url_for('consent_gateway'))
+        
+        # Show dashboard template
+        return render_template('dashboard.html')
+        
+    except Exception as e:
+        print(f"DEBUG: Error in dashboard route: {e}")
+        # Fallback to welcome page
+        return redirect(url_for('index'))
 
 # Login manager setup
 login_manager = LoginManager()
@@ -9075,57 +9084,90 @@ def consent_gateway():
 def submit_consent():
     """Process user consent submission with granular controls"""
     try:
-        consent_data = request.get_json()
+        # Handle both JSON and form data
+        if request.is_json:
+            consent_data = request.get_json()
+            email = consent_data.get('email', '')
+        else:
+            # Form data submission
+            email = request.form.get('email', '')
+            consent_data_str = request.form.get('consent_data', '{}')
+            try:
+                consent_data = json.loads(consent_data_str)
+            except:
+                # Fallback to individual form fields
+                consent_data = {}
+                for key in request.form.keys():
+                    if key != 'email' and key != 'consent_data':
+                        consent_data[key] = request.form.get(key) == 'true'
+        
+        print(f"DEBUG: Consent submission - Email: {email}, Data: {consent_data}")
         
         # Validate required consents (essential only)
-        required_consents = ['cookies_essential', 'terms_of_service', 'privacy_policy', 'data_collection', 'safety_verification']
+        required_consents = ['terms_required', 'privacy_required']
+        missing_consents = []
         for consent_type in required_consents:
             if not consent_data.get(consent_type, False):
+                missing_consents.append(consent_type)
+        
+        if missing_consents:
+            error_msg = f'Required consent missing: {", ".join(missing_consents)}'
+            print(f"DEBUG: Missing consents: {error_msg}")
+            if request.is_json:
                 return jsonify({
                     'success': False,
-                    'error': f'Required consent missing: {consent_type}',
+                    'error': error_msg,
                     'required': True
                 }), 400
+            else:
+                flash(error_msg, 'error')
+                return redirect(url_for('consent_gateway'))
         
         # Get user ID
         user_id = current_user.id if current_user.is_authenticated else None
         
-        # Create consent record with all preferences
-        consent_record = UserConsent(
-            user_id=user_id,
-            session_id=session.get('session_id', request.cookies.get('session')),
-            ip_address=request.environ.get('HTTP_X_FORWARDED_FOR', request.remote_addr),
-            user_agent=request.headers.get('User-Agent'),
+        try:
+            # Create consent record with all preferences
+            consent_record = UserConsent(
+                user_id=user_id,
+                session_id=session.get('session_id', request.cookies.get('session')),
+                ip_address=request.environ.get('HTTP_X_FORWARDED_FOR', request.remote_addr),
+                user_agent=request.headers.get('User-Agent'),
+                
+                # Required consents
+                cookies_essential=True,  # Always required
+                terms_of_service=consent_data.get('terms_required', False),
+                privacy_policy=consent_data.get('privacy_required', False),
+                data_collection=True,  # Always required for platform function
+                safety_verification=True,  # Always required
+                
+                # Optional consents
+                marketing_communications=consent_data.get('marketing_communications', False),
+                personalization=consent_data.get('personalization', False),
+                market_research=consent_data.get('data_monetization', False),
+                cookies_analytics=consent_data.get('analytics_cookies', False),
+                cookies_marketing=consent_data.get('marketing_communications', False),
+                
+                # Metadata
+                consent_method='gateway',
+                consent_version='3.0',
+                consent_data=consent_data,
+                granted_at=datetime.utcnow(),
+                expires_at=datetime.utcnow() + timedelta(days=365)  # 1 year expiry
+            )
             
-            # Required consents
-            cookies_essential=True,  # Always required
-            terms_of_service=True,  # Always required
-            privacy_policy=True,  # Always required
-            data_collection=True,  # Always required
-            safety_verification=True,  # Always required
+            # Save to database if available
+            if user_id:
+                # Remove old consent records for this user
+                UserConsent.query.filter_by(user_id=user_id).delete()
             
-            # Optional consents
-            marketing_communications=consent_data.get('marketing_communications', False),
-            personalization=consent_data.get('personalization', False),
-            market_research=consent_data.get('market_research', False),
-            cookies_analytics=consent_data.get('cookies_analytics', False),
-            cookies_marketing=consent_data.get('cookies_marketing', False),
+            db.session.add(consent_record)
+            db.session.commit()
+            print("DEBUG: Consent record saved to database")
             
-            # Metadata
-            consent_method='gateway',
-            consent_version='2.0',
-            consent_data=consent_data,
-            granted_at=datetime.utcnow(),
-            expires_at=datetime.utcnow() + timedelta(days=365)  # 1 year expiry
-        )
-        
-        # Save to database
-        if user_id:
-            # Remove old consent records for this user
-            UserConsent.query.filter_by(user_id=user_id).delete()
-        
-        db.session.add(consent_record)
-        db.session.commit()
+        except Exception as db_error:
+            print(f"DEBUG: Database error (continuing): {db_error}")
+            # Continue without database - store in session only
         
         # Store consent in session for immediate use
         session['consent_granted'] = True
@@ -9133,21 +9175,53 @@ def submit_consent():
         session['consent_preferences'] = {
             'marketing': consent_data.get('marketing_communications', False),
             'personalization': consent_data.get('personalization', False),
-            'analytics': consent_data.get('cookies_analytics', False)
+            'analytics': consent_data.get('analytics_cookies', False),
+            'data_monetization': consent_data.get('data_monetization', False)
         }
         
-        # Set consent cookies
-        response_data = {
-            'success': True,
-            'message': 'Consent preferences saved successfully',
-            'redirect_url': session.pop('intended_url', url_for('index')),
-            'features_enabled': {
-                'core_platform': True,
-                'marketing_communications': consent_data.get('marketing_communications', False),
-                'personalization': consent_data.get('personalization', False),
-                'analytics': consent_data.get('cookies_analytics', False)
+        print("DEBUG: Consent stored in session successfully")
+        
+        # Determine redirect URL
+        redirect_url = session.pop('intended_url', url_for('welcome'))
+        
+        if request.is_json:
+            # JSON response for AJAX
+            response_data = {
+                'success': True,
+                'message': 'Consent preferences saved successfully',
+                'redirect_url': redirect_url,
+                'features_enabled': {
+                    'core_platform': True,
+                    'marketing_communications': consent_data.get('marketing_communications', False),
+                    'personalization': consent_data.get('personalization', False),
+                    'analytics': consent_data.get('analytics_cookies', False),
+                    'data_monetization': consent_data.get('data_monetization', False)
+                }
             }
-        }
+            
+            response = jsonify(response_data)
+            # Set consent cookie
+            response.set_cookie('consent_granted', 'true', max_age=31536000)  # 1 year
+            return response
+        else:
+            # Form submission - redirect
+            flash('Consent preferences saved successfully!', 'success')
+            response = redirect(redirect_url)
+            response.set_cookie('consent_granted', 'true', max_age=31536000)  # 1 year
+            return response
+            
+    except Exception as e:
+        error_msg = f"Error processing consent: {str(e)}"
+        print(f"DEBUG: {error_msg}")
+        
+        if request.is_json:
+            return jsonify({
+                'success': False,
+                'error': error_msg
+            }), 500
+        else:
+            flash(error_msg, 'error')
+            return redirect(url_for('consent_gateway'))
         
         response = jsonify(response_data)
         
