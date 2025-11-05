@@ -554,6 +554,32 @@ def index():
         print("DEBUG: Error occurred, showing modern welcome page")
         return render_template('welcome.html')
 
+@app.route("/test-minimal")
+def test_minimal():
+    """MINIMAL TEST PAGE - NO TEMPLATES, NO CONSENT POSSIBLE"""
+    return '''<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>MINIMAL TEST - ZERO CONSENT</title>
+</head>
+<body style="font-family: Arial; padding: 20px;">
+    <h1 style="color: red;">🔥 MINIMAL TEST PAGE 🔥</h1>
+    <p><strong>If you see ANY consent popup on this page, it's being injected by:</strong></p>
+    <ul>
+        <li>Your browser cache/storage</li>
+        <li>A browser extension</li>
+        <li>ISP/DNS level caching</li>
+        <li>Antivirus software</li>
+    </ul>
+    <p><strong>This page contains ABSOLUTELY ZERO consent code.</strong></p>
+    <p>Test URL: <code>https://laborlooker.com/test-minimal</code></p>
+    <p>Generated at: <script>document.write(new Date())</script></p>
+    <hr>
+    <p><a href="/">Back to main site</a></p>
+</body>
+</html>'''
+
 @app.route('/main-dashboard')
 def main_dashboard():
     """Main dashboard"""
