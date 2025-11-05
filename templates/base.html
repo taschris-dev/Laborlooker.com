@@ -15,6 +15,73 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 <link href="{{ url_for('static', filename='styles.css') }}?v=20251104-clean" rel="stylesheet">
+
+<!-- ULTRA AGGRESSIVE CONSENT BLOCKER - Runs BEFORE page loads -->
+<script>
+// Emergency consent blocker - runs immediately in HEAD
+(function() {
+    'use strict';
+    
+    // Override document.write to prevent consent injection
+    const originalWrite = document.write;
+    document.write = function(content) {
+        if (content && typeof content === 'string') {
+            const lower = content.toLowerCase();
+            if (lower.includes('consent') || lower.includes('privacy') || 
+                lower.includes('we value your') || lower.includes('binding agreement')) {
+                console.log('🚫 BLOCKED document.write consent injection');
+                return;
+            }
+        }
+        return originalWrite.apply(document, arguments);
+    };
+    
+    // Block any createElement that looks like consent popup
+    const originalCreateElement = document.createElement;
+    document.createElement = function(tagName) {
+        const el = originalCreateElement.call(document, tagName);
+        const originalSetAttribute = el.setAttribute;
+        el.setAttribute = function(name, value) {
+            if (typeof value === 'string') {
+                const lower = value.toLowerCase();
+                if ((name === 'class' || name === 'id') && 
+                    (lower.includes('consent') || lower.includes('modal') || 
+                     lower.includes('privacy') || lower.includes('cookie'))) {
+                    console.log('🚫 BLOCKED consent element creation:', name, value);
+                    return;
+                }
+            }
+            return originalSetAttribute.call(el, name, value);
+        };
+        return el;
+    };
+    
+    // Aggressive style blocker - hide fixed overlays
+    const style = document.createElement('style');
+    style.innerHTML = `
+        /* NUCLEAR CONSENT BLOCKER STYLES */
+        [class*="consent"],
+        [id*="consent"],
+        [class*="cookie"],
+        [id*="cookie"],
+        [class*="privacy-modal"],
+        [id*="privacy-modal"],
+        div[style*="z-index: 9999"],
+        div[style*="z-index: 10000"],
+        div[style*="position: fixed"][style*="width: 100%"][style*="height: 100%"] {
+            display: none !important;
+            visibility: hidden !important;
+            opacity: 0 !important;
+            pointer-events: none !important;
+        }
+    `;
+    document.head?.appendChild(style) || (window.addEventListener('DOMContentLoaded', () => {
+        document.head.appendChild(style);
+    }));
+    
+    console.log('⚡ ULTRA AGGRESSIVE CONSENT BLOCKER LOADED');
+})();
+</script>
 </head>
 
 <body>
