@@ -3,18 +3,18 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>{% block title %}LaborLooker - South Carolina's Premier Business Network{% endblock %}</title>
+<title>LaborLooker - South Carolina's Premier Business Network</title>
 <!-- MODERN TEMPLATE v3.0 DEPLOYED -->
 <meta name="description" content="LaborLooker connects skilled workers with local businesses across South Carolina. Find work, hire professionals, and grow your network.">
 <meta name="keywords" content="south carolina jobs, skilled labor, contractors, local business, job matching, trades, networking">
-<link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='images/favicon.ico') }}">
-<link rel="icon" type="image/png" sizes="32x32" href="{{ url_for('static', filename='images/logo-small.png') }}">
-<link rel="apple-touch-icon" href="{{ url_for('static', filename='images/logo-square.png') }}">
+<link rel="icon" type="image/x-icon" href="/static/images/favicon.ico">
+<link rel="icon" type="image/png" sizes="32x32" href="/static/images/logo-small.png">
+<link rel="apple-touch-icon" href="/static/images/logo-square.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-<link href="{{ url_for('static', filename='styles.css') }}?v=20251104-clean" rel="stylesheet">
+<link href="/static/styles.css?v=20251104-clean" rel="stylesheet">
 </head>
 
 <body>
@@ -22,7 +22,7 @@
 <nav class="navbar">
     <div class="navbar-container">
         <div class="navbar-brand">
-            <img src="{{ url_for('static', filename='images/logo.svg') }}" 
+            <img src="/static/images/logo.svg" 
                  alt="LaborLooker" 
                  style="height: 32px; margin-right: 0.5rem;">
             LaborLooker
@@ -31,24 +31,14 @@
         <div class="d-flex align-center gap-3">
             <!-- Desktop Navigation -->
             <ul class="navbar-nav" style="display: none;" id="desktopNav">
-                {% if current_user.is_authenticated %}
-                    <li><a href="{{ url_for('main_dashboard') }}" class="nav-link">
-                        <i class="fas fa-tachometer-alt"></i> Dashboard
-                    </a></li>
-                    <li><a href="/profile" class="nav-link">
-                        <i class="fas fa-user"></i> Profile
-                    </a></li>
-                    <li><a href="{{ url_for('logout') }}" class="nav-link">
-                        <i class="fas fa-sign-out-alt"></i> Logout
-                    </a></li>
-                {% else %}
-                    <li><a href="{{ url_for('login') }}" class="nav-link">
+                
+                    <li><a href="/login" class="nav-link">
                         <i class="fas fa-sign-in-alt"></i> Login
                     </a></li>
-                    <li><a href="{{ url_for('register') }}" class="btn btn-primary btn-sm">
+                    <li><a href="/register" class="btn btn-primary btn-sm">
                         <i class="fas fa-user-plus"></i> Join Now
                     </a></li>
-                {% endif %}
+                
             </ul>
             
             <!-- Mobile Menu Button -->
@@ -66,7 +56,7 @@
     <div class="hamburger-header">
         <div class="d-flex justify-between align-center">
             <div class="navbar-brand">
-                <img src="{{ url_for('static', filename='images/logo.svg') }}" 
+                <img src="/static/images/logo.svg" 
                      alt="LaborLooker" 
                      style="height: 24px; margin-right: 0.5rem;">
                 LaborLooker
@@ -75,35 +65,15 @@
                 <i class="fas fa-times"></i>
             </button>
         </div>
-        {% if current_user.is_authenticated %}
-        <p style="color: var(--gray-600); font-size: var(--text-sm); margin-top: 0.5rem;">
-            {{ current_user.email }}
-        </p>
-        <span class="status-indicator status-online" style="margin-top: 0.5rem;">
-            {{ current_user.account_type.title() }}
-        </span>
-        {% endif %}
+        
     </div>
     
     <div class="hamburger-nav">
-        {% if current_user.is_authenticated %}
-            <a href="{{ url_for('main_dashboard') }}">
-                <i class="fas fa-tachometer-alt"></i> Dashboard
-            </a>
-            <a href="/profile">
-                <i class="fas fa-user"></i> Profile
-            </a>
-            <a href="/help">
-                <i class="fas fa-question-circle"></i> Help & Support
-            </a>
-            <a href="{{ url_for('logout') }}">
-                <i class="fas fa-sign-out-alt"></i> Logout
-            </a>
-        {% else %}
-            <a href="{{ url_for('login') }}">
+        
+            <a href="/login">
                 <i class="fas fa-sign-in-alt"></i> Login
             </a>
-            <a href="{{ url_for('register') }}">
+            <a href="/register">
                 <i class="fas fa-user-plus"></i> Create Account
             </a>
             <a href="/about-us">
@@ -112,26 +82,79 @@
             <a href="/contact-us">
                 <i class="fas fa-envelope"></i> Contact
             </a>
-        {% endif %}
+        
     </div>
 </div>
 
 <!-- Flash Messages -->
-{% with messages = get_flashed_messages(with_categories=true) %}
-    {% if messages %}
-        <div class="flashes">
-            {% for category, message in messages %}
-                <div class="flash flash-{{ category }}">
-                    {{ message }}
-                </div>
-            {% endfor %}
-        </div>
-    {% endif %}
-{% endwith %}
+
+    
+
 
 <!-- Main Content -->
 <main>
-    {% block content %}{% endblock %}
+    
+<!-- CLEAN DESIGN v4.0 - Nov 3 2025 -->
+<!-- Clean Hero Section -->
+<div class="clean-hero">
+    <div class="hero-center">
+        <div class="logo-section">
+            <img src="/static/images/logo.svg" 
+                 alt="LaborLooker" 
+                 class="main-logo">
+            <h1 class="main-title">LaborLooker</h1>
+        </div>
+        
+        <h2 class="subtitle">South Carolina's Business Network</h2>
+        
+        <p class="description">
+            Connect with trusted professionals across the Palmetto State.<br>
+            Find work. Hire talent. Build relationships.
+        </p>
+        
+        <div class="simple-actions">
+            <a href="/register" class="primary-btn">Join Network</a>
+            <a href="/login" class="secondary-btn">Sign In</a>
+        </div>
+        
+        <div class="trust-line">
+            <span class="trust-text">Trusted by 2,500+ professionals in Charleston, Columbia & Greenville</span>
+        </div>
+    </div>
+</div>
+
+<!-- Simple Features -->
+<div class="simple-features">
+    <div class="feature-center">
+        <h3 class="features-title">Why LaborLooker Works</h3>
+        
+        <div class="feature-grid">
+            <div class="feature-item">
+                <div class="feature-icon">🤝</div>
+                <h4>Local Focus</h4>
+                <p>South Carolina professionals serving South Carolina businesses</p>
+            </div>
+            
+            <div class="feature-item">
+                <div class="feature-icon">✓</div>
+                <h4>Verified Members</h4>
+                <p>Background checked, licensed, and insured professionals</p>
+            </div>
+            
+            <div class="feature-item">
+                <div class="feature-icon">⚡</div>
+                <h4>Quick Connections</h4>
+                <p>Find the right person for your project in hours, not days</p>
+            </div>
+        </div>
+        
+        <div class="bottom-cta">
+            <a href="/register" class="primary-btn">Get Started</a>
+            <p class="small-text">Free to join • No setup fees</p>
+        </div>
+    </div>
+</div>
+
 </main>
 
 <!-- Footer -->
@@ -162,14 +185,14 @@
         
         <div class="footer-section">
             <h3>For Professionals</h3>
-            <a href="{{ url_for('register') }}">Join Network</a>
+            <a href="/register">Join Network</a>
             <a href="/training">Training</a>
             <a href="/resources">Resources</a>
         </div>
         
         <div class="footer-section">
             <h3>For Businesses</h3>
-            <a href="{{ url_for('register') }}">Find Talent</a>
+            <a href="/register">Find Talent</a>
             <a href="/solutions">Solutions</a>
             <a href="/partnerships">Partnerships</a>
         </div>
@@ -181,80 +204,6 @@
 </footer>
 
 <script>
-// NUCLEAR CONSENT POPUP BLOCKER - Prevents ANY consent/privacy popups
-(function() {
-    // Block consent popups immediately on load
-    const blockConsentPopups = () => {
-        // Remove any elements with consent/privacy keywords
-        const selectors = [
-            '[class*="consent"]',
-            '[id*="consent"]',
-            '[class*="privacy"]', 
-            '[id*="privacy"]',
-            '[class*="cookie"]',
-            '[id*="cookie"]',
-            '[class*="modal"][style*="fixed"]',
-            '[class*="popup"]',
-            '[class*="overlay"][style*="fixed"]',
-            'div[style*="z-index: 9999"]',
-            'div[style*="z-index: 10000"]',
-            'div[style*="position: fixed"][style*="width: 100%"]'
-        ];
-        
-        selectors.forEach(selector => {
-            try {
-                document.querySelectorAll(selector).forEach(el => {
-                    // Check if it contains consent-related text
-                    const text = el.textContent || '';
-                    if (text.toLowerCase().includes('consent') || 
-                        text.toLowerCase().includes('privacy') || 
-                        text.toLowerCase().includes('accept') ||
-                        text.toLowerCase().includes('agreement')) {
-                        console.log('🔥 BLOCKED CONSENT ELEMENT:', el);
-                        el.remove();
-                    }
-                });
-            } catch(e) {}
-        });
-    };
-    
-    // Block immediately
-    blockConsentPopups();
-    
-    // Block on DOM ready
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', blockConsentPopups);
-    }
-    
-    // Block after page load
-    window.addEventListener('load', blockConsentPopups);
-    
-    // Monitor for dynamically added consent popups
-    const observer = new MutationObserver(mutations => {
-        mutations.forEach(mutation => {
-            mutation.addedNodes.forEach(node => {
-                if (node.nodeType === 1) { // Element node
-                    const text = node.textContent || '';
-                    if (text.toLowerCase().includes('consent') || 
-                        text.toLowerCase().includes('we value your privacy') ||
-                        text.toLowerCase().includes('binding agreement')) {
-                        console.log('🔥 BLOCKED DYNAMIC CONSENT:', node);
-                        node.remove();
-                    }
-                }
-            });
-        });
-    });
-    
-    // Start observing
-    observer.observe(document.documentElement, {
-        childList: true,
-        subtree: true
-    });
-    
-    console.log('✅ CONSENT BLOCKER ACTIVE');
-})();
-
 // Modern Mobile Menu Toggle
 function toggleMobileMenu() {
     const menu = document.getElementById('mobileMenu');
