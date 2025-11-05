@@ -9206,13 +9206,8 @@ except ImportError:
         def send_client_terms(self, user):
             return None, "DocuSign integration temporarily unavailable"
 
-# Initialize consent middleware
-try:
-    from consent_manager import ConsentManager
-    print("Consent manager loaded successfully")
-except ImportError as e:
-    print(f"Warning: Consent manager not found: {e}")
-    ConsentManager = None
+# Consent manager COMPLETELY ELIMINATED - no longer needed
+# ConsentManager functionality removed to ensure consent-free operation
 def init_db():
     """Initialize database with error handling"""
     try:
