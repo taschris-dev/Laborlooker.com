@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Consent Debug Test</title>
+</head>
+<body>
+    <h1>Consent Popup Debug Test</h1>
+    <p>If you see the consent popup on THIS page, it's a browser extension or network injection!</p>
+    <p>This is a completely blank HTML file with NO consent code.</p>
+    
+    <button onclick="alert('Button works - page is loading correctly')">Click Me</button>
+    
+    <script>
+        console.log('Simple test page loaded');
+        console.log('Looking for consent elements...');
+        
+        setTimeout(() => {
+            const body = document.body.innerHTML;
+            if (body.toLowerCase().includes('comprehensive consent') || 
+                body.toLowerCase().includes('binding agreement')) {
+                alert('⚠️ CONSENT FOUND! Something is injecting it into this clean page!');
+            } else {
+                alert('✅ No consent found - page is clean');
+            }
+        }, 2000);
+    </script>
+</body>
+</html>

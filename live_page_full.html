@@ -1,0 +1,393 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>LaborLooker - South Carolina's Premier Business Network</title>
+<!-- MODERN TEMPLATE v3.0 DEPLOYED -->
+<meta name="description" content="LaborLooker connects skilled workers with local businesses across South Carolina. Find work, hire professionals, and grow your network.">
+<meta name="keywords" content="south carolina jobs, skilled labor, contractors, local business, job matching, trades, networking">
+<link rel="icon" type="image/x-icon" href="/static/images/favicon.ico">
+<link rel="icon" type="image/png" sizes="32x32" href="/static/images/logo-small.png">
+<link rel="apple-touch-icon" href="/static/images/logo-square.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+<link href="/static/styles.css?v=20251104-clean" rel="stylesheet">
+
+<!-- ULTRA AGGRESSIVE CONSENT BLOCKER - Runs BEFORE page loads -->
+<script>
+// Emergency consent blocker - runs immediately in HEAD
+(function() {
+    'use strict';
+    
+    // Override document.write to prevent consent injection
+    const originalWrite = document.write;
+    document.write = function(content) {
+        if (content && typeof content === 'string') {
+            const lower = content.toLowerCase();
+            if (lower.includes('consent') || lower.includes('privacy') || 
+                lower.includes('we value your') || lower.includes('binding agreement')) {
+                console.log('🚫 BLOCKED document.write consent injection');
+                return;
+            }
+        }
+        return originalWrite.apply(document, arguments);
+    };
+    
+    // Block any createElement that looks like consent popup
+    const originalCreateElement = document.createElement;
+    document.createElement = function(tagName) {
+        const el = originalCreateElement.call(document, tagName);
+        const originalSetAttribute = el.setAttribute;
+        el.setAttribute = function(name, value) {
+            if (typeof value === 'string') {
+                const lower = value.toLowerCase();
+                if ((name === 'class' || name === 'id') && 
+                    (lower.includes('consent') || lower.includes('modal') || 
+                     lower.includes('privacy') || lower.includes('cookie'))) {
+                    console.log('🚫 BLOCKED consent element creation:', name, value);
+                    return;
+                }
+            }
+            return originalSetAttribute.call(el, name, value);
+        };
+        return el;
+    };
+    
+    // Aggressive style blocker - hide fixed overlays
+    const style = document.createElement('style');
+    style.innerHTML = `
+        /* NUCLEAR CONSENT BLOCKER STYLES */
+        [class*="consent"],
+        [id*="consent"],
+        [class*="cookie"],
+        [id*="cookie"],
+        [class*="privacy-modal"],
+        [id*="privacy-modal"],
+        div[style*="z-index: 9999"],
+        div[style*="z-index: 10000"],
+        div[style*="position: fixed"][style*="width: 100%"][style*="height: 100%"] {
+            display: none !important;
+            visibility: hidden !important;
+            opacity: 0 !important;
+            pointer-events: none !important;
+        }
+    `;
+    document.head?.appendChild(style) || (window.addEventListener('DOMContentLoaded', () => {
+        document.head.appendChild(style);
+    }));
+    
+    console.log('⚡ ULTRA AGGRESSIVE CONSENT BLOCKER LOADED');
+})();
+</script>
+</head>
+
+<body>
+<!-- Modern Navigation -->
+<nav class="navbar">
+    <div class="navbar-container">
+        <div class="navbar-brand">
+            <img src="/static/images/logo.svg" 
+                 alt="LaborLooker" 
+                 style="height: 32px; margin-right: 0.5rem;">
+            LaborLooker
+        </div>
+        
+        <div class="d-flex align-center gap-3">
+            <!-- Desktop Navigation -->
+            <ul class="navbar-nav" style="display: none;" id="desktopNav">
+                
+                    <li><a href="/login" class="nav-link">
+                        <i class="fas fa-sign-in-alt"></i> Login
+                    </a></li>
+                    <li><a href="/register" class="btn btn-primary btn-sm">
+                        <i class="fas fa-user-plus"></i> Join Now
+                    </a></li>
+                
+            </ul>
+            
+            <!-- Mobile Menu Button -->
+            <button onclick="toggleMobileMenu()" class="btn btn-ghost btn-sm" id="mobileMenuBtn">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+    </div>
+</nav>
+<!-- Mobile Menu Overlay -->
+<div class="hamburger-overlay" id="mobileOverlay" onclick="toggleMobileMenu()"></div>
+
+<!-- Mobile Menu -->
+<div class="hamburger-menu" id="mobileMenu">
+    <div class="hamburger-header">
+        <div class="d-flex justify-between align-center">
+            <div class="navbar-brand">
+                <img src="/static/images/logo.svg" 
+                     alt="LaborLooker" 
+                     style="height: 24px; margin-right: 0.5rem;">
+                LaborLooker
+            </div>
+            <button onclick="toggleMobileMenu()" class="btn btn-ghost btn-sm">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        
+    </div>
+    
+    <div class="hamburger-nav">
+        
+            <a href="/login">
+                <i class="fas fa-sign-in-alt"></i> Login
+            </a>
+            <a href="/register">
+                <i class="fas fa-user-plus"></i> Create Account
+            </a>
+            <a href="/about-us">
+                <i class="fas fa-info-circle"></i> About Us
+            </a>
+            <a href="/contact-us">
+                <i class="fas fa-envelope"></i> Contact
+            </a>
+        
+    </div>
+</div>
+
+<!-- Flash Messages -->
+
+    
+
+
+<!-- Main Content -->
+<main>
+    
+<!-- CLEAN DESIGN v4.0 - Nov 3 2025 -->
+<!-- Clean Hero Section -->
+<div class="clean-hero">
+    <div class="hero-center">
+        <div class="logo-section">
+            <img src="/static/images/logo.svg" 
+                 alt="LaborLooker" 
+                 class="main-logo">
+            <h1 class="main-title">LaborLooker</h1>
+        </div>
+        
+        <h2 class="subtitle">South Carolina's Business Network</h2>
+        
+        <p class="description">
+            Connect with trusted professionals across the Palmetto State.<br>
+            Find work. Hire talent. Build relationships.
+        </p>
+        
+        <div class="simple-actions">
+            <a href="/register" class="primary-btn">Join Network</a>
+            <a href="/login" class="secondary-btn">Sign In</a>
+        </div>
+        
+        <div class="trust-line">
+            <span class="trust-text">Trusted by 2,500+ professionals in Charleston, Columbia & Greenville</span>
+        </div>
+    </div>
+</div>
+
+<!-- Simple Features -->
+<div class="simple-features">
+    <div class="feature-center">
+        <h3 class="features-title">Why LaborLooker Works</h3>
+        
+        <div class="feature-grid">
+            <div class="feature-item">
+                <div class="feature-icon">🤝</div>
+                <h4>Local Focus</h4>
+                <p>South Carolina professionals serving South Carolina businesses</p>
+            </div>
+            
+            <div class="feature-item">
+                <div class="feature-icon">✓</div>
+                <h4>Verified Members</h4>
+                <p>Background checked, licensed, and insured professionals</p>
+            </div>
+            
+            <div class="feature-item">
+                <div class="feature-icon">⚡</div>
+                <h4>Quick Connections</h4>
+                <p>Find the right person for your project in hours, not days</p>
+            </div>
+        </div>
+        
+        <div class="bottom-cta">
+            <a href="/register" class="primary-btn">Get Started</a>
+            <p class="small-text">Free to join • No setup fees</p>
+        </div>
+    </div>
+</div>
+
+</main>
+
+<!-- Footer -->
+<footer class="footer">
+    <div class="footer-content">
+        <div class="footer-section">
+            <h3>LaborLooker</h3>
+            <p style="color: var(--gray-600); margin-bottom: 1rem;">
+                Connecting skilled professionals across South Carolina.
+            </p>
+            <div class="social-proof">
+                <div class="social-proof-avatars">
+                    <div class="user-avatar">SC</div>
+                    <div class="user-avatar">CHS</div>
+                    <div class="user-avatar">CLT</div>
+                </div>
+                <span class="social-proof-text">Trusted in Charleston, Columbia, and beyond</span>
+            </div>
+        </div>
+        
+        <div class="footer-section">
+            <h3>Quick Links</h3>
+            <a href="/about-us">About Us</a>
+            <a href="/contact-us">Contact</a>
+            <a href="/help">Help & Support</a>
+            <a href="/careers">Careers</a>
+        </div>
+        
+        <div class="footer-section">
+            <h3>For Professionals</h3>
+            <a href="/register">Join Network</a>
+            <a href="/training">Training</a>
+            <a href="/resources">Resources</a>
+        </div>
+        
+        <div class="footer-section">
+            <h3>For Businesses</h3>
+            <a href="/register">Find Talent</a>
+            <a href="/solutions">Solutions</a>
+            <a href="/partnerships">Partnerships</a>
+        </div>
+    </div>
+    
+    <div class="footer-bottom">
+        <p>&copy; 2025 LaborLooker. Connecting South Carolina's workforce.</p>
+    </div>
+</footer>
+
+<script>
+// NUCLEAR CONSENT POPUP BLOCKER - Prevents ANY consent/privacy popups
+(function() {
+    // Block consent popups immediately on load
+    const blockConsentPopups = () => {
+        // Remove any elements with consent/privacy keywords
+        const selectors = [
+            '[class*="consent"]',
+            '[id*="consent"]',
+            '[class*="privacy"]', 
+            '[id*="privacy"]',
+            '[class*="cookie"]',
+            '[id*="cookie"]',
+            '[class*="modal"][style*="fixed"]',
+            '[class*="popup"]',
+            '[class*="overlay"][style*="fixed"]',
+            'div[style*="z-index: 9999"]',
+            'div[style*="z-index: 10000"]',
+            'div[style*="position: fixed"][style*="width: 100%"]'
+        ];
+        
+        selectors.forEach(selector => {
+            try {
+                document.querySelectorAll(selector).forEach(el => {
+                    // Check if it contains consent-related text
+                    const text = el.textContent || '';
+                    if (text.toLowerCase().includes('consent') || 
+                        text.toLowerCase().includes('privacy') || 
+                        text.toLowerCase().includes('accept') ||
+                        text.toLowerCase().includes('agreement')) {
+                        console.log('🔥 BLOCKED CONSENT ELEMENT:', el);
+                        el.remove();
+                    }
+                });
+            } catch(e) {}
+        });
+    };
+    
+    // Block immediately
+    blockConsentPopups();
+    
+    // Block on DOM ready
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', blockConsentPopups);
+    }
+    
+    // Block after page load
+    window.addEventListener('load', blockConsentPopups);
+    
+    // Monitor for dynamically added consent popups
+    const observer = new MutationObserver(mutations => {
+        mutations.forEach(mutation => {
+            mutation.addedNodes.forEach(node => {
+                if (node.nodeType === 1) { // Element node
+                    const text = node.textContent || '';
+                    if (text.toLowerCase().includes('consent') || 
+                        text.toLowerCase().includes('we value your privacy') ||
+                        text.toLowerCase().includes('binding agreement')) {
+                        console.log('🔥 BLOCKED DYNAMIC CONSENT:', node);
+                        node.remove();
+                    }
+                }
+            });
+        });
+    });
+    
+    // Start observing
+    observer.observe(document.documentElement, {
+        childList: true,
+        subtree: true
+    });
+    
+    console.log('✅ CONSENT BLOCKER ACTIVE');
+})();
+
+// Modern Mobile Menu Toggle
+function toggleMobileMenu() {
+    const menu = document.getElementById('mobileMenu');
+    const overlay = document.getElementById('mobileOverlay');
+    const isOpen = menu.classList.contains('open');
+    
+    if (isOpen) {
+        menu.classList.remove('open');
+        overlay.classList.remove('show');
+    } else {
+        menu.classList.add('open');
+        overlay.classList.add('show');
+    }
+}
+
+// Show desktop nav on larger screens
+function updateNavigation() {
+    const desktopNav = document.getElementById('desktopNav');
+    const mobileBtn = document.getElementById('mobileMenuBtn');
+    
+    if (window.innerWidth >= 768) {
+        if (desktopNav) desktopNav.style.display = 'flex';
+        if (mobileBtn) mobileBtn.style.display = 'none';
+    } else {
+        if (desktopNav) desktopNav.style.display = 'none';
+        if (mobileBtn) mobileBtn.style.display = 'flex';
+    }
+}
+
+// Initialize on load and resize
+window.addEventListener('load', updateNavigation);
+window.addEventListener('resize', updateNavigation);
+
+// Auto-hide flash messages
+setTimeout(() => {
+    const flashes = document.querySelectorAll('.flash');
+    flashes.forEach(flash => {
+        flash.style.opacity = '0';
+        flash.style.transform = 'translateX(400px)';
+        setTimeout(() => flash.remove(), 300);
+    });
+}, 5000);
+</script>
+
+</body>
+</html>
