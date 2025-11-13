@@ -19,7 +19,7 @@ except ImportError:
     # Running on Google App Engine where dotenv might not be available
     pass
 
-from flask import Flask, render_template, request, redirect, url_for, flash, send_file, session, jsonify, current_app
+from flask import Flask, render_template, request, redirect, url_for, flash, send_file, session, jsonify, current_app, send_from_directory
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.exc import SQLAlchemyError, DatabaseError
 from flask_login import LoginManager, UserMixin, login_user, logout_user, login_required, current_user
@@ -474,6 +474,11 @@ def startup_check():
         "message": "LaborLooker application started successfully"
     }), 200
 
+@app.route('/robots.txt')
+def robots_txt():
+    """Serve robots.txt for search engine crawlers"""
+    return send_from_directory('static', 'robots.txt', mimetype='text/plain')
+
 @app.route('/health')
 def public_health():
     """Public health check for monitoring"""
@@ -846,8 +851,12 @@ def get_user_pii_settings(user_id):
     
     return pii_protection
 
-def apply_pii_masking(user_data, viewer_id, context="profile"):
-    """Apply PII masking based on user's privacy settings"""
+def apply_pii_masking(user_data, viewer_id, context="profile"):  # noqa: ARG001
+    """Apply PII masking based on user's privacy settings
+    
+    Args:
+        context: Reserved for future use (different masking rules per context)
+    """
     if not user_data:
         return user_data
     
@@ -3026,7 +3035,6 @@ def track_profile_view(viewer_id, viewed_user_id, view_type="full_profile", sour
     viewer_pii_settings = get_user_pii_settings(viewer_id)
     
     # Reset monthly views if needed
-    from datetime import datetime
     now = datetime.utcnow()
     if viewer_pii_settings.last_view_reset.month != now.month:
         viewer_pii_settings.current_month_views = 0
@@ -3131,8 +3139,6 @@ def detect_tos_violations(content):
         'cut out', 'bypass', 'work around', 'avoid platform', 'direct deal',
         'under table', 'cash under', 'no taxes', 'off books', 'side deal'
     ]
-    
-    import re
     
     # Check for PII
     for pattern in pii_patterns:
@@ -3393,9 +3399,13 @@ def accept_network_invitation(invitation_id, invitee_id):
         db.session.rollback()
         return False, f"Error accepting invitation: {str(e)}"
 
-def search_potential_network_members(network_owner_id, location=None, service_categories=None, 
+def search_potential_network_members(network_owner_id, location=None, service_categories=None,  # noqa: ARG001
                                    experience_level=None, rating_threshold=4.0):
-    """Search for potential network members based on criteria"""
+    """Search for potential network members based on criteria
+    
+    Args:
+        service_categories: Reserved for future filtering by service type
+    """
     
     query = User.query.filter(
         User.account_type.in_(["professional", "networking"]),
@@ -3483,7 +3493,6 @@ def log_privacy_setting_change(user_id, setting_name, old_value, new_value):
 
 def check_data_retention_policy():
     """Check and enforce data retention policies"""
-    from datetime import datetime, timedelta
     
     # Get users with auto-delete enabled and past retention period
     cutoff_date = datetime.utcnow() - timedelta(days=2555)  # Default 7 years
@@ -3522,7 +3531,6 @@ def process_network_commission(invoice):
         # In network: 8% to networking account, 2% to platform
         networking_account = network_connection.developer
         gross_amount = invoice.contractor_amount  # Amount contractor receives
-        total_commission = gross_amount * 0.10  # 10% total commission
         
         networking_commission = gross_amount * 0.08  # 8% to networking account
         platform_commission = gross_amount * 0.02   # 2% to platform
@@ -3649,7 +3657,7 @@ def get_random_contractors(service_category, geographic_area, customer_rating=No
     weighted_contractors = []
     
     for contractor_user, contractor_profile in all_contractors:
-        rating, count = calculate_user_rating(contractor_user.id)
+        rating, _ = calculate_user_rating(contractor_user.id)
         is_new = is_new_user(contractor_user.id)
         
         # Base weight
@@ -3700,7 +3708,7 @@ def get_random_networking_accounts(customer_rating=None):
     weighted_accounts = []
     
     for user, profile in all_accounts:
-        rating, count = calculate_user_rating(user.id)
+        rating, _ = calculate_user_rating(user.id)
         is_new = is_new_user(user.id)
         
         # Base weight
@@ -3928,7 +3936,7 @@ class DocuSignManager:
             'assertion': assertion
         }
         
-        response = requests.post(token_url, headers=headers, data=data)
+        response = requests.post(token_url, headers=headers, data=data, timeout=30)
         
         if response.status_code == 200:
             token_data = response.json()
@@ -3970,9 +3978,6 @@ class DocuSignManager:
     def _send_required_document(self, user, document_type):
         """Send required document for signing"""
         try:
-            # Prepare document data
-            template_data = self._prepare_document_data(user, document_type)
-            
             # Create envelope (simplified - would need actual template)
             envelope_data = {
                 'envelopeId': f"env_{shortuuid.uuid()}_{document_type}",
@@ -3999,8 +4004,12 @@ class DocuSignManager:
             self.logger.error(f"Failed to send document {document_type}: {str(e)}")
             return False
     
-    def _prepare_document_data(self, user, document_type):
-        """Prepare template data for document"""
+    def _prepare_document_data(self, user, document_type):  # noqa: ARG002
+        """Prepare template data for document
+        
+        Args:
+            document_type: Reserved for future document-specific template data
+        """
         base_data = {
             'user_name': user.name,
             'user_email': user.email,
@@ -4054,7 +4063,7 @@ class DocuSignManager:
                 user.contractor_profile.liability_waiver_signed_at = datetime.utcnow()
         
         # Check if all required documents are complete
-        all_complete, message = self.require_contractor_documents(user)
+        all_complete, _ = self.require_contractor_documents(user)
         if all_complete and user.contractor_profile:
             user.contractor_profile.documents_complete = True
             user.contractor_profile.status = 'active'
@@ -4066,8 +4075,12 @@ class DocuSignManager:
 docusign_manager = DocuSignManager()
 
 # Decorator for document enforcement
-def require_contractor_documents(action=None):
-    """Decorator to enforce contractor document requirements"""
+def require_contractor_documents(action=None):  # noqa: ARG001
+    """Decorator to enforce contractor document requirements
+    
+    Args:
+        action: Reserved for future action-specific document requirements
+    """
     def decorator(f):
         @wraps(f)
         def decorated_function(*args, **kwargs):
@@ -8532,7 +8545,7 @@ def campaign_performance(campaign_id):
         if latest_performance.geographic_performance:
             try:
                 audience_data['geographic'] = json.loads(latest_performance.geographic_performance)
-            except:
+            except (json.JSONDecodeError, ValueError, TypeError):
                 audience_data['geographic'] = {}
         
         if latest_performance.mobile_performance and latest_performance.desktop_performance:
@@ -8540,7 +8553,7 @@ def campaign_performance(campaign_id):
                 mobile = json.loads(latest_performance.mobile_performance)
                 desktop = json.loads(latest_performance.desktop_performance)
                 audience_data['device'] = {'mobile': mobile, 'desktop': desktop}
-            except:
+            except (json.JSONDecodeError, ValueError, TypeError):
                 audience_data['device'] = {}
     
     return render_template("marketing/performance.html", 

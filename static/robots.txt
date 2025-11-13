@@ -1,0 +1,50 @@
+# LaborLooker Robots.txt
+# Allow search engines to index public pages
+
+User-agent: *
+
+# Allow all public pages
+Allow: /
+Allow: /about
+Allow: /guide
+Allow: /jobs/
+Allow: /contractors/
+Allow: /contact
+
+# Disallow private/sensitive pages
+Disallow: /admin
+Disallow: /api/
+Disallow: /auth/
+Disallow: /dashboard
+Disallow: /login
+Disallow: /register
+Disallow: /profile
+Disallow: /settings
+Disallow: /billing
+Disallow: /payment
+Disallow: /privacy/delete
+Disallow: /two_factor/
+Disallow: /contracts/
+Disallow: /messages
+Disallow: /notifications
+Disallow: /upload
+Disallow: /static/downloads/
+Disallow: /static/qr/
+
+# Prevent indexing of user-generated content that should be private
+Disallow: /prospects/
+Disallow: /campaigns/
+Disallow: /schedule/
+Disallow: /swipe/
+Disallow: /networking/
+
+# Allow static assets
+Allow: /static/images/
+Allow: /static/css/
+Allow: /static/js/
+
+# Sitemap location (create this later)
+Sitemap: https://laborlooker.com/sitemap.xml
+
+# Crawl delay for polite bots (optional)
+Crawl-delay: 1
